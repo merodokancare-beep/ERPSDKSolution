@@ -171,7 +171,7 @@ a:hover {
 
 .page-wrapper {
   margin-left: 240px !important;
-  padding-top: 70px !important;
+  padding-top: 64px !important;
   transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
@@ -978,7 +978,7 @@ body.light-mode .bar-icon span {
 .sidebar .sidebar-inner, 
 .sidebar #sidebar-menu,
 .sidebar .sidebar-menu {
-  padding-top: 20px !important;
+  padding-top: 0 !important;
   margin-top: 0 !important;
 }
 
@@ -986,7 +986,7 @@ body.light-mode .bar-icon span {
   font-size: 14px;
   list-style-type: none;
   margin: 0;
-  padding: 1px 0 !important;
+  padding: 0 !important;
   position: relative;
 }
 
@@ -996,13 +996,13 @@ body.light-mode .bar-icon span {
   font-weight: 800 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.08em !important;
-  padding: 10px 20px 4px !important;
+  padding: 8px 20px 4px !important;
 }
 
 .sidebar .sidebar-menu > ul > li:first-child.menu-title,
 .sidebar .sidebar-menu .menu-title:first-child,
 .sidebar #sidebar-menu > ul > li:first-child.menu-title {
-  padding-top: 8px !important;
+  padding-top: 2px !important;
   margin-top: 0 !important;
 }
 
