@@ -1,10 +1,701 @@
 ﻿-- ==========================================================
--- WBSDKERPDB Complete Database Script (Tables, Data & Stored Procedures)
+-- WBSDKERPDB Complete Database Script (TVPs, Functions, Tables, Procedures, Data)
 -- Generated for Cloud / Render SQL Server deployment
 -- ==========================================================
 SET NOCOUNT ON;
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
+GO
+
+-- ==========================================================
+-- USER-DEFINED TABLE TYPES (TVPs)
+-- ==========================================================
+IF TYPE_ID(N'[dbo].[AddChallanItemDtlsTVP]') IS NULL
+BEGIN
+CREATE TYPE [dbo].[AddChallanItemDtlsTVP] AS TABLE (
+    [CHItemID] nvarchar(128) NULL,
+    [ChallanID] varchar(10) NULL,
+    [ItemName] nvarchar(MAX) NOT NULL,
+    [Quantity] int NOT NULL,
+    [UnitID] bigint NOT NULL,
+    [SlNo] int NULL
+);
+END;
+GO
+
+IF TYPE_ID(N'[dbo].[AddItemDtlsTVP]') IS NULL
+BEGIN
+CREATE TYPE [dbo].[AddItemDtlsTVP] AS TABLE (
+    [ItemDtlID] nvarchar(128) NULL,
+    [SaleInvoiceID] varchar(8) NULL,
+    [ItemName] nvarchar(MAX) NOT NULL,
+    [ItemHSNCode] varchar(50) NOT NULL,
+    [GSTPercentage] int NOT NULL,
+    [IGSTPercentage] float NULL,
+    [CGSTPercentage] float NULL,
+    [SGSTPercentage] float NULL,
+    [Qty] int NOT NULL,
+    [Rate] decimal(10, 2) NOT NULL,
+    [Amount] decimal(10, 2) NOT NULL
+);
+END;
+GO
+
+IF TYPE_ID(N'[dbo].[AttendanceType]') IS NULL
+BEGIN
+CREATE TYPE [dbo].[AttendanceType] AS TABLE (
+    [EnrollNo] int NOT NULL,
+    [MachineNo] int NOT NULL,
+    [VeriMode] varchar(50) NOT NULL,
+    [InTime] datetime NULL,
+    [OutTime] datetime NULL
+);
+END;
+GO
+
+-- ==========================================================
+-- FUNCTIONS
+-- ==========================================================
+IF OBJECT_ID('[udfGenerateAttendanceID]', 'FN') IS NOT NULL DROP FUNCTION [udfGenerateAttendanceID];
+IF OBJECT_ID('[udfGenerateAttendanceID]', 'IF') IS NOT NULL DROP FUNCTION [udfGenerateAttendanceID];
+IF OBJECT_ID('[udfGenerateAttendanceID]', 'TF') IS NOT NULL DROP FUNCTION [udfGenerateAttendanceID];
+GO
+CREATE FUNCTION [dbo].[udfGenerateAttendanceID] 
+(	
+	@tablename varchar(256)
+)
+
+RETURNS @MsgRTable table
+(
+	MsgRcpID varchar(16),
+	CharRange varchar(1),
+	Year int,
+	SINo int
+)
+AS
+BEGIN
+	-- Declare the return variable here
+	Declare @char varchar(1)
+	Declare @slno int
+	Declare @msgRID varchar(16)
+	Declare @year varchar(2)
+	Declare @uniqueNo varchar(11)
+
+	-- Add the T-SQL statements to compute the return value here
+	select @char=CharRange, @slno=StartRange, @year = Year from utblMstGenCodeSeeds where TableName=@tablename
+	set @uniqueNo= RIGHT('00000000000'+CAST(ISNULL(@slno,0) AS VARCHAR),11)
+	if(@year <> Right(YEAR(GETDATE()),2))
+	BEGIN
+		set @year = Right(YEAR(GETDATE()),2)
+		set @char = 'A'
+		--set @uniqueNo = RIGHT('00000000000'+CAST(1 AS VARCHAR),11)
+	END
+	set @msgRID='AT'+@year+@char+@uniqueNo
+	set @slno=@slno+1
+
+	insert @MsgRTable
+	select @msgRID, @char,@year, @slno
+	-- Return the result of the function
+	RETURN
+END
+
+
+
+
+
+
+
+
+GO
+
+IF OBJECT_ID('[udfGenerateEmpID]', 'FN') IS NOT NULL DROP FUNCTION [udfGenerateEmpID];
+IF OBJECT_ID('[udfGenerateEmpID]', 'IF') IS NOT NULL DROP FUNCTION [udfGenerateEmpID];
+IF OBJECT_ID('[udfGenerateEmpID]', 'TF') IS NOT NULL DROP FUNCTION [udfGenerateEmpID];
+GO
+CREATE FUNCTION [dbo].[udfGenerateEmpID] 
+(
+	@tablename varchar(256)
+)
+RETURNS @MsgRTable table
+(
+	MsgRcpID varchar(9),
+	CharRange varchar(1),
+	Year int,
+	SINo int
+)
+AS
+BEGIN
+	-- Declare the return variable here
+	Declare @char varchar(1)
+	Declare @slno int
+	Declare @msgRID varchar(9)
+	Declare @year varchar(2)
+	Declare @uniqueNo varchar(6)
+
+	-- Add the T-SQL statements to compute the return value here
+	select @char=CharRange, @slno=StartRange, @year = Year from utblMstGenCodeSeeds where TableName=@tablename
+	set @uniqueNo= RIGHT('0000'+CAST(ISNULL(@slno,0) AS VARCHAR),4)
+	if(@year <> Right(YEAR(GETDATE()),2))
+	BEGIN
+		set @year = Right(YEAR(GETDATE()),2)
+		set @char = 'A'
+		--set @uniqueNo = RIGHT('0000'+CAST(1 AS VARCHAR),4)
+	END
+	set @msgRID='E'+@year+@char+@uniqueNo
+	set @slno=@slno+1
+
+	insert @MsgRTable
+	select @msgRID, @char,@year, @slno
+	-- Return the result of the function
+	RETURN
+
+END
+
+
+
+
+
+
+
+
+
+
+GO
+
+IF OBJECT_ID('[udfGenerateHolidayCode]', 'FN') IS NOT NULL DROP FUNCTION [udfGenerateHolidayCode];
+IF OBJECT_ID('[udfGenerateHolidayCode]', 'IF') IS NOT NULL DROP FUNCTION [udfGenerateHolidayCode];
+IF OBJECT_ID('[udfGenerateHolidayCode]', 'TF') IS NOT NULL DROP FUNCTION [udfGenerateHolidayCode];
+GO
+CREATE FUNCTION [dbo].[udfGenerateHolidayCode] 
+(	
+	@tablename varchar(256)
+)
+
+RETURNS @MsgRTable table
+(
+	MsgRcpID varchar(10),
+	CharRange varchar(1),
+	Year int,
+	SINo int
+)
+AS
+BEGIN
+	-- Declare the return variable here
+	Declare @char varchar(1)
+	Declare @slno int
+	Declare @msgRID varchar(10)
+	Declare @year varchar(2)
+	Declare @uniqueNo varchar(6)
+
+	-- Add the T-SQL statements to compute the return value here
+	select @char=CharRange, @slno=StartRange, @year = Year from utblMstGenCodeSeeds where TableName=@tablename
+	set @uniqueNo= RIGHT('00000'+CAST(ISNULL(@slno,0) AS VARCHAR),5)
+	if(@year <> Right(YEAR(GETDATE()),2))
+	BEGIN
+		set @year = Right(YEAR(GETDATE()),2)
+		set @char = 'A'
+		--set @uniqueNo = RIGHT('00000'+CAST(1 AS VARCHAR),5)
+	END
+	set @msgRID='HL'+@year+@char+@uniqueNo
+	set @slno=@slno+1
+
+	insert @MsgRTable
+	select @msgRID, @char,@year, @slno
+	-- Return the result of the function
+	RETURN
+END
+
+
+
+GO
+
+IF OBJECT_ID('[udfGetDirectPaymentExpByDaterange]', 'FN') IS NOT NULL DROP FUNCTION [udfGetDirectPaymentExpByDaterange];
+IF OBJECT_ID('[udfGetDirectPaymentExpByDaterange]', 'IF') IS NOT NULL DROP FUNCTION [udfGetDirectPaymentExpByDaterange];
+IF OBJECT_ID('[udfGetDirectPaymentExpByDaterange]', 'TF') IS NOT NULL DROP FUNCTION [udfGetDirectPaymentExpByDaterange];
+GO
+CREATE FUNCTION [dbo].[udfGetDirectPaymentExpByDaterange] 
+(
+	@SDate date,
+	@EDate date
+)
+RETURNS @MsgRTable table
+(
+	ExpenseHead varchar(100),
+	--MonName varchar(100),
+	AmountReceived decimal(10,2),
+	AmountReleased decimal(10,2)
+)
+AS
+BEGIN
+	
+	Declare @StartDate Date, @EndDate Date
+	Set @StartDate= @SDate
+	Set @EndDate =@EDate 
+
+	Insert Into @MsgRTable (ExpenseHead,AmountReceived,AmountReleased)
+	select ExpenseType,isnull(sum(Received),0.0) as TotalReceived, isnull(Sum(Released),0.0) as TotalReleased from
+	(
+		select ExpenseType,isnull(AmtReceived,0.0) as Received, 0 as Released from utblPaymentReceivables a
+		inner join utblMstExpenseTypes b  on a.ExpenseTypeID=b.ExpenseTypeID
+		where Cast(ReceivedDate as date) between @StartDate and @EndDate
+		union All
+		Select ExpenseType,0 as Received,isnull(c.PaymentAmt,0) as Released from utblDirectPayments a
+		inner join utblMstExpenseTypes b  on a.ExpenseTypeID=b.ExpenseTypeID
+		inner join utblPaymentReleasedTrans c on a.DirectPaymentID=c.DirectPaymentID
+		where Cast(c.PaymentDate as date) between @StartDate and @EndDate
+	)R
+	where Received>0 or Released>0
+	Group By ExpenseType
+
+	
+	
+	--Select ExpenseType,Concat(DateName(Month, c.PaymentDate), ' ',Year(c.PaymentDate)),isnull(Sum(c.PaymentAmt),0)
+	--		from utblDirectPayments a
+	--		inner join utblMstExpenseTypes b  on a.ExpenseTypeID=b.ExpenseTypeID
+	--		inner join utblPaymentReleasedTrans c on a.DirectPaymentID=c.DirectPaymentID
+	--		where Cast(c.PaymentDate as date) between @StartDate and @EndDate
+			--Group By ExpenseType,Concat(DateName(Month, c.PaymentDate), ' ',Year(c.PaymentDate))
+	RETURN
+
+END
+
+
+
+
+
+
+
+
+
+
+GO
+
+IF OBJECT_ID('[udfGetDirectPaymentYearDD]', 'FN') IS NOT NULL DROP FUNCTION [udfGetDirectPaymentYearDD];
+IF OBJECT_ID('[udfGetDirectPaymentYearDD]', 'IF') IS NOT NULL DROP FUNCTION [udfGetDirectPaymentYearDD];
+IF OBJECT_ID('[udfGetDirectPaymentYearDD]', 'TF') IS NOT NULL DROP FUNCTION [udfGetDirectPaymentYearDD];
+GO
+-- =============================================
+-- Author:		Rakib Alam
+-- Create date: 6 May 2023
+-- Description:	Get Release Direct payment Distinct Year DD
+-- =============================================
+Create FUNCTION [dbo].[udfGetDirectPaymentYearDD]
+(	
+)
+RETURNS TABLE 
+AS
+RETURN 
+(
+	select Distinct Year(PaymentDate) as YearNo from utblDirectPayments
+
+)
+
+
+GO
+
+IF OBJECT_ID('[udfGetFiscalWiseCount]', 'FN') IS NOT NULL DROP FUNCTION [udfGetFiscalWiseCount];
+IF OBJECT_ID('[udfGetFiscalWiseCount]', 'IF') IS NOT NULL DROP FUNCTION [udfGetFiscalWiseCount];
+IF OBJECT_ID('[udfGetFiscalWiseCount]', 'TF') IS NOT NULL DROP FUNCTION [udfGetFiscalWiseCount];
+GO
+CREATE FUNCTION [dbo].[udfGetFiscalWiseCount] 
+(
+	@SDate date,
+	@EDate date
+)
+RETURNS @MsgRTable table
+(
+	OpenProject int,
+	ClosedProject int,
+	SaleInvCount int,
+	POCount int,
+	OpenProjPer int,
+	ClosedProjPer int,
+	SaleInvPer int,POCountPer int
+)
+AS
+BEGIN
+	
+	Declare @StartDate Date, @EndDate Date
+	Set @StartDate= @SDate
+	Set @EndDate =@EDate 
+	--if (Month(GetDate())>= 4 and Month(GetDate()) >= 3)
+	--Begin
+	--	Set @StartDate=cast(convert(varchar,YEAR(GetDate()))+'-04-01' as date) 
+	--	Set @EndDate =cast(convert(varchar,YEAR(GetDate())+1)+'-03-31' as date)        
+	--End
+	--Else
+	--Begin
+	--	Set @StartDate=cast(convert(varchar,YEAR(GetDate())-1)+'-04-01' as date) 
+	--	Set @EndDate =cast(convert(varchar,YEAR(GetDate()))+'-03-31' as date)        
+	--End
+
+	Declare @OpenProject int=0,@ClosedProject int=0,@SaleInvCount int=0,@POCount int=0
+	Declare @OpenProjPer int=0,@ClosedProjPer int=0,@SaleInvPer int=0,@POCountPer int=0,@TProj int=0,@TInvoice int=0,@TPO int=0
+
+	Set @TProj=(select Count(ProjectID) from utblMstProjects)
+	Set @TInvoice=(select Count(SaleInvoiceID) from utblSaleInvoiceKeys)
+	Set @TPO=(select Count(PurchaseDate) from utblPurchaseInvoiceKeys)
+
+	set @OpenProject=(select Count(ProjectID) from utblMstProjects where ProjStatus='Open' and  ProjStartDate between @StartDate and @EndDate)
+	set @ClosedProject=(select Count(ProjectID) from utblMstProjects where ProjStatus='Closed' and ProjEndDate between @StartDate and @EndDate)
+	set @SaleInvCount= (select count(*) from utblSaleInvoiceKeys where Cast(InvoiceDate as date) between @StartDate and @EndDate and IsCancelled=0)
+	set @POCount= (select count(*) from utblPurchaseInvoiceKeys where Cast(PurchaseDate as date) between @StartDate and @EndDate and IsPOCancelled=0)
+
+	set @OpenProjPer =((@OpenProject*100)/@TProj)
+	set @ClosedProjPer =((@ClosedProject*100)/@TProj)
+	set @SaleInvPer =((@SaleInvCount*100)/@TInvoice)
+    set @POCountPer =((@POCount*100)/@TPO)
+
+	Insert Into @MsgRTable (OpenProject,ClosedProject,SaleInvCount,POCount,OpenProjPer,ClosedProjPer,SaleInvPer,POCountPer)
+	Values(@OpenProject,@ClosedProject,@SaleInvCount,@POCount,@OpenProjPer,@ClosedProjPer,@SaleInvPer,@POCountPer)
+	
+	RETURN
+
+END
+
+
+
+
+
+
+
+
+
+
+GO
+
+IF OBJECT_ID('[udfGetGSTInputByDaterange]', 'FN') IS NOT NULL DROP FUNCTION [udfGetGSTInputByDaterange];
+IF OBJECT_ID('[udfGetGSTInputByDaterange]', 'IF') IS NOT NULL DROP FUNCTION [udfGetGSTInputByDaterange];
+IF OBJECT_ID('[udfGetGSTInputByDaterange]', 'TF') IS NOT NULL DROP FUNCTION [udfGetGSTInputByDaterange];
+GO
+CREATE FUNCTION [dbo].[udfGetGSTInputByDaterange] 
+(
+	@SDate date,
+	@EDate date
+)
+RETURNS @MsgRTable table
+(
+	TotalIGST decimal(10,2),
+	TotalCGST decimal(10,2),
+	TotalSGST decimal(10,2)
+)
+AS
+BEGIN
+	
+	Declare @StartDate Date, @EndDate Date
+	Set @StartDate= @SDate
+	Set @EndDate =@EDate 
+
+	
+
+	Insert Into @MsgRTable (TotalIGST,TotalCGST,TotalSGST)
+	select isnull(Sum(IGSTAmount),0.0) as TotalIGST,isnull(Sum(CGSTAmount),0.0) as TotalCGST,isnull(Sum(SGSTAmount),0.0) as TotalSGST 
+	from utblPurchaseInvoiceKeys where Cast(PurchaseDate as date) between @StartDate and @EndDate and IsPOCancelled=0
+	
+	RETURN
+
+END
+
+
+
+
+
+
+
+
+
+
+GO
+
+IF OBJECT_ID('[udfGetGSTPayableByDaterange]', 'FN') IS NOT NULL DROP FUNCTION [udfGetGSTPayableByDaterange];
+IF OBJECT_ID('[udfGetGSTPayableByDaterange]', 'IF') IS NOT NULL DROP FUNCTION [udfGetGSTPayableByDaterange];
+IF OBJECT_ID('[udfGetGSTPayableByDaterange]', 'TF') IS NOT NULL DROP FUNCTION [udfGetGSTPayableByDaterange];
+GO
+Create FUNCTION [dbo].[udfGetGSTPayableByDaterange] 
+(
+	@SDate date,
+	@EDate date
+)
+RETURNS @MsgRTable table
+(
+	TotalIGST decimal(10,2),
+	TotalCGST decimal(10,2),
+	TotalSGST decimal(10,2)
+)
+AS
+BEGIN
+	
+	Declare @StartDate Date, @EndDate Date
+	Set @StartDate= @SDate
+	Set @EndDate =@EDate 
+
+	Insert Into @MsgRTable (TotalIGST,TotalCGST,TotalSGST)
+	select isnull(Sum(IGSTAmount),0.0) as TotalIGST,isnull(Sum(CGSTAmount),0.0) as TotalCGST,isnull(Sum(SGSTAmount),0.0) as TotalSGST 
+	from utblSaleInvoiceKeys where Cast(InvoiceDate as date) between @StartDate and @EndDate and IsCancelled=0
+	
+	RETURN
+
+END
+
+
+
+
+
+
+
+
+
+
+GO
+
+IF OBJECT_ID('[udfGetPettyCashBalance]', 'FN') IS NOT NULL DROP FUNCTION [udfGetPettyCashBalance];
+IF OBJECT_ID('[udfGetPettyCashBalance]', 'IF') IS NOT NULL DROP FUNCTION [udfGetPettyCashBalance];
+IF OBJECT_ID('[udfGetPettyCashBalance]', 'TF') IS NOT NULL DROP FUNCTION [udfGetPettyCashBalance];
+GO
+-- =============================================
+-- Author:		Rakib Alam
+-- Description:	Get Petty Cash Balance
+-- =============================================
+Create FUNCTION [dbo].[udfGetPettyCashBalance]
+(
+	
+)
+RETURNS money
+AS
+BEGIN
+	Declare @TotalCredit money=0.00,@TotalDebit money =0.00,@Balance money=0.00
+
+	Select @TotalCredit=isnull(sum(CreditAmt),0),@TotalDebit=isnull(sum(DebitAmt),0) from utblPettyCashs
+	set @Balance=@TotalCredit-@TotalDebit
+
+	return @Balance
+	
+END
+
+GO
+
+IF OBJECT_ID('[udfGetPettyCashTotalTrans]', 'FN') IS NOT NULL DROP FUNCTION [udfGetPettyCashTotalTrans];
+IF OBJECT_ID('[udfGetPettyCashTotalTrans]', 'IF') IS NOT NULL DROP FUNCTION [udfGetPettyCashTotalTrans];
+IF OBJECT_ID('[udfGetPettyCashTotalTrans]', 'TF') IS NOT NULL DROP FUNCTION [udfGetPettyCashTotalTrans];
+GO
+-- =============================================
+-- Author:		Rakib Alam
+-- Create date: 6 May 2023
+-- Description:	Get Petty Cash Total Transaction
+-- =============================================
+CREATE FUNCTION [dbo].[udfGetPettyCashTotalTrans]
+(	
+	@MonthNo int,
+	@YearNo int
+)
+RETURNS TABLE 
+AS
+RETURN 
+(
+	select isnull(sum(CreditAmt),0) as TotalReceived,isnull(sum(DebitAmt),0) as TotalPayment,
+	(isnull(sum(CreditAmt),0)-isnull(sum(DebitAmt),0)) as CurrentBal from utblPettyCashs
+	Where (Year(TransDate)<=@YearNo or @YearNo is Null) and (Month(TransDate)<@MonthNo or @MonthNo is Null)
+
+)
+
+
+
+GO
+
+IF OBJECT_ID('[udfGetPettyCashYearDD]', 'FN') IS NOT NULL DROP FUNCTION [udfGetPettyCashYearDD];
+IF OBJECT_ID('[udfGetPettyCashYearDD]', 'IF') IS NOT NULL DROP FUNCTION [udfGetPettyCashYearDD];
+IF OBJECT_ID('[udfGetPettyCashYearDD]', 'TF') IS NOT NULL DROP FUNCTION [udfGetPettyCashYearDD];
+GO
+-- =============================================
+-- Author:		Rakib Alam
+-- Create date: 6 May 2023
+-- Description:	Get Petty Cash Distinct Year DD
+-- =============================================
+Create FUNCTION [dbo].[udfGetPettyCashYearDD]
+(	
+)
+RETURNS TABLE 
+AS
+RETURN 
+(
+	select Distinct Year(TransDate) as YearNo from utblPettyCashs
+
+)
+
+
+
+GO
+
+IF OBJECT_ID('[udfGetProjPaymentReceiveYearDD]', 'FN') IS NOT NULL DROP FUNCTION [udfGetProjPaymentReceiveYearDD];
+IF OBJECT_ID('[udfGetProjPaymentReceiveYearDD]', 'IF') IS NOT NULL DROP FUNCTION [udfGetProjPaymentReceiveYearDD];
+IF OBJECT_ID('[udfGetProjPaymentReceiveYearDD]', 'TF') IS NOT NULL DROP FUNCTION [udfGetProjPaymentReceiveYearDD];
+GO
+-- =============================================
+-- Author:		Rakib Alam
+-- Create date: 6 May 2023
+-- Description:	Get Project Related Payment Received
+-- =============================================
+Create FUNCTION [dbo].[udfGetProjPaymentReceiveYearDD]
+(	
+)
+RETURNS TABLE 
+AS
+RETURN 
+(
+	select Distinct Year(ReceivedDate) as YearNo from utblProjPaymentReceivables
+
+)
+
+
+
+GO
+
+IF OBJECT_ID('[udfGetReceivePaymentYearDD]', 'FN') IS NOT NULL DROP FUNCTION [udfGetReceivePaymentYearDD];
+IF OBJECT_ID('[udfGetReceivePaymentYearDD]', 'IF') IS NOT NULL DROP FUNCTION [udfGetReceivePaymentYearDD];
+IF OBJECT_ID('[udfGetReceivePaymentYearDD]', 'TF') IS NOT NULL DROP FUNCTION [udfGetReceivePaymentYearDD];
+GO
+-- =============================================
+-- Author:		Rakib Alam
+-- Create date: 6 May 2023
+-- Description:	Get Receive Direct payment Distinct Year DD
+-- =============================================
+Create FUNCTION [dbo].[udfGetReceivePaymentYearDD]
+(	
+)
+RETURNS TABLE 
+AS
+RETURN 
+(
+	select Distinct Year(ReceivedDate) as YearNo from utblPaymentReceivables
+
+)
+
+
+GO
+
+IF OBJECT_ID('[udfGstProjwisePaymentDetailsByDaterange]', 'FN') IS NOT NULL DROP FUNCTION [udfGstProjwisePaymentDetailsByDaterange];
+IF OBJECT_ID('[udfGstProjwisePaymentDetailsByDaterange]', 'IF') IS NOT NULL DROP FUNCTION [udfGstProjwisePaymentDetailsByDaterange];
+IF OBJECT_ID('[udfGstProjwisePaymentDetailsByDaterange]', 'TF') IS NOT NULL DROP FUNCTION [udfGstProjwisePaymentDetailsByDaterange];
+GO
+CREATE FUNCTION [dbo].[udfGstProjwisePaymentDetailsByDaterange] 
+(
+	@SDate date,
+	@EDate date
+)
+RETURNS @MsgRTable table
+(
+	ProjectName varchar(max),
+	--MonName varchar(100),
+	ProjCost decimal(10,2),
+	PaymentReceived decimal(10,2),
+	DueAmt decimal(10,2)
+)
+AS
+BEGIN
+	
+	Declare @StartDate Date, @EndDate Date
+	Set @StartDate= @SDate
+	Set @EndDate =@EDate 
+
+	Insert Into @MsgRTable (ProjectName,ProjCost,PaymentReceived,DueAmt)
+	select ProjectName,isnull(ProjValue,0)as ProjCost,isnull(TotalReceived,0)as PaymentReceived,ISNULL((ProjValue-TotalReceived),0) as DueAmt from 
+	(
+		select ProjectName,ProjectID,ProjValue from utblMstProjects a
+		where Cast(ProjStartDate as date) between @StartDate and @EndDate
+	)Proj
+	Inner Join 
+	(
+		select ProjectID,Sum(isnull(NetAmtReceived,0)+isnull(TDSDeductionAmt,0)+isnull(GstDeductionAmt,0)+isnull(SecurityDepositAmt,0)+isnull(OtherDeductionAmt,0)) as TotalReceived  from utblProjPaymentReceivables
+		Group By ProjectID
+	)Payment
+	on Proj.ProjectID=Payment.ProjectID
+	where ISNULL((ProjValue-TotalReceived),0)>1
+	
+
+	RETURN
+
+END
+
+GO
+
+IF OBJECT_ID('[udfUtilEightCharacterKey]', 'FN') IS NOT NULL DROP FUNCTION [udfUtilEightCharacterKey];
+IF OBJECT_ID('[udfUtilEightCharacterKey]', 'IF') IS NOT NULL DROP FUNCTION [udfUtilEightCharacterKey];
+IF OBJECT_ID('[udfUtilEightCharacterKey]', 'TF') IS NOT NULL DROP FUNCTION [udfUtilEightCharacterKey];
+GO
+CREATE FUNCTION [dbo].[udfUtilEightCharacterKey]
+(	
+	-- Add the parameters for the function here
+	@TableName varchar(50)
+)
+RETURNS 
+@ResultTable TABLE 
+(
+	UniqueCode varchar(8),
+	CharRange char(1),
+	UpdatedSLNo int
+)
+As
+Begin
+	Declare @CurChar char(1),@CurSLNo int,@UniqueCode varchar(10),@DigitCode varchar(4),@year varchar(2)--,@DigitCodeComm varchar(5)
+
+	select @CurChar=CharRange, @CurSLNo=StartRange from utblMstGenCodeSeeds
+	where TableName = @TableName
+	set @year = RIGHT(YEAR(GETDATE()),2)
+	set @DigitCode = RIGHT('000'+CAST(ISNULL(@CurSLNo,0) As varchar),3)
+
+	if(@TableName='utblSaleInvoiceKeys')
+		set @UniqueCode = 'SI'+@year+@CurChar+@DigitCode
+	else if(@TableName='utblPurchaseInvoiceKeys')
+		set @UniqueCode = 'PI'+@year+@CurChar+@DigitCode
+	else if(@TableName='utblPaymentDetails')
+		set @UniqueCode = 'PD'+@year+@CurChar+@DigitCode
+	else if(@TableName='utblChallanKeys')
+		set @UniqueCode = 'CH'+@year+@CurChar+@DigitCode
+	else
+		set @UniqueCode = @CurChar+@year+@DigitCode
+
+	insert into @ResultTable
+	select @UniqueCode,@CurChar,@CurSLNo+1
+	return
+ end
+
+GO
+
+IF OBJECT_ID('[udsfGetFiscalYear]', 'FN') IS NOT NULL DROP FUNCTION [udsfGetFiscalYear];
+IF OBJECT_ID('[udsfGetFiscalYear]', 'IF') IS NOT NULL DROP FUNCTION [udsfGetFiscalYear];
+IF OBJECT_ID('[udsfGetFiscalYear]', 'TF') IS NOT NULL DROP FUNCTION [udsfGetFiscalYear];
+GO
+-- =============================================
+-- Author:		Rakib Alam
+-- Description:	Get Fiscal Year 
+-- =============================================
+Create FUNCTION [dbo].[udsfGetFiscalYear] 
+(
+	@DateValue date
+)
+RETURNS varchar(10)
+AS
+BEGIN
+		Declare @StartDate date, @EndDate date,@FiscalYear varchar(10)
+		set @StartDate = cast(convert(varchar,YEAR(@DateValue))+'-04-01' as date)
+		set @EndDate = cast(convert(varchar,YEAR(@DateValue)+1)+'-03-31' as date)
+		if(cast(@DateValue as date) between @StartDate and @EndDate)
+		BEGIN
+			set @FiscalYear = CONCAT (YEAR(@StartDate),'-',Right(Year(@StartDate)+1,2))
+		END
+		else if(cast(@DateValue as date) < @StartDate)
+		BEGIN
+			set @FiscalYear =CONCAT(YEAR(@StartDate) - 1,'-',Right(Year(@StartDate),2))
+		END
+		else
+		BEGIN
+			set @FiscalYear=NULL;
+		END
+
+		return @FiscalYear
+	
+END
+
 GO
 
 -- ==========================================================
