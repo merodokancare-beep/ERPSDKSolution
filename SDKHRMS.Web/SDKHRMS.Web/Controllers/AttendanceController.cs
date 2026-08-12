@@ -1,11 +1,13 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using SDKHRMS.Entities.DataAccess;
 using SDKHRMS.Entities.ViewModels;
 using SDKHRMS.Web.HtmlHelpers;
 using System;
 using System.Data;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 //using Rotativa.Options;
 namespace SDKHRMS.Web.Controllers
 {

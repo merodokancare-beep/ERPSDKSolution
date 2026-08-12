@@ -1,8 +1,8 @@
-﻿@model System.Web.Mvc.HandleErrorInfo
+@model dynamic
 
 @{
     Layout = null;
-    Response.StatusCode = (int)ViewBag.StatusCode;
+    Context.Response.StatusCode = (int)ViewBag.StatusCode;
 }
 <html>
 <head>

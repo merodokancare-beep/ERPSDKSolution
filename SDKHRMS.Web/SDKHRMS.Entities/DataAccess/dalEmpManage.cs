@@ -1,8 +1,8 @@
-﻿using SDKHRMS.Entities.Models;
+using SDKHRMS.Entities.Models;
 using SDKHRMS.Entities.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,6 +13,7 @@ namespace SDKHRMS.Entities.DataAccess
     public class dalEmpManage
     {
         private EFDBContext objDB = new EFDBContext();
+
         public string SaveEmpDetails(utblEmpPersonalInfoKey Item, out string NewEmpID)
         {
             var parFName = new SqlParameter("@FName", Item.FName);
@@ -44,19 +45,22 @@ namespace SDKHRMS.Entities.DataAccess
             };
             string result = objDB.Database.SqlQuery<string>("udspEmpPersonalDtlsInsert @FName,@MName,@LName,@DOB,@Gender,@BloodGroup,@MaritalStatus,@Nationality,@Religion,@Email,@PhoneNumber,@PanNo,@AadharNo,@PresentAddress,@EmgContactName,@EmgContactNo,@EmgContactAddress,@PhotoNormal,@PhotoThumb,@UserName ,@NewEmpID out",
                parFName, parMName, parLName, parDOB, parGender, parBloodGroup, parMaritalStatus, parEmail, parNationality, parReligion, parPhoneNumber, parPanNo, parAadharNo, parPresentAddress, parEmgContactName, parEmgContactNo, parEmgContactAddress, parPhotoNormal, parPhotoThumb, parUserName, spOutput).FirstOrDefault();
-            NewEmpID = spOutput.Value.ToString();
+            NewEmpID = spOutput.Value?.ToString();
             return result;
         }
+
         public void DeleteEmpDetails(string EmpID)
         {
             string query = "delete from utblEmpPersonalInfoKeys where EmployeeID=" + EmpID + "Select 'success'";
             objDB.Database.SqlQuery<string>(query).FirstOrDefault();
         }
+
         public string deleteEmpDtl(string EmployeeID)
         {
             var parEmpID = new SqlParameter("@EmployeeID", EmployeeID);
             return objDB.Database.SqlQuery<string>("udspEmpDtlDelete @EmployeeID", parEmpID).FirstOrDefault();
         }
+
         public EmpManageVM empList(int PageNo, int PageSize, string SearchTerm)
         {
             EmpManageVM objVM = new EmpManageVM();
@@ -64,7 +68,7 @@ namespace SDKHRMS.Entities.DataAccess
             var parEnd = new SqlParameter("@PageSize", PageSize);
 
             var parSearchTerm = new SqlParameter("@SearchTerm", DBNull.Value);
-            if (!(SearchTerm == null || SearchTerm == ""))
+            if (!string.IsNullOrEmpty(SearchTerm))
                 parSearchTerm.Value = SearchTerm;
             var spOutput = new SqlParameter
             {
@@ -75,13 +79,15 @@ namespace SDKHRMS.Entities.DataAccess
 
             objVM.empList = objDB.Database.SqlQuery<EmpList>("udspMstEmpList @Start,@PageSize,@SearchTerm,@TotalRecords out",
               parStart, parEnd, parSearchTerm, spOutput).ToList();
-            objVM.TotalRecords = int.Parse(spOutput.Value.ToString());
+            objVM.TotalRecords = spOutput.Value != null ? int.Parse(spOutput.Value.ToString()) : 0;
             return objVM;
         }
+
         public utblEmpPersonalInfoKey empEdit(string EmployeeID)
         {
             return objDB.utblEmpPersonalInfoKeys.Where(x => x.EmployeeID == EmployeeID).FirstOrDefault();
         }
+
         public string editEmpDetails(utblEmpPersonalInfoKey Item)
         {
             string result = "";
@@ -113,12 +119,14 @@ namespace SDKHRMS.Entities.DataAccess
                parID, parFName, parMName, parLName, parDOB, parGender, parBloodGroup, parMaritalStatus, parEmail, parNationality, parReligion, parPhoneNumber, parPanNo, parAadharNo, parPresentAddress, parEmgContactName, parEmgContactNo, parEmgContactAddress, parPhotoNormal, parPhotoThumb, parUserName).FirstOrDefault();
             return result;
         }
+
         public IEnumerable<EmployeeListForDD> GetUnMappedEmpList()
         {
             List<EmployeeListForDD> objEmpList = new List<EmployeeListForDD>();
             objEmpList = objDB.Database.SqlQuery<EmployeeListForDD>("udspGetUnMapingEmpList").ToList();
             return objEmpList;
         }
+
         public EmployeeProfile empProfile(string Username)
         {
             EmployeeProfile objEmp = new EmployeeProfile();
@@ -127,6 +135,33 @@ namespace SDKHRMS.Entities.DataAccess
             return objEmp;
         }
 
+        public utblEmpPersonalInfoKey GetEmpDetailsByID(string id)
+        {
+            return empEdit(id);
+        }
 
+        public string SaveUpdateEmp(utblEmpPersonalInfoKey item)
+        {
+            if (string.IsNullOrEmpty(item.EmployeeID))
+            {
+                string newEmpID;
+                string res = SaveEmpDetails(item, out newEmpID);
+                return "1#" + newEmpID;
+            }
+            else
+            {
+                return editEmpDetails(item);
+            }
+        }
+
+        public IEnumerable<VendorDDList> GetDesignationList()
+        {
+            return new List<VendorDDList>();
+        }
+
+        public IEnumerable<VendorDDList> GetRoleList()
+        {
+            return new List<VendorDDList>();
+        }
     }
 }

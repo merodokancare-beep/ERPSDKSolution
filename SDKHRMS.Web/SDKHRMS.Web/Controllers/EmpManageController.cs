@@ -1,53 +1,33 @@
-﻿using SDKHRMS.Entities.DataAccess;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using SDKHRMS.Entities.DataAccess;
 using SDKHRMS.Entities.ViewModels;
-using SDKHRMS.Web.Models;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity.Owin;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
 using SDKHRMS.Web.HtmlHelpers;
+using SDKHRMS.Web.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace SDKHRMS.Web.Controllers
 {
-   [UserAuthorize(Roles = "Admin,Super Admin")]
-    public class EmpManageController : Controller
+    [UserAuthorize(Roles = "Admin,Super Admin")]
+    public class EmpManageController : BaseController
     {
-        //private ApplicationSignInManager _signInManager;
-        //private ApplicationUserManager _userManager;
-         private ApplicationDbContext objDB = new ApplicationDbContext();
+        private readonly UserManager<ApplicationUser> _userManager;
         dalConfiguration objDalConfig = new dalConfiguration();
         dalEmpManage objDalEmp = new dalEmpManage();
-        // GET: EmpManage
-        #region Identity Initialization Code
-        public EmpManageController()
-            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
-        {
-        }
 
         public EmpManageController(UserManager<ApplicationUser> userManager)
         {
-            UserManager = userManager;
+            _userManager = userManager;
         }
 
-        public UserManager<ApplicationUser> UserManager { get; private set; }
-
-
-
-        #endregion
+        public UserManager<ApplicationUser> UserManager => _userManager;
 
         public ActionResult EmpList(int PageNo = 1, int PageSize = 20, string SearchTerm = "")
         {
             ViewBag.ActiveURL = "/EmpManage/EmpList";
-            //if (Session["username"] == null)
-            //{
-            //    return RedirectToAction("login", "account", new { Area = "" });
-            //}
             EmpManageVM objVM = new EmpManageVM();
             ViewBag.SearchTerm = SearchTerm;
             objVM = objDalEmp.empList(PageNo, PageSize, SearchTerm);
@@ -56,96 +36,85 @@ namespace SDKHRMS.Web.Controllers
             {
                 return PartialView("_pvEmpList", objVM);
             }
-
             return View(objVM);
         }
 
-        public ActionResult AddEmpPersonalDetails()
+        public ActionResult AddEmp()
         {
-            return View();
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddEmpPersonalDetails(EmpManageViewModel ItemData)
-        {
-            ViewBag.ActiveURL = "/EmpManage/EmpList";
-            DateTime dob = Convert.ToDateTime(ItemData.utblEmpPersonalInfoKey.DateOfBirth);
-            DateTime PresentYear = DateTime.Now;
-            TimeSpan ts = PresentYear - dob;
-            DateTime Age = DateTime.MinValue.AddDays(ts.Days);
-            ItemData.utblEmpPersonalInfoKey.UserID = User.Identity.GetUserId();
-            int MinAge = Age.Year - 1;
-            if (MinAge < 18)
-            {
-                TempData["ErrMsg"] = "Date of Birth Cannot Be Less than 18 Years!";
-                return View(ItemData);
-            }
-                //string IpAddress = IPAddressGetter.GetIPAddress();
-             if (ModelState.IsValid)
-                {
-                    int users = objDalConfig.EmailExist(ItemData.utblEmpPersonalInfoKey.Email);
-                    if (users == 1)
-                    {
-                        TempData["ErrMsg"] = "Email ID Already Exists";
-                        return View(ItemData);
-                    }
-                    string NewEmpID = "";
-                    ItemData.utblEmpPersonalInfoKey.UserID =User.Identity.Name;
-
-                    string result = objDalEmp.SaveEmpDetails(ItemData.utblEmpPersonalInfoKey, out NewEmpID);
-                    TempData["ErrMsg"] = result;
-                    if (!result.Contains("Error"))
-                    {
-                        string r = await Register(ItemData.utblEmpPersonalInfoKey.Email, "Employee", NewEmpID);
-                        if (!(r.Contains("success")))
-                        {
-                            //delete User
-                            DeleteUser(NewEmpID);
-                            return RedirectToAction("EmpList", "EmpManage", new { Area = "" });
-                        }
-                        else
-                        {
-                            return RedirectToAction("EmpList", "EmpManage", new { Area = "" });
-                        }
-                    }
-                }
-            return View(ItemData);
-        }
-
-        public ActionResult EmpEdit(string EmployeeID)
-        {
-            ViewBag.ActiveURL = "/EmpManage/EmpList";
-            EmpManageViewModel objVM = new EmpManageViewModel();
-            objVM.utblEmpPersonalInfoKey = objDalEmp.empEdit(EmployeeID);
-            return View(objVM);
+            ViewBag.ActiveURL = "/EmpManage/AddEmp";
+            EmpAdd obj = new EmpAdd();
+            obj.StateDDList = objDalConfig.GetStateDDList();
+            obj.DesignationDDList = objDalEmp.GetDesignationList();
+            obj.RolesDDList = objDalEmp.GetRoleList();
+            return View(obj);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EmpEdit(EmpManageViewModel obj)
+        public async Task<ActionResult> AddEmp(EmpAdd obj)
         {
-            ViewBag.ActiveURL = "/EmpManage/EmpList";
-            DateTime dob = Convert.ToDateTime(obj.utblEmpPersonalInfoKey.DateOfBirth);
-            DateTime PresentYear = DateTime.Now;
-            TimeSpan ts = PresentYear - dob;
-            DateTime Age = DateTime.MinValue.AddDays(ts.Days);
-            obj.utblEmpPersonalInfoKey.UserID = "";
-            int MinAge = Age.Year - 1;
-            if (MinAge < 18)
-            {
-                TempData["ErrMsg"] = "Date of Birth Cannot Be Less than 18 Years!";
-                return View(obj);
-            }
-            //string IpAddress = IPAddressGetter.GetIPAddress();
+            ViewBag.ActiveURL = "/EmpManage/AddEmp";
+            string result = "";
+            obj.StateDDList = objDalConfig.GetStateDDList();
+            obj.DesignationDDList = objDalEmp.GetDesignationList();
+            obj.RolesDDList = objDalEmp.GetRoleList();
             if (ModelState.IsValid)
             {
-               
-                string result = objDalEmp.editEmpDetails(obj.utblEmpPersonalInfoKey);
-                TempData["ErrMsg"] = result;
-                if (!result.Contains("Error"))
+                result = objDalEmp.SaveUpdateEmp(obj.EmpAddDetails);
+                if (result != null && result.Contains("1#"))
                 {
-                        return RedirectToAction("EmpList", "EmpManage", new { Area = "" });
-                    
+                    string NewEmpID = result.Split('#')[1];
+                    string registerResult = await Register(obj.EmpAddDetails.Email, obj.Role ?? "Employee", NewEmpID);
+                    if (registerResult == "success")
+                    {
+                        TempData["ErrMsg"] = "0";
+                        return RedirectToAction("AddEmp");
+                    }
+                    else
+                    {
+                        DeleteUser(NewEmpID);
+                        TempData["ErrMsg"] = "1";
+                    }
+                }
+                else
+                {
+                    TempData["ErrMsg"] = result;
+                }
+            }
+            return View(obj);
+        }
+
+        public ActionResult EditEmp(string id)
+        {
+            ViewBag.ActiveURL = "/EmpManage/EmpList";
+            EmpAdd obj = new EmpAdd();
+            obj.EmpAddDetails = objDalEmp.GetEmpDetailsByID(id);
+            obj.StateDDList = objDalConfig.GetStateDDList();
+            obj.DesignationDDList = objDalEmp.GetDesignationList();
+            obj.RolesDDList = objDalEmp.GetRoleList();
+            return View(obj);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditEmp(EmpAdd obj)
+        {
+            ViewBag.ActiveURL = "/EmpManage/EmpList";
+            string result = "";
+            obj.StateDDList = objDalConfig.GetStateDDList();
+            obj.DesignationDDList = objDalEmp.GetDesignationList();
+            obj.RolesDDList = objDalEmp.GetRoleList();
+            if (ModelState.IsValid)
+            {
+                result = objDalEmp.SaveUpdateEmp(obj.EmpAddDetails);
+                if (result == "0")
+                {
+                    TempData["ErrMsg"] = "0";
+                    return RedirectToAction("EmpList");
+                }
+                else
+                {
+                    TempData["ErrMsg"] = result;
                 }
             }
             return View(obj);
@@ -158,20 +127,16 @@ namespace SDKHRMS.Web.Controllers
                 if (ModelState.IsValid)
                 {
                     var user = new ApplicationUser() { UserName = Email, Email = Email, Role = Role, EmployeeID = NewEmpID, EmailConfirmed = true, IsActive = true };
-                    var result = await UserManager.CreateAsync(user, "Pass@1234#");
-                    //var result = await UserManager.CreateAsync(user, "Pass@1234#");
+                    var result = await _userManager.CreateAsync(user, "Pass@1234#");
                     if (result.Succeeded)
                     {
-                        //string IpAddress = IPAddressGetter.GetIPAddress();
-                        string userName = User.Identity.Name;
-                        await UserManager.AddToRoleAsync(user.Id, Role);
+                        await _userManager.AddToRoleAsync(user, Role);
                         return "success";
                     }
                     else
                     {
                         return "Error";
                     }
-
                 }
                 else
                 {
@@ -180,10 +145,8 @@ namespace SDKHRMS.Web.Controllers
             }
             catch (Exception)
             {
-                
                 throw;
             }
-           
         }
 
         public ActionResult EmpDelete(string EmployeeID)
@@ -191,35 +154,32 @@ namespace SDKHRMS.Web.Controllers
             string result = "";
             result = objDalEmp.deleteEmpDtl(EmployeeID);
             TempData["ErrMsg"] = result;
-            return RedirectToAction("EmpList", "EmpManage", new { Area = "" });
+            return RedirectToAction("EmpList", "EmpManage");
         }
 
         public void DeleteUser(string EmpID)
         {
             objDalEmp.DeleteEmpDetails(EmpID);
         }
-        #region Disable User
-        //
-        // POST: /UserAdmin/Delete
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[UserAuthorize(Roles = "Super Admin")]
         public async Task<ActionResult> DisableUser(string id, int PgNo, int PgSize, int ListCount, string SearchTerm = "")
         {
             if (ModelState.IsValid)
             {
                 if (id == null)
                 {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    return BadRequest();
                 }
 
-                var user = await UserManager.FindByIdAsync(id);
+                var user = await _userManager.FindByIdAsync(id);
                 if (user == null)
                 {
-                    return HttpNotFound();
+                    return NotFound();
                 }
                 user.IsActive = !user.IsActive;
-                var result = await UserManager.UpdateAsync(user);
+                var result = await _userManager.UpdateAsync(user);
                 if (!result.Succeeded)
                 {
                     TempData["ErrMsg"] = "Error: User record could not be updated, please contact Administrator.";
@@ -235,11 +195,13 @@ namespace SDKHRMS.Web.Controllers
                     {
                         TempData["ErrMsg"] = "Success: User Disabled Succesfully.";
                     }
-
+                }
+                if (ListCount == 1)
+                {
+                    PgNo = PgNo - 1;
                 }
             }
             return RedirectToAction("EmpList", "EmpManage", new { PageNo = PgNo, PageSize = PgSize, SearchTerm = SearchTerm });
         }
-        #endregion
     }
 }

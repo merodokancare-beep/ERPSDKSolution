@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNet.Identity;
-using Microsoft.Owin.Security;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace SDKHRMS.Web.Models
 {
@@ -19,7 +16,6 @@ namespace SDKHRMS.Web.Models
     public class ManageLoginsViewModel
     {
         public IList<UserLoginInfo> CurrentLogins { get; set; }
-        public IList<AuthenticationDescription> OtherLogins { get; set; }
     }
     public class ChangePasswordViewModel
     {

@@ -1,12 +1,12 @@
-﻿using SDKHRMS.Entities.ViewModels;
+using SDKHRMS.Entities.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Configuration;
+using Microsoft.EntityFrameworkCore;
 
 namespace SDKHRMS.Entities.DataAccess
 {
@@ -23,8 +23,8 @@ namespace SDKHRMS.Entities.DataAccess
             var spOutput = new SqlParameter
             {
                 ParameterName = "@TotalCount",
-                SqlDbType = System.Data.SqlDbType.BigInt,
-                Direction = System.Data.ParameterDirection.Output
+                SqlDbType = SqlDbType.BigInt,
+                Direction = ParameterDirection.Output
             };
             //calling stored procedure to get paged data.
             objAttendance.ViewEmpAttendanceList = objDB.Database.SqlQuery<EmpAttendanceView>("udspgetDatewiseAttendanceList @AttendanceDate,@Start,@PageSize,@TotalCount out", parAttendanceDate, parStart, parEnd, spOutput).ToList();
@@ -59,7 +59,7 @@ namespace SDKHRMS.Entities.DataAccess
         public DataTable GetEmpMonthAttendance(int month, int year)
         {
             DataTable dt = new DataTable();
-            var con = objDB.Database.Connection;
+            var con = objDB.Database.GetDbConnection();
             using (var cmd = con.CreateCommand())
             {
                 cmd.CommandText = "udspgetEmpMonthlyAttendance";
@@ -74,11 +74,12 @@ namespace SDKHRMS.Entities.DataAccess
                 return dt;
             }
         }
+
         public List<HolidayDateMonth> getMonHolidayDates(int month, int year)
         {
-            var parM = new SqlParameter("@Month", month);
-            var parY = new SqlParameter("@Year", year);
-            return objDB.Database.SqlQuery<HolidayDateMonth>("udspgetMonHolidayDates @Month, @Year", parM, parY).ToList();
+            var parMonth = new SqlParameter("@Month", month);
+            var parYear = new SqlParameter("@Year", year);
+            return objDB.Database.SqlQuery<HolidayDateMonth>("udspgetMonHolidayDates @Month, @Year", parMonth, parYear).ToList();
         }
         #endregion
     }

@@ -1,4 +1,4 @@
-﻿using SDKHRMS.Entities.DataAccess;
+using SDKHRMS.Entities.DataAccess;
 using SDKHRMS.Entities.Models;
 using SDKHRMS.Entities.ViewModels;
 using SDKHRMS.Web.HtmlHelpers;
@@ -6,8 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace SDKHRMS.Web.Controllers
 {
@@ -200,7 +201,7 @@ namespace SDKHRMS.Web.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult PurchaseInvoice(PurchaseAddViewModel item, HttpPostedFileBase UploaBill)
+        public ActionResult PurchaseInvoice(PurchaseAddViewModel item, IFormFile UploaBill)
         {
             ViewBag.ActiveURL = "/Invoice/PurchaseInvoiceList";
             string FileStatus = "Failure";
@@ -248,7 +249,7 @@ namespace SDKHRMS.Web.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditPurchaseInvoice(PurchaseAddViewModel item, HttpPostedFileBase UploaBill)
+        public ActionResult EditPurchaseInvoice(PurchaseAddViewModel item, IFormFile UploaBill)
         {
             ViewBag.ActiveURL = "/Invoice/PurchaseInvoiceList";
             string FileStatus = "Failure";
@@ -489,30 +490,33 @@ namespace SDKHRMS.Web.Controllers
         }
         #endregion
         #region File
-        private string CheckAndUpload(HttpPostedFileBase httpPostedFileBase, string filetype)
+        private string CheckAndUpload(IFormFile httpPostedFileBase, string filetype)
         {
             var status = "Failure";
-            if (httpPostedFileBase.ContentLength == 0)
+            if (httpPostedFileBase == null || httpPostedFileBase.Length == 0)
             {
                 status = "Failure, Please Upload a file";
             }
-            else if (httpPostedFileBase.ContentLength > 0)
+            else if (httpPostedFileBase.Length > 0)
             {
-                string fileName = httpPostedFileBase.FileName; // getting File Name
-                string fileContentType = httpPostedFileBase.ContentType; // getting ContentType
-                byte[] tempFileBytes = new byte[httpPostedFileBase.ContentLength]; // getting filebytes
-                var data = httpPostedFileBase.InputStream.Read(tempFileBytes, 0, Convert.ToInt32(httpPostedFileBase.ContentLength));
-                var types = FileUploadCheck.FileType.Image;  // Setting Image type
-                var result = FileUploadCheck.isValidFile(tempFileBytes, types, fileContentType); // Validate Header
+                string fileName = httpPostedFileBase.FileName;
+                string fileContentType = httpPostedFileBase.ContentType;
+                byte[] tempFileBytes = new byte[httpPostedFileBase.Length];
+                using (var stream = httpPostedFileBase.OpenReadStream())
+                {
+                    stream.Read(tempFileBytes, 0, Convert.ToInt32(httpPostedFileBase.Length));
+                }
+                var types = FileUploadCheck.FileType.Image;
+                var result = FileUploadCheck.isValidFile(tempFileBytes, types, fileContentType);
                 if (result == false)
                 {
-                    types = FileUploadCheck.FileType.PDF;  // Setting Pdf type
-                    result = FileUploadCheck.isValidFile(tempFileBytes, types, fileContentType); // Validate Header
+                    types = FileUploadCheck.FileType.PDF;
+                    result = FileUploadCheck.isValidFile(tempFileBytes, types, fileContentType);
                 }
                 if (result == true)
                 {
-                    int FileLength = 1024 * 1024 * 2; //FileLength 2 MB 
-                    if (httpPostedFileBase.ContentLength > FileLength)
+                    int FileLength = 1024 * 1024 * 2;
+                    if (httpPostedFileBase.Length > FileLength)
                     {
                         status = "Failure, Maximum allowed size is: " + FileLength + " MB";
                     }
@@ -534,13 +538,9 @@ namespace SDKHRMS.Web.Controllers
                     status = "Failure, Invalid File. Only .pdf,.jpg|jpeg,.png files allowed";
                 }
             }
-            else
-            {
-                status = "Failure, Content Length Error";
-            }
             return status;
         }
-        private string SaveFile(HttpPostedFileBase file, string foldername)
+        private string SaveFile(IFormFile file, string foldername)
         {
             try
             {

@@ -1,10 +1,10 @@
-﻿using SDKHRMS.Entities.Models;
+using SDKHRMS.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
+using Microsoft.AspNetCore.Http;
 
 namespace SDKHRMS.Entities.ViewModels
 {
@@ -17,7 +17,7 @@ namespace SDKHRMS.Entities.ViewModels
     public class PaymentAdd
     {
         public utblPaymentDetail PaymentDetail { get; set; }
-        public HttpPostedFileBase UploadFile { get; set; }
+        public IFormFile UploadFile { get; set; }
         public List<utblMstBank> BankDDList { get; set; }
         public List<ExpenseTypeDD> ExpenseTypeDDList { get; set; }
         public List<VendorDDList> VendorDDList { get; set; }
@@ -57,14 +57,14 @@ namespace SDKHRMS.Entities.ViewModels
         public utblPaymentReceivable PaymentReceived { get; set; }
         public IEnumerable<ExpenseTypeDD> ExpenseTypeDD { get; set; }
         public IEnumerable<utblMstBank> BankDD { get; set; }
-        public HttpPostedFileBase UploadFile { get; set; }
+        public IFormFile UploadFile { get; set; }
     }
     public class ProjPaymentReceivedAdd
     {
         public utblProjPaymentReceivable ProjPaymentReceived { get; set; }
         public IEnumerable<ProjectDD> ProjectDD { get; set; }
         public IEnumerable<utblMstBank> BankDD { get; set; }
-        public HttpPostedFileBase UploadFile { get; set; }
+        public IFormFile UploadFile { get; set; }
     }
     public class ProjPaymentReceivedVM
     {
@@ -156,7 +156,7 @@ namespace SDKHRMS.Entities.ViewModels
         public POPaymentView POPaymentDtls { get; set; }
         public utblPaymentReleasedTran PaymentReleased { get; set; }
         public IEnumerable<utblMstBank> BankDD { get; set; }
-        public HttpPostedFileBase UploadFile { get; set; }
+        public IFormFile UploadFile { get; set; }
         public string POID { get; set; }
     }
     public class PaymentReleaseView
@@ -183,7 +183,7 @@ namespace SDKHRMS.Entities.ViewModels
         public IEnumerable<ExpenseTypeDD> ExpenseTypeDD { get; set; }
         public IEnumerable<ProjectDD> ProjectDD { get; set; }
         //public IEnumerable<utblMstBank> BankDD { get; set; }
-        //public HttpPostedFileBase UploadFile { get; set; }
+        //public IFormFile UploadFile { get; set; }
     }
     public class DirectPaymentVM
     {
@@ -217,7 +217,7 @@ namespace SDKHRMS.Entities.ViewModels
         public DirectPaymentView DirectPayment { get; set; }
         public utblPaymentReleasedTran PaymentReleased { get; set; }
         public IEnumerable<utblMstBank> BankDD { get; set; }
-        public HttpPostedFileBase UploadFile { get; set; }
+        public IFormFile UploadFile { get; set; }
         public long DirectPaymentID { get; set; }
     }
     #endregion

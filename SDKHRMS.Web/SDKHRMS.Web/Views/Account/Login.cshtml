@@ -139,7 +139,7 @@
             <p style="color: #94A3B8; font-size: 0.88rem; margin-bottom: 28px;">Enter your credentials to access your portal</p>
         </div>
 
-        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, null, new { role = "form" }))
         {
             @Html.AntiForgeryToken()
             

@@ -1,50 +1,48 @@
-﻿using SDKHRMS.Web.Models;
-using Microsoft.AspNet.Identity.EntityFramework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using SDKHRMS.Web.HtmlHelpers;
+using SDKHRMS.Web.Models;
+using System;
+using System.Linq;
 
 namespace SDKHRMS.Web.Controllers
 {
-   [UserAuthorize(Roles = "Admin,Super Admin")]
-    public class RoleCreatorController : Controller
+    [UserAuthorize(Roles = "Admin,Super Admin")]
+    public class RoleCreatorController : BaseController
     {
+        private readonly ApplicationDbContext _context;
+
+        public RoleCreatorController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         // GET: RoleCreator
         public ActionResult RoleList()
         {
-
-            ApplicationDbContext context = new ApplicationDbContext();
-            var Roles = context.Roles.ToList();
+            var roles = _context.Roles.ToList();
 
             if (Request.IsAjaxRequest())
             {
-                return PartialView("_pvRoleList", Roles);
+                return PartialView("_pvRoleList", roles);
             }
-            return View(Roles);
+            return View(roles);
         }
+
         public ActionResult AddRole()
         {
-
             return View();
         }
 
         [HttpPost]
-        public ActionResult AddRole(IdentityRole Role)
+        public ActionResult AddRole(IdentityRole role)
         {
-
-
-            //if (Session["username"] == null)
-            //{
-            //    return RedirectToAction("login", "account", new { Area = "" });
-            //}
-            ApplicationDbContext context = new ApplicationDbContext();
             if (ModelState.IsValid)
             {
-                context.Roles.Add(Role);
-                context.SaveChanges();
+                _context.Roles.Add(role);
+                _context.SaveChanges();
                 TempData["ErrMsg"] = "0";
                 return RedirectToAction("RoleList");
             }
@@ -52,28 +50,23 @@ namespace SDKHRMS.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeleteRole(string ID)
+        public ActionResult DeleteRole(string id)
         {
-            //if (Session["username"] == null)
-            //{
-            //    return RedirectToAction("login", "account", new { Area = "" });
-            //}
-            ApplicationDbContext context = new ApplicationDbContext();
-            IdentityRole RoleToDelete = new IdentityRole();
             try
             {
-                RoleToDelete = context.Roles.Find(ID);
-                context.Roles.Remove(RoleToDelete);
-                context.SaveChanges();
+                var roleToDelete = _context.Roles.Find(id);
+                if (roleToDelete != null)
+                {
+                    _context.Roles.Remove(roleToDelete);
+                    _context.SaveChanges();
+                }
                 TempData["ErrMsg"] = "0";
-                return RedirectToAction("RoleList", "RoleCreator", new { Area = "" });
+                return RedirectToAction("RoleList", "RoleCreator");
             }
             catch (Exception)
             {
-
                 throw;
             }
-
         }
     }
 }

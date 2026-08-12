@@ -1,10 +1,10 @@
-﻿using SDKHRMS.Entities.Models;
+using SDKHRMS.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
+using Microsoft.AspNetCore.Http;
 
 namespace SDKHRMS.Entities.ViewModels
 {
@@ -17,7 +17,7 @@ namespace SDKHRMS.Entities.ViewModels
         public string ExpHeadName { get; set; }
         public decimal AvailableBalance { get; set; }
         public long BankExpID { get; set; }//Select Bank Expance Head Name 
-        public HttpPostedFileBase UploadFile { get; set; }
+        public IFormFile UploadFile { get; set; }
         public string PrevUploadedFile { get; set; }
     }
     public class PettyCashTotalTrans

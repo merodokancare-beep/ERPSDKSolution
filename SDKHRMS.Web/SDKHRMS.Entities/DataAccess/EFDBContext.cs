@@ -1,15 +1,19 @@
-﻿using SDKHRMS.Entities.Models;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using SDKHRMS.Entities.Models;
 
 namespace SDKHRMS.Entities.DataAccess
 {
     public class EFDBContext : DbContext
     {
+        public EFDBContext()
+        {
+        }
+
+        public EFDBContext(DbContextOptions<EFDBContext> options)
+            : base(options)
+        {
+        }
+
         public DbSet<utblMstVendorDetail> utblMstVendorDetails { get; set; }
         public DbSet<utblEmpPersonalInfoKey> utblEmpPersonalInfoKeys { get; set; }
         public DbSet<utblMstExpenseType> utblMstExpenseTypes { get; set; }
@@ -33,5 +37,9 @@ namespace SDKHRMS.Entities.DataAccess
         public DbSet<utblChallanKey> utblChallanKeys { get; set; }
         public DbSet<utblChallanItem> utblChallanItems { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

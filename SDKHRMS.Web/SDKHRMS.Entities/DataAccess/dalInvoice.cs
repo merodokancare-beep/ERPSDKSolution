@@ -1,10 +1,10 @@
-﻿using SDKHRMS.Entities.Models;
+using SDKHRMS.Entities.Models;
 using SDKHRMS.Entities.ViewModels;
 using SDKHRMS.Web.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -84,14 +84,6 @@ namespace SDKHRMS.Entities.DataAccess
             catch (SqlException sqex)
             {
                 throw sqex;
-            }
-            catch (System.Data.Entity.Validation.DbEntityValidationException ensqex)
-            {
-                throw ensqex;
-            }
-            catch (System.Data.Entity.Validation.DbUnexpectedValidationException enuxex)
-            {
-                throw enuxex;
             }
             catch (Exception ex)
             {
@@ -249,14 +241,6 @@ namespace SDKHRMS.Entities.DataAccess
             catch (SqlException sqex)
             {
                 throw sqex;
-            }
-            catch (System.Data.Entity.Validation.DbEntityValidationException ensqex)
-            {
-                throw ensqex;
-            }
-            catch (System.Data.Entity.Validation.DbUnexpectedValidationException enuxex)
-            {
-                throw enuxex;
             }
             catch (Exception ex)
             {

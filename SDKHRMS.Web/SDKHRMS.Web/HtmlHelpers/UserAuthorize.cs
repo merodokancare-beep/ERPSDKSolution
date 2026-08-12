@@ -1,32 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 
 namespace SDKHRMS.Web.HtmlHelpers
 {
-    public class UserAuthorize : AuthorizeAttribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+    public class UserAuthorizeAttribute : AuthorizeAttribute, IAuthorizationFilter
     {
-        protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
+        public void OnAuthorization(AuthorizationFilterContext context)
         {
-            if (!filterContext.HttpContext.User.Identity.IsAuthenticated)
+            var user = context.HttpContext.User;
+            if (user == null || user.Identity == null || !user.Identity.IsAuthenticated)
             {
-                // The user is not authenticated
-                base.HandleUnauthorizedRequest(filterContext);
+                context.Result = new RedirectToActionResult("Login", "Account", null);
+                return;
             }
-            else if (!this.Roles.Split(',').Any(filterContext.HttpContext.User.IsInRole))
+
+            if (!string.IsNullOrEmpty(Roles))
             {
-                // The user is not in any of the listed roles => 
-                // show the unauthorized view
-                filterContext.Result = new ViewResult
+                var allowedRoles = Roles.Split(',').Select(r => r.Trim());
+                if (!allowedRoles.Any(r => user.IsInRole(r)))
                 {
-                    ViewName = "~/Views/Home/Unauthorized.cshtml"
-                };
-            }
-            else
-            {
-                base.HandleUnauthorizedRequest(filterContext);
+                    context.Result = new ViewResult
+                    {
+                        ViewName = "~/Views/Home/Unauthorized.cshtml"
+                    };
+                }
             }
         }
     }

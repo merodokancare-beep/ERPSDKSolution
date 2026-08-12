@@ -1,16 +1,16 @@
-﻿using SDKHRMS.Entities.ViewModels;
+using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using SDKHRMS.Entities.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
-using System.Web;
-using System.Web.Mvc;
+using System.Text.Encodings.Web;
 
 namespace SDKHRMS.Web.HtmlHelpers
 {
     public static class PagingHelper
     {
-        public static MvcHtmlString PageLinks(this HtmlHelper html, PagingInfo pagingInfo, Func<int, string> pageUrl, string dropdowncssclass = "", string labelcssclass = "pager-label")
+        public static HtmlString PageLinks(this IHtmlHelper html, PagingInfo pagingInfo, Func<int, string> pageUrl, string dropdowncssclass = "", string labelcssclass = "pager-label")
         {
             StringBuilder result = new StringBuilder();
             int prevPageNo, nextPageNo, lastPageNo;
@@ -18,7 +18,6 @@ namespace SDKHRMS.Web.HtmlHelpers
             nextPageNo = pagingInfo.CurrentPage < pagingInfo.TotalPages ? (pagingInfo.CurrentPage + 1) : pagingInfo.CurrentPage;
             lastPageNo = pagingInfo.TotalPages;
 
-            //result.Append("<div class='page-size-section col-md-4'>");
             result.Append("&nbsp;<label class= page-size-label '" + labelcssclass + "'>Page Size:</label>");
             result.Append("&nbsp;&nbsp;<select class='page-size " + dropdowncssclass + "'>");
 
@@ -51,39 +50,32 @@ namespace SDKHRMS.Web.HtmlHelpers
                 result.Append("<option value='50' selected='selected'>50</option>");
             }
             result.Append("</select>&nbsp;&nbsp;&nbsp;");
-            //result.Append("</div>");
-            //result.Append("<div class='paging-section col-md-8'>");
+
             TagBuilder tagFirst = new TagBuilder("a");
             if (pagingInfo.CurrentPage == 1)
             {
-                tagFirst.SetInnerText("");
                 tagFirst.AddCssClass("ns-page-link-disabled");
             }
             else
             {
                 tagFirst.MergeAttribute("href", pageUrl(1));
-                tagFirst.SetInnerText("");
                 tagFirst.AddCssClass("ns-page-link");
             }
-            //tagFirst.AddCssClass("glyphicon glyphicon-step-backward");
             tagFirst.AddCssClass("fe fe-chevrons-left");
-            result.Append(tagFirst.ToString());
+            result.Append(GetString(tagFirst));
 
             TagBuilder tagPrev = new TagBuilder("a");
             if (pagingInfo.CurrentPage == 1)
             {
-                tagPrev.SetInnerText("");
                 tagPrev.AddCssClass("ns-page-link-disabled");
             }
             else
             {
                 tagPrev.MergeAttribute("href", pageUrl(prevPageNo));
-                tagPrev.SetInnerText("");
                 tagPrev.AddCssClass("ns-page-link");
             }
-            //tagPrev.AddCssClass("glyphicon glyphicon-chevron-left");
             tagPrev.AddCssClass("fe fe-chevron-left");
-            result.Append(tagPrev.ToString());
+            result.Append(GetString(tagPrev));
 
             result.Append("&nbsp;<label class='" + labelcssclass + "'>Page</label>");
             result.Append("&nbsp;&nbsp;<select class='page-number " + dropdowncssclass + "'>");
@@ -105,36 +97,37 @@ namespace SDKHRMS.Web.HtmlHelpers
             TagBuilder tagNext = new TagBuilder("a");
             if (pagingInfo.CurrentPage == pagingInfo.TotalPages)
             {
-                tagNext.SetInnerText("");
                 tagNext.AddCssClass("ns-page-link-disabled");
             }
             else
             {
                 tagNext.MergeAttribute("href", pageUrl(nextPageNo));
-                tagNext.SetInnerText("");
                 tagNext.AddCssClass("ns-page-link");
             }
-            //tagNext.AddCssClass("glyphicon glyphicon-chevron-right");
             tagNext.AddCssClass("fe fe-chevron-right");
-            result.Append(tagNext.ToString());
+            result.Append(GetString(tagNext));
 
             TagBuilder tagLast = new TagBuilder("a");
             if (pagingInfo.CurrentPage == lastPageNo)
             {
-                tagLast.SetInnerText("");
                 tagLast.AddCssClass("ns-page-link-disabled");
             }
             else
             {
                 tagLast.MergeAttribute("href", pageUrl(lastPageNo));
-                tagLast.SetInnerText("");
                 tagLast.AddCssClass("ns-page-link");
             }
-            //tagLast.AddCssClass("glyphicon glyphicon-step-forward");
             tagLast.AddCssClass("fe fe-chevrons-right");
-            result.Append(tagLast.ToString());
-            //result.Append("</div>");
-            return MvcHtmlString.Create(result.ToString());
+            result.Append(GetString(tagLast));
+
+            return new HtmlString(result.ToString());
+        }
+
+        private static string GetString(TagBuilder tagBuilder)
+        {
+            using var writer = new StringWriter();
+            tagBuilder.WriteTo(writer, HtmlEncoder.Default);
+            return writer.ToString();
         }
     }
 }

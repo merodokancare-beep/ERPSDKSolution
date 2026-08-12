@@ -1,4 +1,4 @@
-﻿using SDKHRMS.Entities.Models;
+using SDKHRMS.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
+using Microsoft.AspNetCore.Http;
 
 namespace SDKHRMS.Entities.ViewModels
 {
@@ -26,7 +26,7 @@ namespace SDKHRMS.Entities.ViewModels
     {
         public utblReferenceDetail ReferenceDetails { get; set; }
         public utblOfficalLetterDoc OfficalLetterAdd { get; set; }
-        public HttpPostedFileBase UploadFile { get; set; }
+        public IFormFile UploadFile { get; set; }
         public long RefNoID { get; set; }
 
     }

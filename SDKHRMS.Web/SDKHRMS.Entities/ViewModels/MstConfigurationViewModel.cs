@@ -1,10 +1,10 @@
-﻿using SDKHRMS.Entities.Models;
+using SDKHRMS.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
+using Microsoft.AspNetCore.Http;
 
 namespace SDKHRMS.Entities.ViewModels
 {
@@ -97,8 +97,8 @@ namespace SDKHRMS.Entities.ViewModels
         public PageParameters PageParameter { get; set; }
         public utblMstProject ProjectModelAdd { get; set; }
         public IEnumerable<VendorDDList> VendorDDList { get; set; }
-        public HttpPostedFileBase WOFile { get; set; }
-        public HttpPostedFileBase PCCFile { get; set; }
+        public IFormFile WOFile { get; set; }
+        public IFormFile PCCFile { get; set; }
     }
     public class ProjectView
     {

@@ -139,7 +139,7 @@
                             <i class="fa-solid fa-key me-2 text-warning"></i>Change Password
                         </a>
                         <hr class="dropdown-divider my-1">
-                        @using (Html.BeginForm("LogOff", "Account", null, FormMethod.Post, new { id = "logoutForm" }))
+                        @using (Html.BeginForm("LogOff", "Account", null, FormMethod.Post, null, new { id = "logoutForm" }))
                         {
                             @Html.AntiForgeryToken()
                         }
