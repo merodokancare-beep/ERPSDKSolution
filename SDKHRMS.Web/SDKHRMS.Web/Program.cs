@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using SDKHRMS.Entities.DataAccess;
 using SDKHRMS.Web.Models;
 
@@ -56,7 +57,16 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Serve static files from wwwroot
 app.UseStaticFiles();
+
+// Serve static files from Content, Scripts, fonts, UploadFile in project root folder
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(builder.Environment.ContentRootPath),
+    RequestPath = ""
+});
 
 app.UseRouting();
 

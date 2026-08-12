@@ -9,121 +9,246 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="~/Content/Images/smalllogo.png">
+    <link rel="icon" href="/Content/Images/smalllogo.png">
     <title>SDK Enterprise ERP - Login</title>
     
     <!-- Google Fonts & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="~/Content/assets/plugins/fontawesome/css/all.min.css">
-    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/Content/custom-erp.css" rel="stylesheet" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
         body {
-            background: radial-gradient(circle at 15% 15%, rgba(79, 70, 229, 0.15), transparent 45%),
-                        radial-gradient(circle at 85% 85%, rgba(14, 165, 233, 0.15), transparent 45%),
-                        #090D16 !important;
+            background: radial-gradient(circle at 15% 15%, rgba(79, 70, 229, 0.22), transparent 45%),
+                        radial-gradient(circle at 85% 85%, rgba(14, 165, 233, 0.22), transparent 45%),
+                        #0B0F19;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 24px;
             margin: 0;
+            color: #F1F5F9;
         }
 
         .login-card {
-            background: rgba(30, 41, 59, 0.75) !important;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.12) !important;
-            border-radius: 20px !important;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5) !important;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55), 0 0 40px rgba(79, 70, 229, 0.15);
             max-width: 440px;
             width: 100%;
-            padding: 40px 32px;
+            padding: 44px 36px;
             position: relative;
             overflow: hidden;
         }
 
         .login-glow {
             position: absolute;
-            top: -60px;
-            right: -60px;
-            width: 150px;
-            height: 150px;
-            background: rgba(79, 70, 229, 0.3);
-            filter: blur(50px);
+            top: -70px;
+            right: -70px;
+            width: 180px;
+            height: 180px;
+            background: rgba(99, 102, 241, 0.35);
+            filter: blur(60px);
             border-radius: 50%;
             pointer-events: none;
         }
 
+        .header-section {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
         .logo-box {
-            width: 72px;
-            height: 72px;
+            width: 76px;
+            height: 76px;
             background: linear-gradient(135deg, #4F46E5, #6366F1);
-            border-radius: 18px;
+            border-radius: 20px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+            margin-bottom: 18px;
+            box-shadow: 0 12px 28px rgba(79, 70, 229, 0.45);
+        }
+
+        .logo-box img {
+            max-height: 48px;
+            max-width: 58px;
+            filter: brightness(0) invert(1);
+        }
+
+        .header-title {
+            font-size: 1.65rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.02em;
+        }
+
+        .header-subtitle {
+            color: #94A3B8;
+            font-size: 0.9rem;
+            margin: 0;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
-        .input-group-addon {
-            background: rgba(17, 24, 39, 0.8) !important;
-            border: 1px solid rgba(255, 255, 255, 0.12) !important;
-            border-right: none !important;
-            color: #94A3B8 !important;
-            border-radius: 10px 0 0 10px !important;
-            padding: 10px 14px;
+        .form-label {
+            display: flex;
+            align-items: center;
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: #CBD5E1;
+            margin-bottom: 8px;
         }
 
-        .form-control {
-            border-radius: 0 10px 10px 0 !important;
-            height: 46px !important;
-            background: rgba(17, 24, 39, 0.8) !important;
-            border: 1px solid rgba(255, 255, 255, 0.12) !important;
-            color: #FFF !important;
+        .form-label i {
+            color: #818CF8;
+            margin-right: 8px;
+            font-size: 0.95rem;
         }
 
-        .form-control:focus {
-            border-color: #6366F1 !important;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25) !important;
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            overflow: hidden;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: #6366F1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        .input-icon {
+            padding: 0 14px;
+            color: #64748B;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-wrapper:focus-within .input-icon {
+            color: #818CF8;
+        }
+
+        .custom-input {
+            width: 100%;
+            height: 48px;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #FFFFFF;
+            font-size: 0.95rem;
+            padding-right: 14px;
+        }
+
+        .custom-input::placeholder {
+            color: #475569;
         }
 
         .alert-danger {
-            background: rgba(239, 68, 68, 0.18) !important;
-            border: 1px solid rgba(239, 68, 68, 0.4) !important;
-            color: #FCA5A5 !important;
-            border-radius: 10px !important;
-            padding: 12px 16px !important;
-            font-size: 0.88rem !important;
-            margin-bottom: 20px;
+            background: rgba(239, 68, 68, 0.16);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #FCA5A5;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.88rem;
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
         }
 
         .btn-login {
             width: 100%;
-            height: 48px;
+            height: 50px;
             font-size: 1rem;
             font-weight: 700;
-            border-radius: 12px;
+            border-radius: 14px;
             background: linear-gradient(135deg, #4F46E5, #6366F1);
             border: none;
-            color: white;
+            color: #FFFFFF;
             cursor: pointer;
-            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.4);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
             transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(79, 70, 229, 0.6);
+            box-shadow: 0 14px 32px rgba(79, 70, 229, 0.6);
+            background: linear-gradient(135deg, #4338CA, #4F46E5);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .forgot-link {
+            text-align: right;
+            margin-top: 14px;
+        }
+
+        .forgot-link a {
+            color: #38BDF8;
+            font-size: 0.86rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .forgot-link a:hover {
+            color: #7DD3FC;
+            text-decoration: underline;
+        }
+
+        .credentials-card {
+            margin-top: 28px;
+            padding: 16px;
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px dashed rgba(255, 255, 255, 0.18);
+            border-radius: 14px;
+            font-size: 0.84rem;
+            color: #94A3B8;
+            text-align: center;
+        }
+
+        .credentials-title {
+            font-weight: 700;
+            color: #F8FAFC;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 26px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 18px;
+            color: #64748B;
+            font-size: 0.82rem;
         }
     </style>
 </head>
@@ -131,12 +256,12 @@
     <div class="login-card">
         <div class="login-glow"></div>
         
-        <div class="text-center">
+        <div class="header-section">
             <div class="logo-box">
-                <img src="~/Content/Images/LOGOSDK1.png" style="max-height: 44px; max-width: 54px; filter: brightness(0) invert(1);" alt="SDK Logo">
+                <img src="/Content/Images/LOGOSDK1.png" alt="SDK Logo">
             </div>
-            <h2 style="font-size: 1.6rem; font-weight: 800; color: #FFF; margin-bottom: 6px;">SDK Enterprise ERP</h2>
-            <p style="color: #94A3B8; font-size: 0.88rem; margin-bottom: 28px;">Enter your credentials to access your portal</p>
+            <h1 class="header-title">SDK Enterprise ERP</h1>
+            <p class="header-subtitle">Enter your credentials to access your portal</p>
         </div>
 
         @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, null, new { role = "form" }))
@@ -144,74 +269,74 @@
             @Html.AntiForgeryToken()
             
             <div class="form-group">
-                <label style="display: block; font-size: 0.85rem; color: #CBD5E1; margin-bottom: 6px;"><i class="fas fa-user" style="color: #6366F1; margin-right: 6px;"></i> Username / Email</label>
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fas fa-user-circle"></i></span>
-                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @placeholder = "Enter username or email", required = "required" })
+                <label class="form-label"><i class="fa-solid fa-user"></i> Username / Email</label>
+                <div class="input-wrapper">
+                    <div class="input-icon"><i class="fa-solid fa-circle-user"></i></div>
+                    @Html.TextBoxFor(m => m.UserName, new { @class = "custom-input", @placeholder = "Enter username or email", required = "required" })
                 </div>
-                @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger", style = "font-size: 0.8rem; margin-top: 4px; display: block;" })
+                @Html.ValidationMessageFor(m => m.UserName, "", new { style = "color: #FCA5A5; font-size: 0.8rem; margin-top: 6px; display: block;" })
             </div>
 
             <div class="form-group">
-                <label style="display: block; font-size: 0.85rem; color: #CBD5E1; margin-bottom: 6px;"><i class="fas fa-lock" style="color: #6366F1; margin-right: 6px;"></i> Password</label>
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fas fa-key"></i></span>
-                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Enter password", id = "Password", required = "required" })
+                <label class="form-label"><i class="fa-solid fa-lock"></i> Password</label>
+                <div class="input-wrapper">
+                    <div class="input-icon"><i class="fa-solid fa-key"></i></div>
+                    @Html.PasswordFor(m => m.Password, new { @class = "custom-input", @placeholder = "Enter password", id = "Password", required = "required" })
                 </div>
-                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger", style = "font-size: 0.8rem; margin-top: 4px; display: block;" })
+                @Html.ValidationMessageFor(m => m.Password, "", new { style = "color: #FCA5A5; font-size: 0.8rem; margin-top: 6px; display: block;" })
             </div>
 
             if (!string.IsNullOrEmpty(@ViewBag.ErrMsg))
             {
-                <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-circle me-2"></i> @ViewBag.ErrMsg
+                <div class="alert-danger">
+                    <i class="fa-solid fa-circle-exclamation me-2" style="margin-right: 8px;"></i> @ViewBag.ErrMsg
                 </div>
             }
 
-            <div class="form-group" style="margin-top: 28px;">
-                <input type="submit" id="LogInBtn" class="hidden" style="display:none;" />
-                <button type="button" id="LogIn" class="btn-login"><i class="fas fa-sign-in-alt me-2"></i> Sign In to Account</button>
+            <div style="margin-top: 28px;">
+                <input type="submit" id="LogInBtn" style="display:none;" />
+                <button type="button" id="LogIn" class="btn-login"><i class="fa-solid fa-right-to-bracket"></i> Sign In to Account</button>
             </div>
         }
 
-        <div style="text-align: right; margin-top: 14px;">
-            @Html.ActionLink("Forgot your password?", "ForgotPassword", null, new { style = "color: #0EA5E9; font-size: 0.85rem; text-decoration: none;" })
+        <div class="forgot-link">
+            @Html.ActionLink("Forgot your password?", "ForgotPassword", "Account")
         </div>
 
-        <!-- Demo Login Credentials Helper Card -->
-        <div style="margin-top: 24px; padding: 14px; background: rgba(15, 23, 42, 0.6); border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: 12px; font-size: 0.82rem; color: #94A3B8; text-align: center;">
-            <div style="font-weight: 700; color: #F8FAFC; margin-bottom: 4px;">
-                <i class="fas fa-key" style="color: #F59E0B; margin-right: 6px;"></i> Active ERP Login Credentials:
+        <!-- ERP Credentials Info -->
+        <div class="credentials-card">
+            <div class="credentials-title">
+                <i class="fa-solid fa-key" style="color: #F59E0B;"></i> Active ERP Login Credentials:
             </div>
-            <div>Username: <strong style="color: #6366F1;">admin</strong> | Password: <strong style="color: #10B981;">admin123</strong></div>
-            <div style="font-size: 0.78rem; color: #64748B; margin-top: 2px;">Other accounts: <span style="color: #CBD5E1;">manoj@sdksolution.co.in</span> | <span style="color: #CBD5E1;">kabita.tamang@netspeq.com</span></div>
+            <div>Username: <strong style="color: #818CF8;">admin</strong> | Password: <strong style="color: #34D399;">admin123</strong></div>
+            <div style="font-size: 0.78rem; color: #64748B; margin-top: 4px;">Other accounts: <span style="color: #CBD5E1;">manoj@sdksolution.co.in</span> | <span style="color: #CBD5E1;">kabita.tamang@netspeq.com</span></div>
         </div>
 
-        <div style="text-align: center; margin-top: 24px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; color: #64748B; font-size: 0.82rem;">
+        <div class="footer-text">
             &copy; SDK @DateTime.Now.Year All Rights Reserved | Executive ERP Portal
         </div>
     </div>
 
-    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
-    @Scripts.Render("~/bundles/jqueryval")
-    @Scripts.Render("~/bundles/bootstrap")
-    <script src="~/Scripts/aes.js"></script>
-    <script src="~/Scripts/core-min.js"></script>
-    <script src="~/Scripts/enc-utf16-min.js"></script>
+    <script src="/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="/Scripts/aes.js"></script>
+    <script src="/Scripts/core-min.js"></script>
+    <script src="/Scripts/enc-utf16-min.js"></script>
     <script type="text/javascript">
         $('#LogIn').click(function () {
             var txtpassword = $('#Password').val();
             if (txtpassword != "") {
-                var key = CryptoJS.enc.Utf8.parse('8080808080808080');
-                var iv = CryptoJS.enc.Utf8.parse('8080808080808080');
-                var pass = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(txtpassword), key,
-                {
-                    keySize: 128 / 8,
-                    iv: iv,
-                    mode: CryptoJS.mode.CBC,
-                    padding: CryptoJS.pad.Pkcs7
-                });
-                $('#Password').val(pass);
+                try {
+                    var key = CryptoJS.enc.Utf8.parse('8080808080808080');
+                    var iv = CryptoJS.enc.Utf8.parse('8080808080808080');
+                    var pass = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(txtpassword), key,
+                    {
+                        keySize: 128 / 8,
+                        iv: iv,
+                        mode: CryptoJS.mode.CBC,
+                        padding: CryptoJS.pad.Pkcs7
+                    });
+                    $('#Password').val(pass);
+                } catch(e) { }
                 $('#LogInBtn').click();
             }
             else {
@@ -229,4 +354,3 @@
     </script>
 </body>
 </html>
-

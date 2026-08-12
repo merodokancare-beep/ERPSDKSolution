@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "SDKHRMS.Web": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:63280;http://localhost:63281"
+    }
+  }
+}
