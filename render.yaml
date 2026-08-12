@@ -9,3 +9,5 @@ services:
         value: Production
       - key: ConnectionStrings__EFDBContext
         sync: false
+      - key: ConnectionStrings__DefaultConnection
+        sync: false
