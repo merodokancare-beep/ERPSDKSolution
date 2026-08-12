@@ -1,0 +1,595 @@
+﻿@model SDKHRMS.Entities.ViewModels.InvoiceAddViewModel
+@{
+    ViewBag.Title = "Edit Invoice";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+    int i = 1; int j = 0;
+}
+
+<link href="~/Content/CustomWidth.css" rel="stylesheet" />
+<link href="~/Content/datetimepicker/jquery.datetimepicker.min.css" rel="stylesheet" />
+<link href="~/Content/Plugins/Select2/newselect2.css" rel="stylesheet" />
+
+<div class="page-header">
+    <div class="content-page-header">
+        <h5>Edit Sales Invoice Details</h5>
+        @*<h5>Project Details</h5>*@
+    </div>
+</div>
+
+@using (Html.BeginForm())
+{
+    @*Client & Project Details Partial View*@
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+
+                <div class="card-body card-buttons">
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.HiddenFor(m => m.SaleInvoiceKeyModel.SaleInvoiceID)
+                    @Html.HiddenFor(m => m.SaleInvoiceKeyModel.ReferenceNo)
+                    @Html.HiddenFor(m => m.PageParameter.PageNo)
+                    @Html.HiddenFor(m => m.PageParameter.PageSize)
+                    @Html.HiddenFor(m => m.PageParameter.SearchTerm)
+                    @Html.HiddenFor(@m => m.SaleInvoiceKeyModel.VenderID, new { id = "ClientID" })@*Vender/Client *@
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="form-group">
+                                <div class="hidden" id="DataGrid">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-8" style="margin-top:-20px!important">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.SaleInvoiceKeyModel.ProjectID, new { @class = "control-label required" })
+                                @Html.DropDownListFor(m => m.SaleInvoiceKeyModel.ProjectID, new SelectList(@Model.ProjectDDList, "ProjectID", "ProjectName"), "--- Select Project---", new { @class = "form-control ddSelect2", @id = "proj", autocomplete = "false" })
+                                @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.ProjectID)
+                            </div>
+                        </div>
+                        <div class="col-xl-4" style="margin-top:-20px!important">
+                            <div class="form-group row">
+                                <label class="control-label">Reference No</label>
+                                @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.ReferenceNo, new { @class = "form-control", autocomplete = "off", @placeholder = "Reference", @id = "ref", @Disabled = "Disabled" })
+                                @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.ReferenceNo)
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.SaleInvoiceKeyModel.InvoiceTo, new { @class = "control-label required" })
+                                @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.InvoiceTo, new { @class = "form-control", autocomplete = "off", @placeholder = "Invoice To", @id = "invto" })
+                                @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.InvoiceTo)
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.SaleInvoiceKeyModel.InvoiceDate, new { @class = "control-label required" })
+                                @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.InvoiceDate, new { @class = "form-control", autocomplete = "off", @placeholder = "Select Invoice Date", @id = "invdt", @Value = @Model.SaleInvoiceKeyModel.InvoiceDate.ToString("dd MMM yyyy") })
+                                @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.InvoiceDate)
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.SaleInvoiceKeyModel.OrderNo, new { @class = "control-label " })
+                                @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.OrderNo, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Order No.", id = "orderno" })
+                                @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.OrderNo)
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.SaleInvoiceKeyModel.OrderDate, new { @class = "control-label " })
+                                @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.OrderDate, new { @class = "form-control", autocomplete = "off", @placeholder = "Select Order Date", @id = "orderdt" })
+                                @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.OrderDate)
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-xl-12"><button class="btn btn-dark btn-sm float-end" type="button" id="addnewitems"><i class="fe fe-plus-circle me-2"></i>Add New Row</button></div>
+                    </div>
+                    <div class="row">
+                        <div class=" col-md-12 ">
+                            <table class="table table-bordered table-condensed table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="col-width-25 text-center" style="vertical-align:middle;width:4%">
+                                            Sl
+                                        </th>
+                                        <th class="col-width-400 text-center" style="vertical-align: middle; width: 20%">
+                                            Item Name
+                                        </th>
+                                        <th class="col-width-200 text-center" style="vertical-align: middle; width: 10%">
+                                            HSN Code
+                                        </th>
+                                        <th class="col-width-100 text-center" style="vertical-align: middle; width: 6%">
+                                            GST %
+                                        </th>
+                                        <th class="col-width-100 text-center" style="vertical-align: middle; width: 6%">
+                                            IGST %
+                                        </th>
+                                        <th class="col-width-100 text-center" style="vertical-align: middle; width: 6%">
+                                            CGST %
+                                        </th>
+                                        <th class="col-width-100 text-center" style="vertical-align: middle; width: 6%">
+                                            SGST %
+                                        </th>
+                                        <th class="col-width-100 text-center" style="vertical-align: middle; width: 6%">
+                                            Order Qty
+                                        </th>
+                                        <th class="col-width-200 text-center" style="vertical-align: middle; width: 15%">
+                                            Rate
+                                        </th>
+                                        <th class="col-width-300 text-center" style="vertical-align: middle; width: 17%">
+                                            Amount
+                                        </th>
+                                        <th class="col-width-25 text-center" style="vertical-align: middle; width: 4%">
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="itemtable">
+                                    @if (@Model.CustomInvoiceItemList == null)
+                                    {
+                                        <tr class="member-data-row">
+                                            <td class="slno text-center" style="vertical-align:middle;">1</td>
+                                            <td class="text-center" style="vertical-align:middle;">
+                                                @Html.TextAreaFor(m => m.CustomInvoiceItemList[0].ItemName, new { @class = "form-control itemname", autocomplete = "off", @placeholder = "Item Name" })
+                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].ItemName)
+                                            </td>
+                                            <td class="text-center" style="vertical-align:middle;">
+                                                @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].ItemHSNCode, new { @class = "form-control ItemHSNCode", autocomplete = "off", @placeholder = "HSN Code" })
+                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].ItemHSNCode)
+                                            </td>
+                                            <td class="text-center" style="vertical-align:middle;">
+                                                @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].GSTPercentage, new { @class = "form-control gstper", autocomplete = "off", @placeholder = "Gst %" })
+                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].GSTPercentage)
+                                            </td>
+                                            <td class="text-center" style="vertical-align:middle;">
+                                                @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].IGSTPercentage, new { @class = "form-control igst", autocomplete = "off", @placeholder = "IGST %" })
+                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].IGSTPercentage)
+                                            </td>
+                                            <td class="text-center" style="vertical-align:middle;">
+                                                @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].CGSTPercentage, new { @class = "form-control cgst", autocomplete = "off", @placeholder = "CGST %" })
+                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].CGSTPercentage)
+                                            </td>
+                                            <td class="text-center" style="vertical-align:middle;">
+                                                @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].SGSTPercentage, new { @class = "form-control sgst", autocomplete = "off", @placeholder = "SGST %" })
+                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].SGSTPercentage)
+                                            </td>
+                                            <td class="text-center" style="vertical-align:middle;">
+                                                @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].Qty, new { @class = "form-control qty", autocomplete = "off", @placeholder = "Qty" })
+                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].Qty)
+                                            </td>
+                                            <td class="text-center" style="vertical-align:middle;">
+                                                @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].Rate, new { @class = "form-control rate", autocomplete = "off", @placeholder = "Rate" })
+                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].Rate)
+                                            </td>
+                                            <td class="text-center" style="vertical-align:middle;">
+                                                @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].Amount, new { @class = "form-control amount", autocomplete = "off", @placeholder = "Amount", @readonly = "readonly" })
+                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].Amount)
+                                            </td>
+                                            <td class="text-center" style="vertical-align:middle;">
+                                                <i class="fe fe-trash-2 rowremove btn-sm btn-danger" title="Remove"></i>
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        foreach (var item in @Model.CustomInvoiceItemList)
+                                        {
+                                            <tr class="member-data-row">
+                                                <td class="slno text-center" style="vertical-align:middle;">@i</td>
+                                                <td class="text-center" style="vertical-align:middle;">
+                                                    @Html.TextAreaFor(m => m.CustomInvoiceItemList[i - 1].ItemName, new { @class = "form-control itemname", autocomplete = "off", @placeholder = "Item Name" })
+                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].ItemName)
+                                                </td>
+                                                <td class="text-center" style="vertical-align:middle;">
+                                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].ItemHSNCode, new { @class = "form-control ItemHSNCode", autocomplete = "off", @placeholder = "HSN Code" })
+                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].ItemHSNCode)
+                                                </td>
+                                                <td class="text-center" style="vertical-align:middle;">
+                                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].GSTPercentage, new { @class = "form-control gstper", autocomplete = "off", @placeholder = "Gst %" })
+                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].GSTPercentage)
+                                                </td>
+                                                <td class="text-center" style="vertical-align:middle;">
+                                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].IGSTPercentage, new { @class = "form-control igst", autocomplete = "off", @placeholder = "IGST %" })
+                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].IGSTPercentage)
+                                                </td>
+                                                <td class="text-center" style="vertical-align:middle;">
+                                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].CGSTPercentage, new { @class = "form-control cgst", autocomplete = "off", @placeholder = "CGST %" })
+                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].CGSTPercentage)
+                                                </td>
+                                                <td class="text-center" style="vertical-align:middle;">
+                                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].SGSTPercentage, new { @class = "form-control sgst", autocomplete = "off", @placeholder = "SGST %" })
+                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].SGSTPercentage)
+                                                </td>
+                                                <td class="text-center" style="vertical-align:middle;">
+                                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].Qty, new { @class = "form-control qty", autocomplete = "off", @placeholder = "Qty" })
+                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].Qty)
+                                                </td>
+                                                <td class="text-center" style="vertical-align:middle;">
+                                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].Rate, new { @class = "form-control rate", autocomplete = "off", @placeholder = "Rate", @Value = @Model.CustomInvoiceItemList[i - 1].Rate.ToString("0.00") })
+                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].Rate)
+                                                </td>
+                                                <td class="text-center" style="vertical-align:middle;">
+                                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].Amount, new { @class = "form-control amount", autocomplete = "off", @placeholder = "Amount", @readonly = "readonly", @Value = @Model.CustomInvoiceItemList[i - 1].Amount.ToString("0.00") })
+                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].Amount)
+                                                </td>
+                                                <td class="text-center" style="vertical-align:middle;">
+                                                    <i class="rowremove btn-sm btn-danger fe fe-trash-2" title="Remove"></i>
+                                                </td>
+                                            </tr>
+                                            i++; j++;
+                                        }
+                                    }
+                                </tbody>
+                                <tr class="TotalSec">
+                                    <td colspan="9" class="text-right font-bold">Net Billing Amount</td>
+                                    <td class="text-right font-bold">
+                                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.ExcludingTaxAmt, new { @class = "form-control", @autocomplete = "off", @id = "EXcludeTax", @readonly = "readonly" })
+                                    </td>
+                                    <td class="text-center font-bold"><span>-</span></td>
+                                </tr>
+                                <tr class="TotalSec">
+                                    <td colspan="9" class="text-right font-bold">IGST Amount</td>
+                                    <td class="text-right font-bold">
+                                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.IGSTAmount, new { @class = "form-control", @autocomplete = "off", @id = "IGSTAmt", @readonly = "readonly" })
+                                    </td>
+                                    <td class="text-center font-bold"><span>-</span></td>
+                                </tr>
+                                <tr class="TotalSec">
+                                    <td colspan="9" class="text-right font-bold">CGST Amount</td>
+                                    <td class="text-right font-bold">
+                                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.CGSTAmount, new { @class = "form-control", @autocomplete = "off", @id = "CGSTAmt", @readonly = "readonly" })
+                                    </td>
+                                    <td class="text-center font-bold"><span>-</span></td>
+                                </tr>
+                                <tr class="TotalSec">
+                                    <td colspan="9" class="text-right font-bold">SGST Amount</td>
+                                    <td class="text-right font-bold">
+                                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.SGSTAmount, new { @class = "form-control", @autocomplete = "off", @style = "margin-bottom:2px;", @id = "SGSTAmt", @readonly = "readonly" })
+                                    </td>
+                                    <td class="text-center font-bold"><span>-</span></td>
+                                </tr>
+                                <tr class="TotalSec">
+                                    <td colspan="9" class="text-right font-bold">Net Amount</td>
+                                    <td class="text-right font-bold">
+                                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.IncludingTaxAmt, new { @class = "form-control", @autocomplete = "off", @id = "GTAmt", @readonly = "readonly" })
+                                    </td>
+                                    <td class="text-center font-bold"><span>-</span></td>
+                                </tr>
+                                <tr class="TotalSec">
+                                    <td colspan="9" class="text-right font-bold">
+                                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.ReceivedRemarks, new { @class = "form-control", autocomplete = "off", @placeholder = "Advance Or Deduction Remarks", @id = "dremarks" })
+                                        @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.ReceivedRemarks)
+                                    </td>
+                                    <td class="text-right font-bold">
+                                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.AdvanceReceived, new { @class = "form-control", autocomplete = "off", @placeholder = "Amount", @id = "damt" })
+                                        @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.AdvanceReceived)
+                                    </td>
+                                    <td class="text-center font-bold"><span>-</span></td>
+                                </tr>
+                                <tr class="TotalSec">
+                                    <td colspan="9" class="text-right font-bold">Net Payable Amount</td>
+                                    <td class="text-right font-bold"><input id="netpayable" class="form-control text-left" readonly="readonly" min="0" /></td>
+                                    <td class="text-center font-bold"><span>-</span></td>
+                                </tr>
+
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3 mb-3">
+                        <div class="col-xl-12">
+                            @Html.LabelFor(m => m.SaleInvoiceKeyModel.Remarks, new { @class = "control-label required" })
+                            @Html.TextAreaFor(m => m.SaleInvoiceKeyModel.Remarks, new { @class = "form-control", autocomplete = "off", @placeholder = "Remarks", @id = "rem" })
+                            @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.Remarks)
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <button type="reset" onclick="location.href='@Url.Action("SaleInvoiceList")'" class="btn btn-primary cancel me-2">Cancel</button>
+                        <input type="submit" value="Save" id="save" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+@section Scripts{
+    <script src="~/Content/datetimepicker/jquery.datetimepicker.full.min.js"></script>
+    <script src="~/Content/Plugins/Select2/select2.min.js"></script>
+    <script src="~/Scripts/bootstrap-autocomplete.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.ddSelect2').select2({ width: '100%' });
+            $('#orderdt').datetimepicker({
+                theme: 'light',
+                format: 'd M Y',
+                timepicker: false,
+                minDate: 1
+            })
+            $('#invdt').datetimepicker({
+                theme: 'light',
+                format: 'd M Y',
+                timepicker: false,
+                minDate: 1
+            })
+            var bindAutoComplete = function () {
+                $('.member-data-row').each(function (index) {
+                    $('#CustomInvoiceItemList_' + index + '__Qty').on('input', function () { calculateamount(this) })
+                    $('#CustomInvoiceItemList_' + index + '__Rate').on('input', function () { calculateamount(this) })
+                    $('#CustomInvoiceItemList_' + index + '__GSTPercentage').on('input', function () { calculateamount(this) })
+                    $('#CustomInvoiceItemList_' + index + '__IGSTPercentage').on('input', function () { calculateamount(this) })
+                    $('#CustomInvoiceItemList_' + index + '__CGSTPercentage').on('input', function () { calculateamount(this) })
+                    $('#CustomInvoiceItemList_' + index + '__SGSTPercentage').on('input', function () { calculateamount(this) })
+                    $('#damt').on('input', function () { deductionvalue() })
+                })
+            }
+            bindAutoComplete();
+            var totalcalculation = function () {
+                var ETAmtSum = 0;
+                var IGSTAmtSum = 0;
+                var CGSTAmtSum = 0;
+                var SGSTAmtSum = 0;
+                var GTAmt = 0;
+                var rowno = $(".member-data-row").length;
+                //var newrowno = rowno + 1;
+                $('.amount').each(function (rowno) {
+                    var indxetamt = parseFloat($('#CustomInvoiceItemList_' + rowno + '__Amount').val());
+                    if ($('#CustomInvoiceItemList_' + rowno + '__IGSTPercentage').val() != 0) {
+                        var indxigstamt = parseFloat($('#CustomInvoiceItemList_' + rowno + '__IGSTPercentage').val() / 100) * indxetamt;
+                        IGSTAmtSum += indxigstamt;
+                        ETAmtSum += indxetamt;
+                    }
+                    else if ($('#CustomInvoiceItemList_' + rowno + '__CGSTPercentage').val() != 0 && $('#CustomInvoiceItemList_' + rowno + '__SGSTPercentage').val() != 0) {
+                        var indxcgstamt = parseFloat($('#CustomInvoiceItemList_' + rowno + '__CGSTPercentage').val() / 100) * indxetamt;
+                        CGSTAmtSum += indxcgstamt;
+                        var indxsgstamt = parseFloat($('#CustomInvoiceItemList_' + rowno + '__SGSTPercentage').val() / 100) * indxetamt;
+                        SGSTAmtSum += indxsgstamt;
+                        ETAmtSum += indxetamt;
+                    }
+                    else {
+                        alert('Please Enter The IGST OR CGST & SGST Percentage according to ur transaction in ' + (rowno + 1) + ' Row');
+                        $('#CustomInvoiceItemList_' + rowno + '__Qty').val("")
+                        $('#CustomInvoiceItemList_' + rowno + '__Rate').val("")
+                        $('#CustomInvoiceItemList_' + rowno + '__Amount').val("")
+                    }
+                    ($('#EXcludeTax').val(ETAmtSum.toFixed(2)));
+                    ($('#IGSTAmt').val(IGSTAmtSum.toFixed(2)));
+                    ($('#CGSTAmt').val(CGSTAmtSum.toFixed(2)));
+                    ($('#SGSTAmt').val(SGSTAmtSum.toFixed(2)));
+                })
+                GTAmt = parseFloat(ETAmtSum + IGSTAmtSum + CGSTAmtSum + SGSTAmtSum);
+                ($('#GTAmt').val(GTAmt.toFixed(2)));
+
+            };
+            var deductionvalue = function () {
+                var NetPayableTotal = 0
+                var DeductionAmt = 0
+                var TNetAmount = $('#GTAmt').val();
+                DeductionAmt = $('#damt').val();
+                GrandTotal = parseFloat(TNetAmount - DeductionAmt);
+                ($('#netpayable').val(GrandTotal.toFixed(2)));
+            }
+            deductionvalue()
+            //Calculate Amount Based on Qty & Rate
+            var calculateamount = function (index) {
+                var id = $(index).attr("id").split("_");
+                id = id[1];
+                if (($('#CustomInvoiceItemList_' + id + '__Qty').val() != "") && ($('#CustomInvoiceItemList_' + id + '__Rate').val() != "")) {
+                    var amount = (($('#CustomInvoiceItemList_' + id + '__Qty').val()) * ($('#CustomInvoiceItemList_' + id + '__Rate').val()));
+                    $('#CustomInvoiceItemList_' + id + '__Amount').val(amount.toFixed(2));
+                    totalcalculation();
+                    deductionvalue()
+                }
+            }
+            totalcalculation();
+            //Function for Add New Rows
+            var addnewrows = function () {
+                var count = $(".member-data-row").length;
+                var index = count;
+                var slno = count + 1;
+                $("#itemtable").append('<tr class="member-data-row">' +
+                     '<td class="text-center slno" style="vertical-align:middle;">' + slno + '</td>'
+                     + '<td class="text-center" style="vertical-align:middle;">'
+                            + '<textarea autocomplete="off" class="form-control itemname" cols="20" data-val="true" data-val-required="The ItemName field is required." id="CustomInvoiceItemList_' + index + '__ItemName" name="CustomInvoiceItemList[' + index + '].ItemName" placeholder="Item Name" rows="2"></textarea>'
+                            + '<span class="field-validation-valid item-span" data-valmsg-for="CustomInvoiceItemList[' + index + '].ItemName" data-valmsg-replace="true"></span>'
+                     + '</td>'
+                     + '<td class="text-center" style="vertical-align:middle;">'
+                            + '<input autocomplete="off" class="form-control ItemHSNCode valid" data-val="true" data-val-required="The ItemHSNCode field is required." id="CustomInvoiceItemList_' + index + '__ItemHSNCode" name="CustomInvoiceItemList[' + index + '].ItemHSNCode" placeholder="HSN/SCA Code"  type="text" value=""/>'
+                            + '<span class="field-validation-valid ItemHSNCode-span" data-valmsg-for="CustomInvoiceItemList[' + index + '].ItemHSNCode" data-valmsg-replace="true"></span></td>'
+
+                     + '<td class="text-center" style="vertical-align:middle;">'
+                            + '<input autocomplete="off" class="form-control gstper" data-val="true" data-val-number="The field GSTPercentage must be a number." data-val-required="The GSTPercentage field is required." id="CustomInvoiceItemList_' + index + '__GSTPercentage" name="CustomInvoiceItemList[' + index + '].GSTPercentage" placeholder="Gst %"  type="text" value=""/>'
+                            + '<span class="field-validation-valid gstper-span" data-valmsg-for="CustomInvoiceItemList[' + index + '].GSTPercentage" data-valmsg-replace="true"></span></td>'
+
+                     + '<td class="text-center" style="vertical-align:middle;">'
+                            + '<input autocomplete="off" class="form-control igst" data-val="true" data-val-number="The field IGST Amount must be a number." data-val-required="The IGSTPercentage field is required." id="CustomInvoiceItemList_' + index + '__IGSTPercentage" name="CustomInvoiceItemList[' + index + '].IGSTPercentage" placeholder="IGST %"  type="text" value="0"/>'
+                            + '<span class="field-validation-valid igst-span" data-valmsg-for="CustomInvoiceItemList[' + index + '].IGSTPercentage" data-valmsg-replace="true"></span></td>'
+
+                     + '<td class="text-center" style="vertical-align:middle;">'
+                            + '<input autocomplete="off" class="form-control cgst" data-val="true" data-val-number="The field CGST Amount must be a number." data-val-required="The CGSTPercentage field is required." id="CustomInvoiceItemList_' + index + '__CGSTPercentage" name="CustomInvoiceItemList[' + index + '].CGSTPercentage" placeholder="CGST %"  type="text" value="0"/>'
+                            + '<span class="field-validation-valid cgst-span" data-valmsg-for="CustomInvoiceItemList[' + index + '].CGSTPercentage" data-valmsg-replace="true"></span></td>'
+
+                     + '<td class="text-center" style="vertical-align:middle;">'
+                            + '<input autocomplete="off" class="form-control sgst" data-val="true" data-val-number="The field SGST Amount must be a number." data-val-required="The SGSTPercentage field is required." id="CustomInvoiceItemList_' + index + '__SGSTPercentage" name="CustomInvoiceItemList[' + index + '].SGSTPercentage" placeholder="SGST %"  type="text" value="0"/>'
+                            + '<span class="field-validation-valid sgst-span" data-valmsg-for="CustomInvoiceItemList[' + index + '].SGSTPercentage" data-valmsg-replace="true"></span></td>'
+                     + '<td class="text-center" style="vertical-align:middle;">'
+                            + '<input autocomplete="off" class="form-control qty" data-val="true" data-val-number="The field Order Qty must be a number." data-val-required="The Order Qty field is required." id="CustomInvoiceItemList_' + index + '__Qty" name="CustomInvoiceItemList[' + index + '].Qty" placeholder="Qty" type="text" value=""/>'
+                            + '<span class="field-validation-valid qty-span" data-valmsg-for="CustomInvoiceItemList[' + index + '].Qty" data-valmsg-replace="true"></span></td>'
+
+                     + '<td class="text-center" style="vertical-align:middle;">'
+                            + '<input autocomplete="off" class="form-control rate" data-val="true" data-val-number="The field Rate must be a number." data-val-required="The Rate field is required." id="CustomInvoiceItemList_' + index + '__Rate" name="CustomInvoiceItemList[' + index + '].Rate" placeholder="Rate" type="text" value=""/>'
+                            + '<span class="field-validation-valid rate-span" data-valmsg-for="CustomInvoiceItemList[' + index + '].Rate" data-valmsg-replace="true"></span></td>'
+
+                     + '<td class="text-center" style="vertical-align:middle;">'
+                            + '<input autocomplete="off" class="form-control amount" data-val="true" data-val-number="The field Amount must be a number." data-val-required="The Amount field is required." id="CustomInvoiceItemList_' + index + '__Amount" name="CustomInvoiceItemList[' + index + '].Amount" placeholder="Amount" readonly="readonly" type="text" value=""/>'
+                            + '<span class="field-validation-valid amount-span" data-valmsg-for="CustomInvoiceItemList[' + index + '].Amount" data-valmsg-replace="true"></span></td>'
+
+                     + '<td class="text-center" style="vertical-align:middle;"><i class="fa fa-trash rowremove btn-sm btn-danger" title="Remove"></i></td></tr>'
+                      )
+
+                var $form = $("form");
+                $form.unbind();
+                $form.data("validator", null);
+                $.validator.unobtrusive.parse(document);
+                //// Re add validation with changes
+                //$form.validate($form.data("unobtrusiveValidation").options);
+                bindAutoComplete();
+            };
+            $(document).on('click', '#addnewitems', addnewrows);
+
+            //Function For Remove Row
+            $(document).on("click", ".rowremove", function () {
+                $(this).closest("tr").remove();
+                var new_index = 0;
+                var add_new_index = new_index + 1;
+                $('.member-data-row').each(function () {
+                    $(this).find('td.slno').html(new_index + 1);
+
+                    $(this).find('input.itemname').attr('id', 'CustomInvoiceItemList_' + new_index + '__ItemName');
+                    $(this).find('input.itemname').attr('name', 'CustomInvoiceItemList[' + new_index + '].ItemName');
+                    $(this).find('span.item-span').attr('data-valmsg-for', 'CustomInvoiceItemList[' + new_index + '].ItemName');
+
+                    $(this).find('input.ItemHSNCode').attr('id', 'CustomInvoiceItemList_' + new_index + '__ItemHSNCode');
+                    $(this).find('input.ItemHSNCode').attr('name', 'CustomInvoiceItemList[' + new_index + '].ItemHSNCode');
+                    $(this).find('span.ItemHSNCode-span').attr('data-valmsg-for', 'CustomInvoiceItemList[' + new_index + '].ItemHSNCode');
+
+                    $(this).find('input.qty').attr('id', 'CustomInvoiceItemList_' + new_index + '__Qty');
+                    $(this).find('input.qty').attr('name', 'CustomInvoiceItemList[' + new_index + '].Qty');
+                    $(this).find('span.qty-span').attr('data-valmsg-for', 'CustomInvoiceItemList[' + new_index + '].Qty');
+
+                    $(this).find('input.rate').attr('id', 'CustomInvoiceItemList_' + new_index + '__Rate');
+                    $(this).find('input.rate').attr('name', 'CustomInvoiceItemList[' + new_index + '].Rate');
+                    $(this).find('span.rate-span').attr('data-valmsg-for', 'CustomInvoiceItemList[' + new_index + '].PresentState');
+
+                    $(this).find('input.gstper').attr('id', 'CustomInvoiceItemList_' + new_index + '__GSTPercentage');
+                    $(this).find('input.gstper').attr('name', 'CustomInvoiceItemList[' + new_index + '].GSTPercentage');
+                    $(this).find('span.gstper-span').attr('data-valmsg-for', 'CustomInvoiceItemList[' + new_index + '].GSTPercentage');
+
+                    $(this).find('input.amount').attr('id', 'CustomInvoiceItemList_' + new_index + '__Amount');
+                    $(this).find('input.amount').attr('name', 'CustomInvoiceItemList[' + new_index + '].Amount');
+                    $(this).find('span.amount-span').attr('data-valmsg-for', 'CustomInvoiceItemList[' + new_index + '].Amount');
+
+                    $(this).find('input.igst').attr('id', 'CustomInvoiceItemList_' + new_index + '__IGSTPercentage');
+                    $(this).find('input.igst').attr('name', 'CustomInvoiceItemList[' + new_index + '].IGSTPercentage');
+                    $(this).find('span.igst-span').attr('data-valmsg-for', 'CustomInvoiceItemList[' + new_index + '].IGSTPercentage');
+
+                    $(this).find('input.cgst').attr('id', 'CustomInvoiceItemList_' + new_index + '__CGSTPercentage');
+                    $(this).find('input.cgst').attr('name', 'CustomInvoiceItemList[' + new_index + '].CGSTPercentage');
+                    $(this).find('span.cgst-span').attr('data-valmsg-for', 'CustomInvoiceItemList[' + new_index + '].CGSTPercentage');
+
+                    $(this).find('input.sgst').attr('id', 'CustomInvoiceItemList_' + new_index + '__SGSTPercentage');
+                    $(this).find('input.sgst').attr('name', 'CustomInvoiceItemList[' + new_index + '].SGSTPercentage');
+                    $(this).find('span.sgst-span').attr('data-valmsg-for', 'CustomInvoiceItemList[' + new_index + '].SGSTPercentage');
+
+                    $(this).find('input.totalamount').attr('id', 'CustomInvoiceItemList_' + new_index + '__TotalAmount');
+                    $(this).find('input.totalamount').attr('name', 'CustomInvoiceItemList[' + new_index + '].TotalAmount');
+                    $(this).find('span.totalamount-span').attr('data-valmsg-for', 'CustomInvoiceItemList[' + new_index + '].TotalAmount');
+                    new_index++;
+                    add_new_index++;
+                })
+                bindAutoComplete();
+                totalcalculation();
+            });
+
+
+            $('#CustomInvoiceItemList_0__Qty').on('input', function () { calculateamount(this) })
+            $('#CustomInvoiceItemList_0__Rate').on('input', function () { calculateamount(this) })
+            $('#CustomInvoiceItemList_0__GSTPercentage').on('input', function () { calculateamount(this) })
+            $('#CustomInvoiceItemList_0__IGSTPercentage').on('input', function () { calculateamount(this) })
+            $('#CustomInvoiceItemList_0__CGSTPercentage').on('input', function () { calculateamount(this) })
+            $('#CustomInvoiceItemList_0__SGSTPercentage').on('input', function () { calculateamount(this) })
+
+            @*//advamt();
+            var RefNo = function () {
+                var DateVal = new Date();
+                var fullDate = new Date()
+                var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : '0' + (fullDate.getMonth() + 1);
+                var currentDate = fullDate.getDate() + "/" + twoDigitMonth + "/" + fullDate.getFullYear();
+                if ($('#invdt').val() != "") {
+                    DateVal = $('#invdt').val();
+                }
+                else {
+                    DateVal = currentDate;
+                }
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetRefNumber", "Invoice")', // we are calling json method
+                    dataType: 'json',
+                    data: { Datevalue: DateVal },
+                    // here we are get value of selected property and passing same value as inputto json method getJsonSectionList.
+                    success: function (data) {
+                        var msg = data.OperationMsg;
+                        if (msg.includes("Error:")) {
+                            $('#RefSection').addClass('hidden');
+                            $('#ErrorMsg').removeClass('hidden');
+                            $('#msg').text(msg);
+                        }
+                        else {
+                            $('#RefSection').removeClass('hidden');
+                            $('#ErrorMsg').addClass('hidden');
+                            $('#RefNo').text(data.InvoiceNO);
+                            $('#Fiscal').text(data.FiscalYear);
+                            $('#RefNoVal').val(data.InvoiceNO);
+                        }
+                    },
+                });
+            }
+            $(document).on('change', '#invdt', RefNo);
+            RefNo();*@
+            //Project Details
+            var ddProject = function () {
+                if ($('#proj').val() != "" || $('#proj').val() != 0) {
+                    var SelectType = $("#proj").find('option:selected').val();
+                    $.ajax({
+                        type: 'GET',
+                        url: "/Invoice/GetProjectClientDetails",
+                        data: { id: SelectType },
+                        success: function (data) {
+                            $('#DataGrid').html(data);
+                            $('#DataGrid').removeClass("hidden");
+                            OrderDTNo();
+                            //changeProject($(".member-data-row").length);
+                        }
+                    })
+                }
+                else {
+                    $('#DataGrid').addClass("hidden");
+                }
+            };
+            $(document).on('change', '#proj', ddProject);
+            ddProject();
+
+            var OrderDTNo = function () {
+                if (($('#proj').val() != "" || $('#proj').val() != 0)) {
+                    var ProjectID = $("#proj").find('option:selected').val();
+                    $.ajax({
+                        type: 'GET',
+                        url: "/Invoice/WorkingOrderDTNo",
+                        dataType: 'json',
+                        data: { ProjID: ProjectID },
+                        // here we are get value of selected property and passing same value as inputto json method getJsonSectionList.
+                        success: function (data) {
+                            //$('#WorkingOrderSec').removeClass('hidden');
+                            $('#orderdt').val(data.WODate);
+                            $('#orderno').val(data.WONo);
+                            $('#ClientID').val(data.VendorID);
+                            //$('#ClientID').text(data.ClientID);
+                        },
+                    });
+                }
+            }
+
+        });
+
+    </script>
+}

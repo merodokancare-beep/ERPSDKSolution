@@ -1,0 +1,142 @@
+﻿@model SDKHRMS.Entities.ViewModels.PurchaseSalesViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <style type="text/css">
+        .highlight {
+            background-color: #fff;
+        }
+        /*Table scroll */
+        #table-scroll {
+            position: relative;
+            /*max-width: 600px;*/
+            margin: auto;
+            overflow: hidden;
+            border: 1px solid #d9d9d9;
+        }
+
+        #table-wrap {
+            width: 100%;
+            overflow: auto;
+        }
+
+        #table-scroll table {
+            width: 100%;
+            margin: auto;
+            border-collapse: separate;
+            border-spacing: 0.5px;
+        }
+
+        #table-scroll .colhead {
+            padding: 2px 4px;
+            border: 1px solid #d9d9d9;
+            background: #fff;
+            white-space: nowrap;
+            vertical-align: top;
+            background-color: #d9d9d9;
+            border-radius: 0px;
+        }
+
+        #table-scroll th, #table-scroll td {
+            padding: 2px 4px;
+            border: 1px solid #d9d9d9;
+            background: #fff;
+            white-space: nowrap;
+            vertical-align: top;
+            border-radius: 0px;
+        }
+
+        #table-scroll thead, #table-scroll tfoot {
+            background: #f9f9f9;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="~/Content/Images/smalllogo.png">
+    <title>ExportAsPDF</title>
+</head>
+<body>
+    <div class="text-center" style="margin-bottom:15px;">
+        <img src="~/Content/Images/LOGOSDK.png" alt="SDK Logo" width="218px" />
+    </div>
+    <div class="col-md-12" style="margin-bottom:15px;">
+
+        <strong class="">Purchase &amp; Sale Details of SDK Solutions For @ViewBag.MonthName, @ViewBag.Year</strong>
+    </div>
+    <div class="col-md-12 no-padding">
+        @if (Model.PurchaseSaleList.Count() > 0)
+        {
+            <div id="table-scroll" class="table-scroll table-responsive table-bordered">
+                <table class="table-bordered">
+                    <tbody>
+                        @foreach (var group in Model.PurchaseSaleList.GroupBy(x => x.PurchaseSaleType))
+                        {
+                            <tr class="">
+                                <th colspan="10" class="" style="background: white; text-align: left; vertical-align: middle;">
+                                    <span class="text-info" style="font-size:18px;">@group.Select(x => x.PurchaseSaleType).FirstOrDefault() Details of SDK Solutions For @ViewBag.MonthName, @ViewBag.Year</span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th class="text-center" style="vertical-align: middle;">Date</th>
+                                <th class="text-center" style="vertical-align: middle;">Bill No.</th>
+                                <th class="text-center" style="vertical-align: middle;">HSN/SAC</th>
+                                <th class="text-center" style="vertical-align: middle;">Vender/Client Name</th>
+                                <th class="text-center" style="vertical-align: middle;">Vender/Client GST No.</th>
+                                <th class="text-center" style="vertical-align: middle;">IsIGST</th>
+                                <th class="text-center" style="vertical-align: middle;">IGST(&#8377;) </th>
+                                <th class="text-center" style="vertical-align: middle;">CGST(&#8377;) </th>
+                                <th class="text-center" style="vertical-align: middle;">SGST(&#8377;)</th>
+                                <th class="text-center" style="vertical-align: middle;">Amount(&#8377;)</th>
+                                <th class="text-center" style="vertical-align: middle;">Description</th>
+                            </tr>
+                            foreach (var item in group)
+                            {
+                                <tr>
+                                    <td class="text-center">@item.PurchaseSaleDate.ToString("dd MMM yyyy")</td>
+                                    <td class="text-center">@item.PurchaseSaleInvoiceNo </td>
+                                    <td class="text-center">@item.HSNSAC</td>
+                                    <td class="text-center">
+                                        @if (!string.IsNullOrEmpty(@item.VenderName))
+                                        {
+                                            @item.VenderName
+                                        }
+                                        else
+                                        {
+                                            @item.ClientName
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if (!string.IsNullOrEmpty(@item.VendorGSTNO))
+                                        {
+                                            @item.VendorGSTNO
+                                        }
+                                        else
+                                        {
+                                            @item.ClientGSTNO
+                                        }
+                                    </td>
+                                    <td class="text-center">@item.IsIGST</td>
+                                    <td class="text-center">@item.IGST</td>
+                                    <td class="text-center">@item.CGST</td>
+                                    <td class="text-center">@item.SGST</td>
+                                    <td class="text-center">@item.TaxableAmount</td>
+                                    <td class="text-center">@item.Description</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+        else
+        {
+            <h3>No record found...</h3>
+        }
+    </div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+﻿@model SDKHRMS.Entities.ViewModels.EmpManageVM
+@{
+    ViewBag.Title = "Employee: Employee List";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="page-title-wrapper">
+    <div class="page-title-heading text-primary">
+        <div class="page-title-icon">
+            <i class="glyphicon glyphicon-user"></i>
+        </div>
+        <div>
+            <div class="page-title-main-text linebreak">
+                Employee Manage
+            </div>
+            <div class="page-title-sub-text">Employee List</div>
+        </div>
+    </div>
+    <div class="page-title-actions"></div>
+    @*<a href="@Url.Action("AddEmpPersonalDetails", "EmpManage", new { @Area = "" })" class="btn btn-primary pull-right" title="Add New Employee " data-modal="">
+        <i class="glyphicon glyphicon-plus"></i>
+    </a>*@
+</div>
+<div>
+    <div class="page-content">
+        <div class="well well-sm clearfix">
+            <div class="col-md-9">
+                <form action="/EmpManage/EmpList" method="get" data-search="true" data-otf-ajax="true" data-otf-target="#DataGrid">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search By First Name ..." name="SearchTerm" id="inputsearch">
+                        <div class="input-group-btn">
+                            <button class="btn btn-success" type="submit" id="search">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-3 no-horizantal-padding pull-right">
+                &nbsp;&nbsp;<a href="@Url.Action("EmpList")" class="btn btn-success hidden" id="clear">Clear !</a>
+                @Html.ActionLink("Add Employee", "AddEmpPersonalDetails", null, new { @class = "btn btn-danger pull-right" })
+            </div>
+            @*<div class="col-md-5">
+                <a href="/EmpManage/EmpList" class="btn btn-success hidden" id="clear">
+                    <i class="glyphicon glyphicon-remove"> Clear</i>
+                </a>
+            </div>*@
+        </div>
+        <div class="clearfix">
+            @Html.Partial("_pvEmpList", Model)
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $("#search").on("click", function (e) {
+            if ($("#inputsearch").val() != "") {
+                $("#clear").removeClass("hidden");
+            }
+            else {
+                $("#clear").addClass("hidden");
+            }
+        });
+    </script>
+}
+
+
+

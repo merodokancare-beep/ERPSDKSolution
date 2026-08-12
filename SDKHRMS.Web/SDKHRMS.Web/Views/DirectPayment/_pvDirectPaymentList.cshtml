@@ -1,0 +1,274 @@
+﻿@model SDKHRMS.Entities.ViewModels.DirectPaymentVM
+<div id="DataGrid" class="">
+    @if (Model.DirectPayment.Count() > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-condensed table-borderless" id="purtable">
+                <thead>
+                    <tr>
+                        <th style="vertical-align: middle; text-align: left;">
+                            Direct Payment Release Details
+                        </th>
+                        <th style="vertical-align: middle; text-align: left;width:8%">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.DirectPayment)
+                    {
+                        <tr>
+                            <td>
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width:25%">
+                                                Dated:<span class="text-primary"> @item.PaymentDate.ToString("dd MMM yyyy")</span>
+                                            </td>
+                                            <td style="width:50%">
+                                                Expense Head:<span class="text-primary"> @item.ExpenseTypeName</span>
+                                            </td>
+                                            <td style="width:25%">
+                                                Status:<span class="text-primary"> @item.Status</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                Project:<span class="text-primary"> @(item.ProjectName ?? "Not Linked")</span>
+                                            </td>
+                                            <td>
+                                                Amount:<span class="text-primary"> @item.PaymentAmt.ToString("0.00")</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                Purpose:<span class="text-primary"> @(item.ProjectName ?? "Not Linked")</span>
+                                            </td>
+                                            <td>
+                                                Amount Paid:<span class="text-primary"> @item.PaidAmount.ToString("0.00")</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                Remarks:<span class="text-primary"> @item.Remarks</span>
+                                            </td>
+                                            <td>
+                                                Balance:<span class="text-primary"> @item.Balance.ToString("0.00")</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td style="vertical-align: middle; text-align: left;">
+                                @if (item.Status != "Declined")
+                                {
+                                    <a href="/DirectPayment/PrintVoucher?ID=@item.DirectPaymentID" class="btn-action-icon bg-light-gray mb-2" title="Print">
+                                        <i class="fe fe-printer"></i>
+                                    </a>
+                                }
+                                <div class="dropdown dropdown-action me-3 ">
+                                    <a href="#"
+                                       class="btn-action-icon bg-primary-light"
+                                       data-bs-toggle="dropdown"
+                                       aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <ul>
+
+                                            @if (!User.IsInRole("Employee") && (item.Status == "Approved" || item.Status == "Partial Settled" || item.Status == "Settled") && !item.IsDeclined)
+                                            {
+                                                <li>
+                                                    <a href="/DirectPayment/Settlement?id=@item.DirectPaymentID" class="dropdown-item " data-toggle="tooltip" data-placement="bottom">
+                                                        @if (item.Status == "Approved" || item.Status == "Partial Settled")
+                                                        {
+                                                            <span><i class="fe fe-check" title="Payment Settle"></i> Settle</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span><i class="fe fe-eye" title="View Details"></i> View</span>
+                                                        }
+                                                    </a>
+                                                </li>
+                                            }
+                                            @if (User.IsInRole("Super Admin"))
+                                            {
+                                                if (item.Status == "Approved")
+                                                {
+                                                    <li>
+                                                        <a href="/DirectPayment/Edit?id=@item.DirectPaymentID" class="dropdown-item " data-toggle="tooltip" data-placement="bottom" title="Edit Receive Direct Payment Details">
+                                                            <i class="fe fe-edit-2 me-2"></i> Edit
+                                                        </a>
+                                                    </li>
+                                                }
+                                                if (item.Status == "Pending" || item.Status == "Approved")
+                                                {
+                                                    <li>
+                                                        <form action="/DirectPayment/ApprovedPayment" method="post" data-otf-ajax="true" data-otf-target="#DataGrid">
+                                                            @Html.AntiForgeryToken()
+                                                            @Html.Hidden("ID", item.DirectPaymentID)
+                                                            <a href="@Url.Action("ApprovedPayment", "DirectPayment", new {Area="", ID = item.DirectPaymentID })" class="approval dropdown-item grid-button" data-toggle="tooltip" data-placement="bottom" title="Approved Direct Payment" data-record="@item.ExpenseTypeName Payments">
+                                                                @if (item.Status == "Pending")
+                                                                {
+                                                                    <span><i class="fe fe-check" title="Approve Payment"></i> Approve</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (item.Status == "Approved")
+                                                                    {
+                                                                        <span><i class="fe fe-repeat" title="Undo Approved Payment"></i> Undo Approve </span>
+                                                                    }
+                                                                }
+                                                            </a>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form action="/DirectPayment/DeclinedPayment" method="post" data-otf-ajax="true" data-otf-target="#DataGrid">
+                                                            @Html.AntiForgeryToken()
+                                                            @Html.Hidden("ID", item.DirectPaymentID)
+                                                            <a href="@Url.Action("DeclinedPayment", "DirectPayment", new {Area="", ID = item.DirectPaymentID })" class="declined dropdown-item grid-button" data-toggle="tooltip" data-placement="bottom" title="Declined Direct Payment" data-record="@item.ExpenseTypeName Payments">
+                                                                @if (item.Status == "Pending")
+                                                                {
+                                                                    <span><i class="fe fe-x" title="Declined Payment"></i> Decline</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (item.Status == "Approved")
+                                                                    {
+                                                                        <span><i class="fe fe-repeat" title="Undo Declined Payment"></i> Undo Decline </span>
+                                                                    }
+                                                                }
+                                                            </a>
+                                                        </form>
+                                                    </li>
+                                                }
+                                            }
+                                            @if (item.Status == "Pending")
+                                            {
+                                                <li>
+                                                    <a href="/DirectPayment/Edit?id=@item.DirectPaymentID" class="dropdown-item " data-toggle="tooltip" data-placement="bottom" title="Edit Receive Direct Payment Details">
+                                                        <i class="fe fe-edit-2 me-2"></i> Edit
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <form action="/DirectPayment/delete" method="post" data-otf-ajax="true" data-otf-target="#DataGrid">
+                                                        @Html.AntiForgeryToken()
+                                                        @Html.Hidden("ID", item.DirectPaymentID)
+                                                        <a href="@Url.Action("delete", "DirectPayment", new {Area="", ID = item.DirectPaymentID })" class="delete dropdown-item grid-button" data-toggle="tooltip" data-placement="bottom" title="Delete" data-record="@item.Remarks">
+
+                                                            <span><i class="fe fe-trash"></i> Delete </span>
+
+                                                        </a>
+                                                    </form>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                @*@if (!User.IsInRole("Employee") && (item.Status == "Approved" || item.Status == "Partial Settled" || item.Status == "Settled") && !item.IsDeclined)
+                                    {
+                                        <a href="/DirectPayment/Settlement?id=@item.DirectPaymentID" class="text-success mt-1" data-toggle="tooltip" data-placement="bottom">
+                                            @if (item.Status == "Approved" || item.Status == "Partial Settled")
+                                            {
+                                                <span><i class="fa fa-check"></i> Settle</span>
+                                            }
+                                            else
+                                            {
+                                                <span><i class="fa fa-eye"></i> View</span>
+                                            }
+                                        </a>
+                                    }
+                                    @if (User.IsInRole("Super Admin"))
+                                    {
+                                        if (item.Status == "Approved")
+                                        {
+                                            <a href="/DirectPayment/Edit?id=@item.DirectPaymentID" title="Edit Receive Direct Payment Details" class="">
+                                                <i class="fe fe-edit"> Edit</i>
+                                            </a>
+                                        }
+                                        <form action="/DirectPayment/ApprovedPayment" method="post" data-otf-ajax="true" data-otf-target="#DataGrid">
+                                            @Html.AntiForgeryToken()
+                                            @Html.Hidden("ID", item.DirectPaymentID)
+                                            <a href="@Url.Action("ApprovedPayment", "DirectPayment", new {Area="", ID = item.DirectPaymentID })" class="approval mt-1" data-toggle="tooltip" data-placement="bottom" title="Approved Direct Payment" data-record="@item.ExpenseTypeName Payments">
+                                                @if (item.Status == "Pending")
+                                                {
+                                                    <span class="text-success"><i class="fe fe-check " title="Approve Payment"></i> Approve</span>
+                                                }
+                                                else
+                                                {
+                                                    if (item.Status == "Approved")
+                                                    {
+                                                        <span class="text-warning"><i class="fe fe-repeat" title="Undo Approved Payment"></i> Undo Approve </span>
+                                                    }
+                                                }
+                                            </a>
+                                        </form>
+                                        <form action="/DirectPayment/DeclinedPayment" method="post" data-otf-ajax="true" data-otf-target="#DataGrid">
+                                            @Html.AntiForgeryToken()
+                                            @Html.Hidden("ID", item.DirectPaymentID)
+                                            <a href="@Url.Action("DeclinedPayment", "DirectPayment", new {Area="", ID = item.DirectPaymentID })" class="declined mt-1" data-toggle="tooltip" data-placement="bottom" title="Declined Direct Payment" data-record="@item.ExpenseTypeName Payments">
+                                                @if (item.Status == "Pending")
+                                                {
+                                                    <span class="text-danger"><i class="fe fe-alert-triangle " title="Declined Payment"></i> Decline</span>
+                                                }
+                                                else
+                                                {
+                                                    if (item.Status == "Declined")
+                                                    {
+                                                        <span class="text-warning"><i class="fe fe-repeat " title="Undo Declined Payment"></i> Undo Decline</span>
+                                                    }
+
+                                                }
+                                            </a>
+                                        </form>
+                                    }
+
+                                    @if (item.Status == "Pending")
+                                    {
+                                        <a href="/DirectPayment/Edit?id=@item.DirectPaymentID" title="Edit Receive Direct Payment Details" class="mt-1">
+                                            <i class="fe fe-edit"> Edit</i>
+                                        </a>
+                                        <form method="post" action="@Url.Action("delete", "DirectPayment", new { Area = "" })" data-otf-ajax="true" data-otf-target="#DataGrid">
+                                            @Html.Hidden("id", item.DirectPaymentID)
+                                            @Html.AntiForgeryToken()
+                                            <a href="@Url.Action("delete", "DirectPayment", new { Area = "", id = item.DirectPaymentID })" class="delete mt-2" date-toggle="tooltip" data-placement="bottom" title="Delete" data-record="@item.Remarks">
+                                                <i class="fe fe-trash text-danger"> Delete</i>
+                                            </a>
+                                        </form>
+                                    }*@
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="ns-grid-pager col-md-12" data-otf-target="#DataGrid">
+                <div class="visible-lg visible-md visible-sm visible-xs col-lg-12 col-sm-12 ns-pagination" data-otf-target="#DataGrid" data-otf-actionlink="/DirectPayment/index">
+                    <span class="badge bg-warning text-dark">Showing @Model.PagingInfo.TotalItems &nbsp;Record(s) of @Model.TotalRecords Record(s)</span>
+                    @Html.PageLinks(Model.PagingInfo, x => Url.Action("index", "DirectPayment", new { PageNo = x }))
+                </div>
+            </div>
+        </div>
+        @*<div class="ns-grid-pager" data-otf-target="#DataGrid">
+                <div class="hidden-xs col-md-3 col-sm-3">
+                    Showing @Model.DirectPayment.Count() of @Model.TotalRecords Record(s)
+
+                </div>
+                <div class="visible-lg visible-md visible-sm visible-xs col-md-9 col-sm-9 ns-pagination" data-otf-target="#DataGrid" data-otf-actionlink="/DirectPayment/index">
+                    @Html.PageLinks(Model.PagingInfo, x => Url.Action("Index", "DirectPayment", new { PageNo = x }))
+                </div>
+            </div>*@
+    }
+    else
+    {
+        <div class="text-center">
+            <img src="~/Content/Images/no_record.png" /><br />
+            <span class="text-muted">No records available or your searched </span>
+        </div>
+    }
+    @*error message*@
+    <div id="ErrMsg" style="display:none;">
+        <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+    </div>
+</div>

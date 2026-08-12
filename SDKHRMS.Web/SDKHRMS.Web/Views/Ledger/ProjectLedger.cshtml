@@ -1,0 +1,70 @@
+﻿@model  SDKHRMS.Entities.ViewModels.ProjectLedgerVM
+@{
+    ViewBag.Title = "Project Ledger";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<link href="~/Content/datetimepicker/jquery.datetimepicker.min.css" rel="stylesheet" />
+<link href="~/Content/Plugins/Select2/newselect2.css" rel="stylesheet" />
+<div class="page-header">
+    <div class="content-page-header">
+        <h5>Project Ledger</h5>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card ribbon-wrapper">
+            <div class="card-header card-buttons">
+                <form method="get" action="/Ledger/ProjectLedger" class="row" data-search="true" data-otf-ajax="true" data-otf-target="#DataGrid" id="sForm">
+                    <div class="form-group mb-0 row">
+                        <div class="col-md-12 mb-3">
+                            @Html.DropDownList("ProjID", new SelectList(Model.ProjectDD, "ProjectID", "ProjectName", ViewBag.ProjID), "----Select Project----", new { @class = "form-control ddSelect2", id = "project" })
+                        </div>
+                        <div class="col-md-5 mb-3">
+                            <input class="form-control dtp" type="text" placeholder="Start Date" id="startdate" value="@(Model.StartDate=="--"?"":Model.StartDate)" name="StartDate" />
+                        </div>
+                        <div class="col-md-5 mb-3">
+                            <input class="form-control dtp" type="text" placeholder="End Date" id="enddate" value="@(Model.EndDate=="--"?"":Model.EndDate)" name="EndDate" />
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <button onclick="location.href='/Ledger/ProjectLedger'" type="button" class="btn btn-primary" id="clearSearchBtn">Clear Results</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="card-body">
+                @Html.Partial("_pvProjectLedger", Model)
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+@section Scripts{
+    <script src="~/Content/Plugins/Select2/select2.min.js"></script>
+    <script src="~/Content/datetimepicker/jquery.datetimepicker.full.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.ddSelect2').select2({ width: '100%' });
+            $(document).on('change', '#project', function () {
+                $('#sForm').submit();
+            })
+            $('.dtp').datetimepicker({
+                theme: 'light',
+                timepicker: false,
+                format: 'd M Y',
+                scrollMonth: false,
+                scrollInput: false
+            }).on('change', function () {
+                $('#sForm').submit();
+            });
+        });
+    </script>
+}
+
+
+
+
+

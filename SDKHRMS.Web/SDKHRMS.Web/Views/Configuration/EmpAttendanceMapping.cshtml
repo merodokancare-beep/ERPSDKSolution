@@ -1,0 +1,66 @@
+﻿@model SDKHRMS.Entities.ViewModels.MstConfigurationViewModel
+@{
+    ViewBag.Title = "EmpAttendanceMapping";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<div class="page-title-wrapper">
+    <div class="page-title-heading text-primary">
+        <div class="page-title-icon">
+            <i class="fa fa-hand-o-right"></i>
+        </div>
+        <div>
+            <div class="page-title-main-text linebreak">
+                Device Mapping Master
+            </div>
+            <div class="page-title-sub-text">Configuration/Employee-Biometric Device Mapper</div>
+        </div>
+    </div>
+    <div class="page-title-actions">
+        @*<div class="btn btn-primary">
+                Menu
+            </div>*@
+    </div>
+</div>
+<div class="page-content clearfix">
+    @using (Html.BeginForm("EmpAttendanceMapping", "Configuration", FormMethod.Post, new { data_toggle = "validator", @novalidate = true }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        <div class="col-md-12 well well-sm">
+            <div class="row">
+                <div class="col-md-5">
+                    @Html.LabelFor(m => m.utblEmpAttendanceMapping.EmployeeID, new { @class = "control-label required" })
+                    @Html.DropDownListFor(m => m.utblEmpAttendanceMapping.EmployeeID, new SelectList(Model.EmpListForDD, "EmployeeID", "EmployeeName"), "----Select Employee----", new { @class = "form-control", id = "emp" })
+                    @Html.ValidationMessageFor(m => m.utblEmpAttendanceMapping.EmployeeID)
+                </div>
+                <div class="col-md-5">
+                    @Html.LabelFor(m => m.utblEmpAttendanceMapping.EmpDeviceID, new { @class = "control-label required" })
+                    @Html.TextBoxFor(m => m.utblEmpAttendanceMapping.EmpDeviceID, new { @class = "form-control", autocomplete = "off", @placeholder = "Employee-Biometric Device ID" })
+                    @Html.ValidationMessageFor(m => m.utblEmpAttendanceMapping.EmpDeviceID)
+                </div>
+                <div class="col-md-2 margin-top20">
+                    <input type="submit" value="Save" id="save" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+        <div class=" no-margin-bottom col-md-12 col-lg-12 text-center margin-top20">
+            <div class="form-horizontal">
+                <div class="col-md-12">
+                    <strong class="text-primary">EMPLOYEE(S) - DEVICE MAPPED LIST</strong>
+                </div>
+            </div>
+        </div>
+        <div class=" no-margin-bottom col-md-12 col-lg-12 text-right margin-top20">
+            <div class="form-horizontal">
+                @*<div class="col-md-12">*@
+                @Html.Partial("_pvEmpDeviceMapList", Model)
+                @*</div>*@
+            </div>
+        </div>
+    }
+</div>
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+

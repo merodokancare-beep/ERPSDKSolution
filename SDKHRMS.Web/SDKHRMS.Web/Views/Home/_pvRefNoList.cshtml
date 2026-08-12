@@ -1,0 +1,57 @@
+﻿@model SDKHRMS.Entities.ViewModels.DashboardViewModel
+<div id="DataGrid" class="">
+    @if (Model.ReferenceModelList.Count() > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-condensed table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="vertical-align: middle;">
+                           Date
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Reference No.
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Reference Type
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Letter/Invoice To
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Client Name
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ReferenceModelList)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                @item.RefDate.ToString("dd MMM yyyy")
+                            </td>
+                            <td class="text-center">
+                                @item.RefNumber
+                            </td>
+                            <td class="text-center">
+                                @item.RefType
+                            </td>
+                            <td class="text-center">
+                                @item.LetterTO
+                            </td>
+                            <td class="text-center">
+                                @item.ClientName
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        
+        <h3 class="text-center">No Reference Number of SDK Solutions For @ViewBag.FiscalYR Financial Year</h3>
+    }
+    
+</div>

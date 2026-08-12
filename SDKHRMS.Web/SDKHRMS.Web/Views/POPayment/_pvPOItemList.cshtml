@@ -1,0 +1,66 @@
+﻿@model  List<SDKHRMS.Entities.ViewModels.ItemsView>
+<div id="DataGrid">
+    @if (Model.Count() > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="vertical-align:middle">Item Name</th>
+                        <th class="text-center" style="vertical-align:middle">HSN/SAC Code</th>
+                        <th class="text-center" style="vertical-align:middle">GST %</th>
+                        <th class="text-center" style="vertical-align:middle">Qty</th>
+                        <th class="text-center" style="vertical-align:middle">Rate (&#8377)</th>
+                        <th class="text-center" style="vertical-align:middle">Amount (&#8377)</th>
+                        <th class="text-center" style="vertical-align:middle">IGST (&#8377)</th>
+                        <th class="text-center" style="vertical-align:middle">CGST (&#8377)</th>
+                        <th class="text-center" style="vertical-align:middle">SGST (&#8377)</th>
+                        <th class="text-center" style="vertical-align:middle">Total Amount (&#8377)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in @Model)
+                    {
+                        <tr>
+                            <td class="" style="vertical-align:middle">@item.ItemName</td>
+                            <td class="text-center" style="vertical-align:middle">@item.ItemHSNCode</td>
+                            <td class="text-center" style="vertical-align:middle">@item.GSTPercentage</td>
+                            <td class="text-center" style="vertical-align:middle">@item.Qty </td>
+                            <td class="text-right" style="vertical-align:middle">@item.Rate.ToString("0.00") </td>
+                            <td class="text-right" style="vertical-align:middle">@item.Amount.ToString("0.00") </td>
+                            <td class="text-right" style="vertical-align:middle">@item.IGSTAmt.ToString("0.00")</td>
+                            <td class="text-right" style="vertical-align:middle">@item.CGSTAmt.ToString("0.00") </td>
+                            <td class="text-right" style="vertical-align:middle">@item.SGSTAmt.ToString("0.00") </td>
+                            <td class="text-right" style="vertical-align:middle">@item.TotalAmt.ToString("0.00") </td>
+                        </tr>
+                    }
+                    <tr style="font-weight:bold">
+                        <td colspan="5" class="text-right font-bold">Total</td>
+                        <td class="text-right font-bold">@Model.Sum(x => x.Amount).ToString("0.00")</td>
+                        <td class="text-right font-bold">@Model.Sum(x => x.IGSTAmt).ToString("0.00")</td>
+                        <td class="text-right font-bold">@Model.Sum(x => x.CGSTAmt).ToString("0.00")</td>
+                        <td class="text-right font-bold">@Model.Sum(x => x.SGSTAmt).ToString("0.00")</td>
+                        <td class="text-right font-bold">@Model.Sum(x => x.TotalAmt).ToString("0.00")</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <br />
+            @*<strong>Remarks: @Model.Remarks</strong>
+            @if (!string.IsNullOrEmpty(@Model.UploadBill))
+            {
+                <a href="~/UploadFile/UploadBill/@Model.UploadBill" class="btn btn-info btn-xs pull-right" target="_blank">View Bill</a>
+            }*@
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <img src="~/Content/Images/no_record.png" /><br />
+            <span class="text-muted">No records available or your searched record in not available..</span>
+        </div>
+    }
+</div>
+@*<div id="ErrMsg" style="display:none;">
+        <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+    </div>*@

@@ -1,0 +1,207 @@
+﻿@model SDKHRMS.Entities.ViewModels.DashboardVM
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+@{
+    var dynamicDataString = ViewBag.salesgst as string;
+    var dynamicData = ViewBag.salesgst as double?;
+}
+<link href="~/Content/assets/plugins/c3-chart/c3.min.css" rel="stylesheet" />
+<div class="row">
+    <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <span class="dash-widget-icon bg-1">
+                        <i class="fas fa-project-diagram"></i>
+                    </span>
+                    <div class="dash-count">
+                        <div class="dash-title">Projects</div>
+                        <div class="dash-counts">
+                            <p>@*@Model.ProjectList.Count()*@</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="progress progress-sm mt-3">
+                    <div class="progress-bar bg-5" role="progressbar" style="width: 75%"
+                         aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <span class="dash-widget-icon bg-2">
+                        <i class="fas fa-users"></i>
+                    </span>
+                    <div class="dash-count">
+                        <div class="dash-title">Customers</div>
+                        <div class="dash-counts">
+                            <p>@*@Model.ClientList.Count()*@</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="progress progress-sm mt-3">
+                    <div class="progress-bar bg-6" role="progressbar" style="width: 65%"
+                         aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <span class="dash-widget-icon bg-3">
+                        <i class="fas fa-file-alt"></i>
+                    </span>
+                    <div class="dash-count">
+                        <div class="dash-title">Sales Invoices</div>
+                        <div class="dash-counts">
+                            <p>@*@Model.SalesInvoiceList.Count()*@</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="progress progress-sm mt-3">
+                    <div class="progress-bar bg-7" role="progressbar" style="width: 85%"
+                         aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <span class="dash-widget-icon bg-4">
+                        <i class="far fa-file"></i>
+                    </span>
+                    <div class="dash-count">
+                        <div class="dash-title">Purchase Order</div>
+                        <div class="dash-counts">
+                            <p>@*@Model.PurchaseInvoiceList.Count()*@</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="progress progress-sm mt-3">
+                    <div class="progress-bar bg-8" role="progressbar" style="width: 45%"
+                         aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-7 d-flex">
+        <div class="card flex-fill">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title">Monthly GST - @DateTime.Now.Year</h5>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="chart-bar"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-5 d-flex">
+        <div class="card flex-fill">
+            <div class="card-header">
+                <div class="row align-center">
+                    <div class="col">
+                        <h5 class="card-title">Recent Ref. No Issued</h5>
+                    </div>
+                    <div class="col-auto">
+                        <a href="/ReferenceNumber/ReferenceNumberList" class="btn-right btn btn-sm btn-outline-primary">
+                            View All
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-stripped table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th style="text-align:left;">Ref. No.</th>
+                                <th style="text-align:left;">Ref. Type</th>
+                                <th style="text-align:left;">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.RefDtlsList.Count() > 0)
+                            {
+                                foreach (var item in Model.RefDtlsList)
+                                {
+                                    <tr>
+                                        <td>@item.RefNumber</td>
+                                        <td>@item.RefType</td>
+                                        <td>@item.RefDate.ToShortDateString()</td>
+                                    </tr>
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+@section Scripts{
+    <script src="~/Content/assets/plugins/c3-chart/d3.v5.min.js"></script>
+    <script src="~/Content/assets/plugins/c3-chart/c3.min.js"></script>
+    <script>
+
+        var chartDatasales = ['data1', @ViewBag.salesgst];  // Add 'data1' as the first element in the array
+        var chartDatapurchase = ['data2', @ViewBag.purchasegst];  // Add 'data1' as the first element in the array
+
+        var chart = c3.generate({
+            bindto: '#chart-bar', // id of chart wrapper
+            data: {
+                columns: [
+                    // each columns data
+                    chartDatasales,
+                    chartDatapurchase
+                ],
+                type: 'bar', // default type of chart
+                colors: {
+                    data1: '#664dc9',
+                    data2: '#44c4fa'
+                },
+                names: {
+                    // name of each serie
+                    'data1': 'Sales',
+                    'data2': 'Purchase'
+                }
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    // name of each category
+                    categories: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar']
+                },
+            },
+            bar: {
+                width: 16
+            },
+            legend: {
+                show: false, // hide legend
+            },
+            padding: {
+                bottom: 0,
+                top: 0
+            },
+        });
+    </script>
+}

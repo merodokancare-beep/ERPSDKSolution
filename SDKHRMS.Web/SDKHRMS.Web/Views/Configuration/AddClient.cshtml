@@ -1,0 +1,68 @@
+﻿@model  SDKHRMS.Entities.ViewModels.MstConfigurationViewModel
+@{
+    ViewBag.Title = "Configuration : Client Master";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<div class="page-title-wrapper">
+    <div class="page-title-heading text-primary">
+        <div class="page-title-icon">
+            <i class="fa fa-hand-o-right"></i>
+        </div>
+        <div>
+            <div class="page-title-main-text linebreak">
+                Client Master
+            </div>
+            <div class="page-title-sub-text">Configuration/Client/Add</div>
+        </div>
+    </div>
+    <div class="page-title-actions">
+    </div>
+</div>
+@using (Html.BeginForm())
+    {
+<div class="page-content clearfix">
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+    <div class="col-md-12">
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.utblMstClient.ClientName, new { @class = "control-label required" })
+                    @Html.TextBoxFor(m => m.utblMstClient.ClientName, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Client Name" })
+                    @Html.ValidationMessageFor(m => m.utblMstClient.ClientName)
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.utblMstClient.GSTNo, new { @class = "control-label required" })
+                    @Html.TextBoxFor(m => m.utblMstClient.GSTNo, new { @class = "form-control", autocomplete = "off", @placeholder = "GST Number" })
+                    @Html.ValidationMessageFor(m => m.utblMstClient.GSTNo)
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.utblMstClient.ContactNo, new { @class = "control-label " })
+                    @Html.TextBoxFor(m => m.utblMstClient.ContactNo, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Contact Person Number" })
+                    @Html.ValidationMessageFor(m => m.utblMstClient.ContactNo)
+                </div>
+            </div>
+        </div>
+        <div class="row margin-top10">
+            <div class="form-group">
+                <div class="col-md-12">
+                    @Html.LabelFor(m => m.utblMstClient.ClientAddress, new { @class = "control-label required" })
+                    @Html.TextAreaFor(m => m.utblMstClient.ClientAddress, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Vendor Address", @style = "resize:none;" })
+                    @Html.ValidationMessageFor(m => m.utblMstClient.ClientAddress)
+                </div>
+            </div>
+        </div>
+    </div>
+        
+</div>
+    <div class="well well-sm no-margin-bottom col-md-12 col-lg-12 text-right">
+            <div class="form-horizontal">
+                @Html.ActionLink("Back to List", "Clientlist", null, new { @class = "btn btn-default pull-left" })
+                <input type="submit" value="Save" id="save" class="btn btn-primary" />
+            </div>
+        </div>
+    }
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>

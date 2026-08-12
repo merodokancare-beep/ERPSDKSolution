@@ -1,0 +1,172 @@
+﻿@model SDKHRMS.Entities.ViewModels.ChallanKeyView
+@{
+    ViewBag.Title = " Challan Details";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+    var CHID = Model.ChallanID;
+}
+
+<link href="~/Content/Plugins/Select2/select2.min.css" rel="stylesheet" />
+<div class="page-header">
+    <div class="content-page-header">
+        <h5>Sale Invoice Details</h5>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-2 col-lg-4 col-sm-6 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Date</div>
+                        <div class="dash-counts">
+                            <p>@Model.CHDate.ToString("dd MMM yyyy")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-8 col-sm-12 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Client Name</div>
+                        <div class="dash-counts">
+                            <p>@(Model.VendorName)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-sm-6 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Status</div>
+                        <div class="dash-counts">
+                            @if (!@Model.IsCancel)
+                            {
+                                <p> Status: <span class="badge badge-soft-success"><i class="fe fe-check-square"></i> Active</span></p>
+                            }
+                            else
+                            {
+                                <p>Status: <span class="badge badge-soft-danger"> <i class="fe fe-x-square"></i>Cancelled</span></p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-8 col-sm-12 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Project Name</div>
+                        <div class="dash-counts">
+                            <p>@(Model.ProjectName ?? "Not Linked")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-sm-6 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Challan Reference No.</div>
+                        <div class="dash-counts">
+                            <p>@Model.CHRefNo</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-5 col-lg-8 col-sm-12 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Consignee Details</div>
+                        <div class="dash-counts">
+                            <p>To,</p>
+                            <p>@Model.CHToName</p>
+                            <p>Address: @Model.ClientAddress</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-5 col-lg-8 col-sm-12 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Remarks</div>
+                        <div class="dash-counts">
+                            <p>@Model.Remarks</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Challan Items Details</h5>
+            </div>
+            <div class="card-body card-buttons" id="items">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+@section Scripts{
+    <script src="~/Content/Plugins/Select2/select2.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+           
+            //Load PO Items
+            var loaditems = function () {
+                $('#items').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif" /><h2>Please wait....</h2></div>');
+            $.ajax({
+                type: 'GET',
+                url: '/challan/ChallanItemListByID',
+                data: { id: '@CHID' },
+                success: function (data) {
+                    $('#items').empty().append(data);
+                },
+                error: function () {
+                    $('#items').empty().append('<div class="panel-body"><img src="/Content/Images/img-warning.png" height="50" width="50"/><b>Could not load data. Please click here to reload...</b><button id="btnitems"> <i class="fa fa-refresh"></i> Reload</button></div>');
+                    //$('#gstinv').empty().append('<div class="margin-top-15"><b>Could not load data. Please click here to reload...</b><button id="btngstinv">Reload</button></div>');
+                }
+            });
+        }
+            $(document).on('click', "#btnitems", loaditems);
+            loaditems();
+        });
+
+    </script>
+}

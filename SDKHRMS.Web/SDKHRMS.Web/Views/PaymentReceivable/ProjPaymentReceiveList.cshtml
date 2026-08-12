@@ -1,0 +1,87 @@
+﻿@model SDKHRMS.Entities.ViewModels.ProjPaymentReceivedVM
+@{
+    ViewBag.Title = "Payment: Receivables";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<link href="~/Content/Plugins/Select2/newselect2.css" rel="stylesheet" />
+
+<div class="page-header">
+    <div class="content-page-header">
+        @*<h5>Project Payment Manager</h5>*@
+        <h5>Project's Payment Received List</h5>
+        <div class="list-btn">
+            <ul class="filter-list">
+                <li>
+                    <a class="btn btn-primary" href="/PaymentReceivable/ProjPaymentReceive">
+                        <i class="fa fa-plus-circle me-2" aria-hidden="true"></i>Add Project's Payment Receive
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card ribbon-wrapper">
+            <div class="card-header card-buttons">
+                @*<div class="ribbon ribbon-info ribbon-left">Project Payment Received List <i class="fe fe-arrow-down-left"></i></div>*@
+                <form method="get" action="/PaymentReceivable/ProjPaymentReceiveList" data-search="true" data-otf-ajax="true" data-otf-target="#DataGrid" id="sForm">
+                    <div class="form-group mb-0 row">
+                        <div class="col-md-4">
+                            @Html.DropDownList("YearNo", new SelectList(Model.ProjPaymentReceiveYearDD, "YearNo", "YearNo", @ViewBag.YearNo), "----Select Year----", new { @class = "form-control ddSelect2", id = "yr" })
+
+                        </div>
+                        <div class="col-md-4">
+                            @Html.DropDownList("MonNo", new List<SelectListItem>{
+                                new SelectListItem{Text="January", Value="1"},
+                                new SelectListItem{Text="February", Value="2"},
+                                new SelectListItem{Text="March", Value="3"},
+                                new SelectListItem{Text="April", Value="4"},
+                                new SelectListItem{Text="May", Value="5"},
+                                new SelectListItem{Text="June", Value="6"},
+                                new SelectListItem{Text="July", Value="7"},
+                                new SelectListItem{Text="August", Value="8"},
+                                new SelectListItem{Text="September", Value="9"},
+                                new SelectListItem{Text="October", Value="10"},
+                                new SelectListItem{Text="November", Value="11"},
+                                new SelectListItem{Text="December", Value="12"}, }, "--- Select Month ---", new { @class = "form-control ddSelect2", Value = @ViewBag.MonNo, @id = "month" })
+                        </div>
+                        <div class="col-md-4">
+                            @Html.DropDownList("Project", new SelectList(Model.ProjectDD, "ProjectID", "ProjectName", @ViewBag.Project), "----Select Project Name----", new { @class = "form-control ddSelect2", id = "project" })
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="card-body">
+                @Html.Partial("_pvProjPaymentReceiveList", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+@section Scripts{
+    <script src="~/Content/Plugins/Select2/select2.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.ddSelect2').select2({ width: '100%' });
+            $(document).on('change', '#yr', function () {
+                $('#sForm').submit();
+                //clearbtn();
+            })
+            $(document).on('change', '#month', function () {
+                $('#sForm').submit();
+                //clearbtn();
+            })
+            $(document).on('change', '#project', function () {
+                $('#sForm').submit();
+                //clearbtn();
+            })
+
+        });
+    </script>
+}
+

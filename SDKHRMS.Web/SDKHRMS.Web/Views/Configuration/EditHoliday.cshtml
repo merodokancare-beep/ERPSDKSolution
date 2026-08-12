@@ -1,0 +1,91 @@
+﻿@model  SDKHRMS.Entities.ViewModels.HolidayAdd
+@{
+    ViewBag.Title = "Configuration : Holiday Master";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<link href="~/Content/datetimepicker/jquery.datetimepicker.min.css" rel="stylesheet" />
+
+<div class="page-header">
+    <div class="content-page-header">
+        <h5>Holiday Master</h5>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Configure Holidays</h5>
+            </div>
+            <div class="card-body card-buttons">
+                @using (Html.BeginForm("EditHoliday", "Configuration", FormMethod.Post, new { data_toggle = "validator", @novalidate = true }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.HiddenFor(m => m.utblMstHoliday.HolidayID)
+                    @Html.HiddenFor(m => m.PageParameter.PageNo)
+                    @Html.HiddenFor(m => m.PageParameter.PageSize)
+                    @Html.HiddenFor(m => m.PageParameter.SearchTerm)
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.utblMstHoliday.HolidayName, new { @class = "control-label required" })
+                                @Html.TextBoxFor(m => m.utblMstHoliday.HolidayName, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Holiday Name" })
+                                @Html.ValidationMessageFor(m => m.utblMstHoliday.HolidayName)
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.utblMstHoliday.DateFrom, new { @class = "control-label required" })
+                                @Html.TextBoxFor(m => m.utblMstHoliday.DateFrom, new { @class = "form-control datetime-style", autocomplete = "off", @placeholder = "Select Date From", @id = "dtpDFrom", Value = Model.utblMstHoliday.DateFrom.ToString("dd MMM yyyy") })
+                                @Html.ValidationMessageFor(m => m.utblMstHoliday.DateFrom)
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.utblMstHoliday.DateTo, new { @class = "control-label required" })
+                                @Html.TextBoxFor(m => m.utblMstHoliday.DateTo, new { @class = "form-control datetime-style", autocomplete = "off", @placeholder = "Select Date To", @id = "dtpDTo", Value = Model.utblMstHoliday.DateTo.ToString("dd MMM yyyy") })
+                                @Html.ValidationMessageFor(m => m.utblMstHoliday.DateFrom)
+                            </div>
+                        </div>
+                        <div class="col-xl-12">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.utblMstHoliday.HolidayDesc, new { @class = "control-label" })
+                                @Html.TextAreaFor(m => m.utblMstHoliday.HolidayDesc, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Holiday Desc", @style = "resize:none;" })
+                                @Html.ValidationMessageFor(m => m.utblMstHoliday.HolidayDesc)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <button type="reset" onclick="location.href='@Url.Action("Holidaylist")'" class="btn btn-primary cancel me-2">Cancel</button>
+                        <input type="submit" value="Save" id="save" class="btn btn-primary" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+
+@*Loading page specific script files ie. client side validation script*@
+@section Scripts{
+    <script src="~/Content/datetimepicker/jquery.datetimepicker.full.min.js"></script>
+    <script type="text/javascript">
+        $('#dtpDFrom').datetimepicker({
+            theme: 'light',
+            format: 'd M Y',
+            timepicker: false,
+            minDate: 0
+        })
+        $('#dtpDTo').datetimepicker({
+            theme: 'light',
+            format: 'd M Y',
+            timepicker: false,
+            minDate: 0
+        })
+    </script>
+}
+

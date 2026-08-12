@@ -1,0 +1,55 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+@{
+    Layout = null;
+    Response.StatusCode = (int)ViewBag.StatusCode;
+}
+<html>
+<head>
+    <title>Error</title>
+    @*@Styles.Render("~/Content/admin-css")*@
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="">
+                <img src="~/Content/Images/LOGOSDK.png" style="height:50px;" />
+            </a>
+        </div>
+    </nav>
+
+    <div class="col-md-12 clearfix" style=" padding-bottom:20px; margin-top:50px;">
+        <div class="col-md-12 margin-top20">
+            <a class="btn btn-default cpl-md-1 pull-right" href="@Url.Action("Login","Account")">Go To LogIn</a>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row text-center" style="margin-top:50px;">
+                    <img src="~/Content/Images/img-warning.png" style="height:100px;" />
+                    <div>
+                        <h2 class="text-danger">
+                            Error !!
+                        </h2>
+                        <h4>
+                            An error occurred in this page. The error has been recorded and the site administrator informed.
+                        </h4>
+                        @*<p class="text-center">Go back to <a href="@Url.Action("Dashboard", "Home", new { Area="Admin"})" class="text-primary">Dashboard</a></p>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
+

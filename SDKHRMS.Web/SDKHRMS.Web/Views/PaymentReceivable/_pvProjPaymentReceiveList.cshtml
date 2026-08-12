@@ -1,0 +1,193 @@
+﻿@model SDKHRMS.Entities.ViewModels.ProjPaymentReceivedVM
+<div id="DataGrid" class="">
+    @if (Model.ProjPaymentReceivable.Count() > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-condensed table-borderless" id="purtable">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Date
+                        </th>
+                        <th style="vertical-align: middle; text-align: left;">
+                            Particular
+                        </th>
+                        <th style="vertical-align: middle; text-align: left;">
+                            Net Amount
+                        </th>
+                        <th style="vertical-align: middle; text-align: left;">
+                            Deduction Amount
+                        </th>
+                        <th style="vertical-align: middle; text-align: left;">
+                            Total Amount
+                        </th>
+                        <th style="vertical-align: middle; text-align: left;">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ProjPaymentReceivable)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                @item.ReceivedDate.ToString("dd MMM yyyy")
+                            </td>
+                            <td>
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                Is Advance:@if (item.IsAdvance)
+                                                {<span class="text-primary bg-success-light">Yes</span>}
+                                                else
+                                                { <span class="text-primary bg-danger-light">No</span>}
+                                                @if (!string.IsNullOrEmpty(item.SaleInvoiceID))
+                                                {
+                                                    <a href="/Invoice/SaleInvoiceDetails?ID=@item.SaleInvoiceID" target="_blank"> Ref No.: @item.InvRefNo</a>
+                                                }
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                Project:<span class="text-primary"> @item.ProjectName</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Remarks:<span class="text-primary"> @item.Remarks</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td>
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                Amount :<span class="text-primary"> @item.NetAmtReceived.ToString("#,#.00", System.Globalization.CultureInfo.CreateSpecificCulture("hi-IN"))</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Mode:<span class="text-primary"> @item.ReceivedMode</span>
+                                                @*@if (!string.IsNullOrEmpty(@item.UploadedFile))
+                                                    {
+                                                        <a href="~/UploadFile/PaymentReceived/@item.UploadedFile" target="_blank" title="Uploaded Files"><i class="fe fe-file me-2"></i> View File</a>
+                                                    }*@
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            @if (item.ReceivedMode != "Cash")
+                                            {
+                                                <td>
+                                                    Bank:<span class="text-primary"> @item.BankName</span>
+                                                </td>
+                                            }
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td>
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                TDS :<span class="text-primary">  @item.TDSDeductionAmt.ToString("0.00")</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                GST :<span class="text-primary"> @item.GstDeductionAmt.ToString("0.00")</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Security Deposit:<span class="text-primary"> @item.SecurityDepositAmt.ToString("0.00")</span>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+
+                                            <td>
+                                                Others Deduction:<span class="text-primary"> @item.OtherDeductionAmt.ToString("0.00")</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+
+                            <td>
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                Total Amt: <span class="text-primary"> @item.TotalAmt.ToString("#,#.00", System.Globalization.CultureInfo.CreateSpecificCulture("hi-IN"))</span>
+                                            </td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td style="width:120px;">
+                                @if (item.ReceivedMode != "Cash")
+                                {
+                                    if (!string.IsNullOrEmpty(@item.UploadedFile))
+                                    {
+                                        <a href="/UploadFile/PaymentReceived/@item.UploadedFile" target="_blank" class="btn-action-icon bg-light-gray text-success float-start me-2"> <i class="fe fe-file"></i></a>
+                                    }
+                                }
+                                else
+                                {
+                                    <a class="btn-action-icon bg-light-gray text-secondary float-start me-2 disabled"> <i class="fe fe-file"></i></a>
+
+                                }
+                                <a href="/PaymentReceivable/ProjPaymentReceive?id=@item.ProjPaymentReceiveID" data-toggle="tooltip" data-placement="bottom" title="Edit" class="btn-action-icon bg-light-gray text-primary me-2 float-start">
+                                    <i class="fe fe-edit-2"></i>
+                                </a>
+                                @if (User.IsInRole("Super Admin"))
+                                {
+                                    <form action="@Url.Action("deleteProjPaymentReceive", "PaymentReceivable", new { Area = "" })" method="post" data-otf-ajax="true" data-otf-target="#DataGrid">
+                                        @Html.AntiForgeryToken()
+                                        @Html.Hidden("id", item.ProjPaymentReceiveID)
+                                        <a href="@Url.Action("deleteProjPaymentReceive", "PaymentReceivable", new { Area = "", id = item.ProjPaymentReceiveID })" class="delete btn-action-icon bg-danger-light" data-toggle="tooltip" data-placement="bottom" title="Delete" data-record="@item.Remarks">
+                                            <i class="fe fe-trash-2"></i>
+                                        </a>
+                                    </form>
+                                }
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="ns-grid-pager" data-otf-target="#DataGrid">
+            @*<div class="hidden-xs col-md-3 col-sm-3">
+                    Showing @Model.ProjPaymentReceivable.Count() of @Model.TotalRecords Record(s)
+
+                </div>
+                <div class="visible-lg visible-md visible-sm visible-xs col-md-9 col-sm-9 ns-pagination" data-otf-target="#DataGrid" data-otf-actionlink="/PaymentReceivable/ProjPaymentReceiveList">
+                    @Html.PageLinks(Model.PagingInfo, x => Url.Action("ProjPaymentReceiveList", "PaymentReceivable", new { PageNo = x }))
+                </div>*@
+
+            <div class="visible-lg visible-md visible-sm visible-xs col-lg-12 col-sm-12 ns-pagination" data-otf-target="#DataGrid" data-otf-actionlink="/configuration/UnitList">
+                <span class="badge bg-warning text-dark">Showing @Model.ProjPaymentReceivable.Count() of @Model.TotalRecords Record(s)</span>
+                @Html.PageLinks(Model.PagingInfo, x => Url.Action("ProjPaymentReceiveList", "PaymentReceivable", new { PageNo = x }))
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <img src="~/Content/Images/no_record.png" /><br />
+            <span class="text-muted">No records available or your searched </span>
+        </div>
+    }
+    @*error message*@
+    <div id="ErrMsg" style="display:none;">
+        <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+    </div>
+</div>

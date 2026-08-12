@@ -1,0 +1,415 @@
+﻿@model SDKHRMS.Entities.ViewModels.EmpManageViewModel
+@{
+    List<string> Gender = new List<string> { "Male", "Female", "Transgender" };
+    List<string> MaritalStatus = new List<string> { "Single", "Married", "Divorced" };
+    List<string> BloodGroup = new List<string> { "A+(ve)", "A-(ve)", "B+(ve)", "B-(ve)", "O+(ve)", "O-(ve)", "AB+(ve)", "AB-(ve)" };
+    List<string> Nationality = new List<string> { "Indian", "Nepalese", "Bhutanese", "Other" };
+    List<string> Religion = new List<string> { "Buddhism", "Christianity", "Hinduism", "Islam", "Jainism", "Sikhism" };
+
+    ViewBag.Title = "Employee:Edit Employee";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<link href="~/Content/Plugins/Cropper/cropper.min.css" rel="stylesheet" />
+<link href="~/Content/datepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<div class="page-title-wrapper">
+    <div class="page-title-heading text-primary">
+        <div class="page-title-icon">
+            <i class="glyphicon glyphicon-user"></i>
+        </div>
+        <div>
+            <div class="page-title-main-text linebreak">
+                Employee Manage
+            </div>
+            <div class="page-title-sub-text">Employee Edit Details</div>
+        </div>
+    </div>
+    <div class="page-title-actions">
+    </div>
+</div>
+@using (Html.BeginForm())
+    {
+<div class="page-content clearfix">
+   
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m=>m.utblEmpPersonalInfoKey.EmployeeID)
+        @*@Html.HiddenFor(m => m.utblEmpPersonalInfoKey.PhotoNormal)
+        @Html.HiddenFor(m => m.utblEmpPersonalInfoKey.PhotoThumb)*@
+        <div class="">
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div>
+                        <div id="imgPhotoThumb">
+                            @if (Model.utblEmpPersonalInfoKey.PhotoThumb != null)
+                            {
+                                <img src="@Model.utblEmpPersonalInfoKey.PhotoThumb" class="img-circle img-thumbnail img-preview" style="width: 140px; height: 140px;" />
+                            }
+                            else
+                            {
+                                <img src="~/Content/image/no-dp.png" class="img-circle img-thumbnail img-preview" style="width: 140px; height: 140px;" />
+                            }
+                        </div>
+                    </div>
+                    <div style="margin-top: 5px;">
+                        <button type="button" style="width: 128px;" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#photo-modal">
+                            Upload Photo
+                        </button>
+                    </div>
+                    @Html.TextAreaFor(model => model.utblEmpPersonalInfoKey.PhotoNormal, new { @class = "hidden", @id = "DisplayPictureNormal" })
+                    @Html.TextAreaFor(model => model.utblEmpPersonalInfoKey.PhotoThumb, new { @class = "hidden", @id = "DisplayPictureThumb" })
+                </div>
+
+            </div>
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-4 mar">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.utblEmpPersonalInfoKey.FName, new { @class = "control-label required" })
+                            @Html.TextBoxFor(m => m.utblEmpPersonalInfoKey.FName, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter First Name*" })
+                            @Html.ValidationMessageFor(m => m.utblEmpPersonalInfoKey.FName)
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.utblEmpPersonalInfoKey.MName, new { @class = "control-label " })
+                            @Html.TextBoxFor(m => m.utblEmpPersonalInfoKey.MName, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Middle Name" })
+                            @Html.ValidationMessageFor(m => m.utblEmpPersonalInfoKey.MName)
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.utblEmpPersonalInfoKey.LName, new { @class = "control-label required" })
+                            @Html.TextBoxFor(m => m.utblEmpPersonalInfoKey.LName, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Last Name*" })
+                            @Html.ValidationMessageFor(m => m.utblEmpPersonalInfoKey.LName)
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        @Html.LabelFor(m => m.utblEmpPersonalInfoKey.DateOfBirth, new { @class = "control-label required" })
+                        <div class="form-group input-group date datetimepicker">
+                            @Html.TextBoxFor(m => m.utblEmpPersonalInfoKey.DateOfBirth, new {Value=Model.utblEmpPersonalInfoKey.DateOfBirth.ToString("dd MMM yyyy"), @class = "form-control datetime-style", autocomplete = "off", @placeholder = "Select Date of Birth", @id = "dtpDateofBirth" })
+                            <span class="input-group-addon ">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(m => m.utblEmpPersonalInfoKey.DateOfBirth)
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.utblEmpPersonalInfoKey.Gender, new { @class = "control-label required" })
+                            @Html.DropDownListFor(m => m.utblEmpPersonalInfoKey.Gender, new SelectList(Gender,Model.utblEmpPersonalInfoKey.Gender), "----Select Gender----", new { @class = "form-control", id = "Gender" })
+                            @Html.ValidationMessageFor(m => m.utblEmpPersonalInfoKey.Gender)
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.utblEmpPersonalInfoKey.BloodGroup, new { @class = "control-label required" })
+                            @Html.DropDownListFor(m => m.utblEmpPersonalInfoKey.BloodGroup, new SelectList(BloodGroup,Model.utblEmpPersonalInfoKey.BloodGroup), "----Select Blood Group----", new { @class = "form-control", id = "Blood Group" })
+                            @Html.ValidationMessageFor(m => m.utblEmpPersonalInfoKey.BloodGroup)
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.utblEmpPersonalInfoKey.MaritalStatus, new { @class = "control-label required" })
+                            @Html.DropDownListFor(m => m.utblEmpPersonalInfoKey.MaritalStatus, new SelectList(MaritalStatus,Model.utblEmpPersonalInfoKey.MaritalStatus), "----Select Marital Status----", new { @class = "form-control", id = "Marital Status" })
+                            @Html.ValidationMessageFor(m => m.utblEmpPersonalInfoKey.MaritalStatus)
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.utblEmpPersonalInfoKey.Nationality, new { @class = "control-label required" })
+                            @Html.DropDownListFor(m => m.utblEmpPersonalInfoKey.Nationality, new SelectList(Nationality,Model.utblEmpPersonalInfoKey.Nationality), "----Select Nationality----", new { @class = "form-control", id = "Nationality" })
+                            @Html.ValidationMessageFor(m => m.utblEmpPersonalInfoKey.Nationality)
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.utblEmpPersonalInfoKey.Religion, new { @class = "control-label required" })
+                            @Html.DropDownListFor(m => m.utblEmpPersonalInfoKey.Religion, new SelectList(Religion,Model.utblEmpPersonalInfoKey.Religion), "----Select Religion----", new { @class = "form-control", id = "Religion" })
+                            @Html.ValidationMessageFor(m => m.utblEmpPersonalInfoKey.Religion)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.utblEmpPersonalInfoKey.Email, new { @class = "control-label required " })
+                    @Html.TextBoxFor(m => m.utblEmpPersonalInfoKey.Email, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Email ID" })
+                    @Html.ValidationMessageFor(m => m.utblEmpPersonalInfoKey.Email)
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.utblEmpPersonalInfoKey.PhoneNumber, new { @class = "control-label required " })
+                    @Html.TextBoxFor(m => m.utblEmpPersonalInfoKey.PhoneNumber, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Phone No." })
+                    @Html.ValidationMessageFor(m => m.utblEmpPersonalInfoKey.PhoneNumber)
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.utblEmpPersonalInfoKey.PanNo, new { @class = "control-label" })
+                    @Html.TextBoxFor(m => m.utblEmpPersonalInfoKey.PanNo, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Pan No." })
+                    @Html.ValidationMessageFor(m => m.utblEmpPersonalInfoKey.PanNo)
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.utblEmpPersonalInfoKey.AadharNo, new { @class = "control-label " })
+                    @Html.TextBoxFor(m => m.utblEmpPersonalInfoKey.AadharNo, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Aadhar No." })
+                    @Html.ValidationMessageFor(m => m.utblEmpPersonalInfoKey.AadharNo)
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-12">
+                    @Html.LabelFor(m => m.utblEmpPersonalInfoKey.PresentAddress, new { @class = "control-label required" })
+                    @Html.TextAreaFor(m => m.utblEmpPersonalInfoKey.PresentAddress, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Address", @style = "resize:none;" })
+                    @Html.ValidationMessageFor(m => m.utblEmpPersonalInfoKey.PresentAddress)
+                </div>
+            </div>
+        </div>
+        @*<div class="row well well-sm">
+                <div class="col-md-10 text-center">
+                    <span><b>Emergency Contact Details</b></span>
+                </div>
+            </div>*@
+        <div class="row margin-top20">
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.utblEmpPersonalInfoKey.EmgContactName, new { @class = "control-label" })
+                    @Html.TextBoxFor(m => m.utblEmpPersonalInfoKey.EmgContactName, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Emergency Contact Name" })
+                    @Html.ValidationMessageFor(m => m.utblEmpPersonalInfoKey.EmgContactName)
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.utblEmpPersonalInfoKey.EmgContactNo, new { @class = "control-label " })
+                    @Html.TextBoxFor(m => m.utblEmpPersonalInfoKey.EmgContactNo, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Emergency Contact No." })
+                    @Html.ValidationMessageFor(m => m.utblEmpPersonalInfoKey.EmgContactNo)
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-12">
+                    @Html.LabelFor(m => m.utblEmpPersonalInfoKey.EmgContactAddress, new { @class = "control-label" })
+                    @Html.TextAreaFor(m => m.utblEmpPersonalInfoKey.EmgContactAddress, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Emergency Contact Address", @style = "resize:none;" })
+                    @Html.ValidationMessageFor(m => m.utblEmpPersonalInfoKey.EmgContactAddress)
+                </div>
+            </div>
+        </div>
+        
+</div>
+    <div class="well well-sm no-margin-bottom col-md-12 col-lg-12 text-right">
+            <div class="form-horizontal">
+                @Html.ActionLink("Back to List", "emplist", null, new { @class = "btn btn-default pull-left" })
+                <input type="submit" value="Save" id="save" class="btn btn-primary" />
+            </div>
+        </div>
+    }
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+
+@*Loading page specific script files ie. client side validation script*@
+@section Scripts{
+    <script src="~/Content/datepicker/bootstrap-datetimepicker.min.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Content/Plugins/Cropper/cropper.min.js"></script>
+    <script type="text/javascript">
+        $('.modal-dialog').parent().on('show.bs.modal', function (e) { $(e.relatedTarget.attributes['data-target'].value).appendTo('body'); })
+        //Datetime Picker
+        $('.date').datetimepicker({
+            format: "dd M yyyy",
+            weekStart: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 0
+        });
+    </script>
+    <script type="text/javascript">
+        function ShowFileMsg() {
+            if ($('#inputImage').val() == "") {
+                $("#ImageSpan").text("Upload photo...");
+                $('#getDataURL').css("pointer-events", "none");
+                $('#getDataURL').css("opacity:", ".3");
+            }
+            else {
+                $("#ImageSpan").text("");
+                $('#getDataURL').css("pointer-events", "");
+                $('#getDataURL').css("opacity", "1");
+            }
+
+            if ($('#dataURLInto').val() == "") {
+                $('#ModelDone').css("pointer-events", "none");
+                $('#ModelDone').css("opacity:", ".3");
+            }
+            else {
+                $('#ModelDone').css("pointer-events", "");
+                $('#ModelDone').css("opacity", "1");
+            }
+        }
+        $(function () {
+            (function () {
+
+                var $image = $('.img-container img');
+                var $download = $('#download');
+                var $dataX = $('#dataX');
+                var $dataY = $('#dataY');
+                var $dataHeight = $('#dataHeight');
+                var $dataWidth = $('#dataWidth');
+                var $dataRotate = $('#dataRotate');
+                var $dataScaleX = $('#dataScaleX');
+                var $dataScaleY = $('#dataScaleY');
+                var options = {
+                    aspectRatio: 6 / 7,
+                    preview: '.cropper-preview',
+                    crop: function (e) {
+                        $dataX.val(Math.round(e.x));
+                        $dataY.val(Math.round(e.y));
+                        $dataHeight.val(Math.round(e.height));
+                        $dataWidth.val(Math.round(e.width));
+                        $dataRotate.val(e.rotate);
+                        $dataScaleX.val(e.scaleX);
+                        $dataScaleY.val(e.scaleY);
+                    }
+                };
+
+                // Cropper
+                $image.on({
+                    'build.cropper': function (e) {
+                        console.log(e.type);
+                    },
+                    'built.cropper': function (e) {
+                        console.log(e.type);
+                    },
+                    'cropstart.cropper': function (e) {
+                        console.log(e.type, e.action);
+                    },
+                    'cropmove.cropper': function (e) {
+                        console.log(e.type, e.action);
+                    },
+                    'cropend.cropper': function (e) {
+                        console.log(e.type, e.action);
+                    },
+                    'crop.cropper': function (e) {
+                        console.log(e.type, e.x, e.y, e.width, e.height, e.rotate, e.scaleX, e.scaleY);
+                    },
+                    'zoom.cropper': function (e) {
+                        console.log(e.type, e.ratio);
+                    }
+                }).cropper(options);
+
+                // Import image
+                var $inputImage = $('#inputImage');
+                var URL = window.URL || window.webkitURL;
+                var blobURL;
+
+                if (URL) {
+                    $inputImage.change(function () {
+                        var files = this.files;
+                        var file;
+
+                        if (!$image.data('cropper')) {
+                            return;
+                        }
+
+                        if (files && files.length) {
+                            file = files[0];
+
+                            if (/^image\/\w+$/.test(file.type)) {
+                                blobURL = URL.createObjectURL(file);
+                                $image.one('built.cropper', function () {
+
+                                    // Revoke when load complete
+                                    URL.revokeObjectURL(blobURL);
+                                }).cropper('reset').cropper('replace', blobURL);
+                                $inputImage.val('');
+                            } else {
+                                window.alert('Please choose an image file.');
+                            }
+                        }
+                    });
+                } else {
+                    $inputImage.prop('disabled', true).parent().addClass('disabled');
+                }
+
+                $("#getDataURL").click(function () {
+                    var dataURLNormal = $image.cropper("getDataURL", {
+                        width: 480,
+                        height: 560
+                    }, "image/jpeg", 0.8);
+
+                    var dataURLThumb = $image.cropper("getDataURL", {
+                        width: 120,
+                        height: 140
+                    }, "image/jpeg", 0.8);
+
+                    $(DisplayPictureNormal).text(dataURLNormal);
+                    $(DisplayPictureThumb).text(dataURLThumb);
+                    $(imgPhotoThumb).html('<img style="width: 120px; height: 140px;" src="' + dataURLThumb + '">');
+                    $('#photo-modal').modal('hide');
+                });
+            }());
+        });
+        function inputImage() {
+        }
+    </script>
+
+}
+<div class="modal fade" id="photo-modal" aria-hidden="true" aria-labelledby="avatar-modal-label" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form class="avatar-form" action="#" enctype="multipart/form-data" method="post">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal" type="button">&times;</button>
+                    <h4 class="modal-title" id="avatar-modal-label">Upload Photo</h4>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="col-md-12 no-horizantal-padding">
+                        <div class="col-md-8 clearfix">
+                            <div class="well well-sm clearfix">
+                                <div class="img-container">
+                                    <img src="#" class="img-rounded">
+                                </div>
+                            </div>
+                            <div class="well well-sm clearfix">
+                                <div class="col-md-12 col-sm-12" style="padding: 0">
+                                    <div class="btn btn-primary" for="inputImage" title="Upload image file">
+                                        <input id="inputImage" class="img-rounded" name="file" type="file" accept="image/*" data-toggle="tooltip" title="Upload image" onchange="ShowFileMsg()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 clearfix">
+                            <div class="well well-sm text-center">
+                                <span class="page-title-main-text"><strong>Preview</strong></span>
+                                <div id="dataURLView" class="cropper-preview img-thumbnail">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 no-horizantal-padding">
+                        <div class="well well-sm clearfix">
+                            <div class="col-md-12 col-sm-12 no-horizantal-padding text-right clearfix">
+                                <button class="btn btn-success btn-sm" id="getDataURL" type="button"><i class="glyphicon glyphicon-ok"></i> &nbsp;&nbsp;Done</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

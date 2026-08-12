@@ -1,0 +1,262 @@
+﻿@model SDKHRMS.Entities.ViewModels.PaymentAdd
+@{
+    ViewBag.Title = "Payments";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+@{
+    List<string> Mode = new List<string> { "Cash", "Cheque", "Netbanking" };
+    string mode = @Model.PaymentDetail != null ? @Model.PaymentDetail.PaymentMode : "";
+}
+@*<link href="~/Content/Plugins/Select2/select2.min.css" rel="stylesheet" />*@
+<link href="~/Content/datetimepicker/jquery.datetimepicker.min.css" rel="stylesheet" />
+
+<div class="page-header">
+    <div class="content-page-header">
+        <h5>Configure Payment</h5>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+
+            <div class="card-body card-buttons">
+                @using (Html.BeginForm("EditPayment", "Payment", FormMethod.Post, new { id = "pay", role = "form", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.HiddenFor(m => m.PaymentDetail.PaymentID)
+                    @Html.HiddenFor(m => m.PaymentDetail.PaymentType)
+
+                    <div class="row">
+                        <div class="col-xl-6">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.PaymentDetail.ExpenseTypeID, new { @class = "control-label required" })
+                                @Html.DropDownListFor(m => m.PaymentDetail.ExpenseTypeID, new SelectList(Model.ExpenseTypeDDList, "ExpenseTypeID", "ExpenseType"), "----Select Expenses Type----", new { @class = "form-control ddSelect2", id = "exptyp" })
+                                @Html.ValidationMessageFor(m => m.PaymentDetail.ExpenseTypeID)
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group row">
+                                <label class="control-label">Project Name <span class="text-muted">(If Applicable)</span></label>
+                                @Html.DropDownListFor(m => m.PaymentDetail.ProjectID, new SelectList(Model.ProjectDDList, "ProjectID", "ProjectName"), "----Select Project Name----", new { @class = "form-control ddSelect2", id = "proj" })
+                                @Html.ValidationMessageFor(m => m.PaymentDetail.ProjectID)
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group row">
+                                <label class="control-label">Client/Vendor Name <span class="text-muted">(If Applicable)</span></label>
+                                @Html.DropDownListFor(m => m.PaymentDetail.VendorID, new SelectList(Model.VendorDDList, "VenderID", "VenderName"), "----Select Client/Vendor Name----", new { @class = "form-control ddSelect2", id = "vendor" })
+                                @Html.ValidationMessageFor(m => m.PaymentDetail.VendorID)
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.PaymentDetail.PaymentDate, new { @class = "control-label required" })
+                                @Html.TextBoxFor(m => m.PaymentDetail.PaymentDate, new { @class = "form-control", autocomplete = "off", @placeholder = "Select Date", @id = "Dt", @Value = @Model.PaymentDetail.PaymentDate.ToString("dd MMM yyyy") })
+                                @Html.ValidationMessageFor(m => m.PaymentDetail.PaymentDate)
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.PaymentDetail.PaymentAmt, new { @class = "control-label required" })
+                                @Html.TextBoxFor(m => m.PaymentDetail.PaymentAmt, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Payment Amount", @Value = @Model.PaymentDetail.PaymentAmt.ToString("0.00") })
+                                @Html.ValidationMessageFor(m => m.PaymentDetail.PaymentAmt)
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.PaymentDetail.PaymentMode, new { @class = "control-label required" })
+                                @Html.DropDownListFor(m => m.PaymentDetail.PaymentMode, new SelectList(Mode), "----Select Mode----", new { @class = "form-control ddSelect2", id = "ddmode" })
+                                @Html.ValidationMessageFor(m => m.PaymentDetail.PaymentMode)
+                            </div>
+                        </div>
+                        <div class="col-xl-12">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.PaymentDetail.Remarks, new { @class = "control-label required" })
+                                @Html.TextAreaFor(m => m.PaymentDetail.Remarks, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter  Payments Remarks", @style = "resize:none" })
+                                @Html.ValidationMessageFor(m => m.PaymentDetail.Remarks)
+                            </div>
+                        </div>
+                        <div class="d-none row" id="bankdiv">
+                            <div class="col-xl-4">
+                                <div class="form-group">
+                                    <label class="control-label required">Bank</label>
+                                    @Html.DropDownListFor(model => model.PaymentDetail.BankID, new SelectList(Model.BankDDList, "BankID", "BankName"), "-- Select Bank --", new { @class = "form-control auto-focus ddSelect2", @placeholder = "", @autocomplete = "off", @id = "txtbank" })
+                                    @Html.ValidationMessageFor(model => model.PaymentDetail.BankID)
+                                </div>
+                            </div>
+                            <div class="col-xl-4">
+                                <div class="form-group">
+                                    <label class="control-label required">Cheque/Transaction No.</label>
+                                    @Html.TextBoxFor(model => model.PaymentDetail.ChequeTransNo, new { @class = "form-control auto-focus", @placeholder = "", @autocomplete = "off", @id = "txttransno" })
+                                    @Html.ValidationMessageFor(model => model.PaymentDetail.ChequeTransNo)
+                                </div>
+                            </div>
+                            <div class="col-xl-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.UploadFile, new { @class = "control-label" })<br />
+                                    @Html.TextBoxFor(m => m.UploadFile, new { @type = "file", @accept = ".pdf,.jpg,.png,.jpeg", @class = "btn btn-sm btn-primary", @id = "PCC" })
+                                    @Html.ValidationMessageFor(m => m.UploadFile)
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="text-end">
+                        <button type="reset" onclick="location.href='@Url.Action("PaymentList")'" class="btn btn-primary cancel me-2">Cancel</button>
+                        <input type="submit" value="Save" id="save" class="btn btn-primary" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@*<div class="page-title-wrapper">
+    <div class="page-title-heading text-primary">
+        <div class="page-title-icon">
+            <i class="fa fa-hand-o-right"></i>
+        </div>
+        <div>
+            <div class="page-title-main-text linebreak">
+                Payment Manager
+            </div>
+            <div class="page-title-sub-text">Payment/@Model.PaymentDetail.PaymentType/Edit</div>
+        </div>
+    </div>
+    <div class="page-title-actions"></div>
+</div>
+@using (Html.BeginForm("EditPayment", "Payment", FormMethod.Post, new { id = "pay", role = "form", enctype = "multipart/form-data" }))
+{
+
+    <div class="page-content clearfix">
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m => m.PaymentDetail.PaymentID)
+        @Html.HiddenFor(m => m.PaymentDetail.PaymentType)
+        <div class="col-md-12">
+            <label><span class="text-danger">*</span> Mark as required fields.</label>
+            <div class="row margin-top10">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        @Html.LabelFor(m => m.PaymentDetail.ExpenseTypeID, new { @class = "control-label required" })
+                        @Html.DropDownListFor(m => m.PaymentDetail.ExpenseTypeID, new SelectList(Model.ExpenseTypeDDList, "ExpenseTypeID", "ExpenseType"), "----Select Expenses Type----", new { @class = "form-control ddSelect2", id = "exptyp" })
+                        @Html.ValidationMessageFor(m => m.PaymentDetail.ExpenseTypeID)
+                    </div>
+                    <div class="col-md-6 margin-top20">
+                        <label class="control-label">Project Name <span class="text-muted">(If Applicable)</span></label>
+                        @Html.DropDownListFor(m => m.PaymentDetail.ProjectID, new SelectList(Model.ProjectDDList, "ProjectID", "ProjectName"), "----Select Project Name----", new { @class = "form-control ddSelect2", id = "proj" })
+                        @Html.ValidationMessageFor(m => m.PaymentDetail.ProjectID)
+                    </div>
+                    <div class="col-md-6 margin-top20">
+                        <label class="control-label">Client/Vendor Name <span class="text-muted">(If Applicable)</span></label>
+                        @Html.DropDownListFor(m => m.PaymentDetail.VendorID, new SelectList(Model.VendorDDList, "VenderID", "VenderName"), "----Select Client/Vendor Name----", new { @class = "form-control ddSelect2", id = "vendor" })
+                        @Html.ValidationMessageFor(m => m.PaymentDetail.VendorID)
+                    </div>
+                    <div class="col-md-4 margin-top20">
+                        @Html.LabelFor(m => m.PaymentDetail.PaymentDate, new { @class = "control-label required" })
+                        @Html.TextBoxFor(m => m.PaymentDetail.PaymentDate, new { @class = "form-control", autocomplete = "off", @placeholder = "Select Date", @id = "Dt", @Value = @Model.PaymentDetail.PaymentDate.ToString("dd MMM yyyy") })
+                        @Html.ValidationMessageFor(m => m.PaymentDetail.PaymentDate)
+                    </div>
+                    <div class="col-md-4 margin-top20">
+                        @Html.LabelFor(m => m.PaymentDetail.PaymentAmt, new { @class = "control-label required" })
+                        @Html.TextBoxFor(m => m.PaymentDetail.PaymentAmt, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Payment Amount", @Value = Model.PaymentDetail.PaymentAmt.ToString("0.00") })
+                        @Html.ValidationMessageFor(m => m.PaymentDetail.PaymentAmt)
+                    </div>
+                    <div class="col-md-4 margin-top20">
+                        @Html.LabelFor(m => m.PaymentDetail.PaymentMode, new { @class = "control-label required" })
+                        @Html.DropDownListFor(m => m.PaymentDetail.PaymentMode, new SelectList(Mode), "----Select Mode----", new { @class = "form-control ddSelect2", id = "ddmode" })
+                        @Html.ValidationMessageFor(m => m.PaymentDetail.PaymentMode)
+                    </div>
+                    <div class="hidden row" id="bankdiv" style="margin-top:15px;">
+                        <div class="col-md-12">
+                            <div class="col-md-4 margin-top20">
+                                <label class="control-label required">Bank</label>
+                                @Html.DropDownListFor(model => model.PaymentDetail.BankID, new SelectList(Model.BankDDList, "BankID", "BankName"), "-- Select Bank --", new { @class = "form-control auto-focus ddSelect2", @placeholder = "", @autocomplete = "off", @id = "txtbank" })
+                                @Html.ValidationMessageFor(model => model.PaymentDetail.BankID)
+                            </div>
+                            <div class="col-md-4 margin-top20">
+                                <label class="control-label required">Cheque/Transaction No.</label>
+                                @Html.TextBoxFor(model => model.PaymentDetail.ChequeTransNo, new { @class = "form-control auto-focus", @placeholder = "", @autocomplete = "off", @id = "txttransno" })
+                                @Html.ValidationMessageFor(model => model.PaymentDetail.ChequeTransNo)
+                            </div>
+                            <div class="col-md-3 margin-top20">
+                                @Html.LabelFor(m => m.UploadFile, new { @class = "control-label" })
+                                @Html.TextBoxFor(m => m.UploadFile, new { @type = "file", @accept = ".pdf,.jpg,.png,.jpeg", @class = "btn btn-sm btn-primary", @id = "PCC" })
+                                @Html.ValidationMessageFor(m => m.UploadFile)
+                            </div>
+                            <div class="col-md-1 margin-top20">
+                                @if (!string.IsNullOrEmpty(@Model.PaymentDetail.PaymentFile))
+                                {
+                                    <a href="~/UploadFile/Payments/@Model.PaymentDetail.PaymentFile" target="_blank"><i class="fa fa-2x fa-paperclip" style="margin-top:25px;" title="View Previous Attachment"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 margin-top20">
+                        @Html.LabelFor(m => m.PaymentDetail.Remarks, new { @class = "control-label required" })
+                        @Html.TextAreaFor(m => m.PaymentDetail.Remarks, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter  Payments Remarks", @style = "resize:none" })
+                        @Html.ValidationMessageFor(m => m.PaymentDetail.Remarks)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="well well-sm no-margin-bottom col-md-12 col-lg-12 text-right">
+        <div class="form-horizontal">
+            @Html.ActionLink("Back to List", "PaymentList", null, new { @class = "btn btn-default pull-left" })
+            <input type="submit" value="Save" id="save" class="btn btn-primary" />
+        </div>
+    </div>
+}*@
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+@section Scripts{
+    @*<script src="~/Content/Plugins/Select2/select2.min.js"></script>*@
+    <script src="~/Content/datetimepicker/jquery.datetimepicker.full.min.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+         /*   $('.ddSelect2').select2({ width: '100%' });*/
+
+        $('#Dt').datetimepicker({
+            //maxDate: '0d',
+            //format: "dd M yyyy",
+            //weekStart: 1,
+            //todayBtn: 1,
+            //autoclose: 1,
+            //todayHighlight: 1,
+            //startView: 2,
+            //minView: 2,
+            //forceParse: 0
+
+            theme: 'light',
+            format: 'd M Y',
+            timepicker: false,
+            minDate: 1
+        })
+        loadPaySection('@mode');
+
+        $('#ddmode').on('change', function () {
+            loadPaySection($(this).val());
+        });
+        function loadPaySection(value) {
+            if (value == 'Cash') {
+                $('#txtbank').val('');
+                $('#txttransno').val('');
+                $('#txtfile').val();
+
+                $('#bankdiv').addClass('d-none');
+            } else if (value == '') {
+                $('#bankdiv').addClass('d-none');
+            } else {
+                $('#bankdiv').removeClass('d-none');
+            }
+            }
+        });
+    </script>
+}

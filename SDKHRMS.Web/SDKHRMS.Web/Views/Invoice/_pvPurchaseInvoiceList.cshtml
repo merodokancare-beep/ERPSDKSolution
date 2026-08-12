@@ -1,0 +1,229 @@
+﻿@model SDKHRMS.Entities.ViewModels.PurchaseInvoiceVM
+<div id="DataGrid" class="">
+    @if (Model.PurchaseInvoiceKeyViewList.Count() > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-condensed table-bordered" id="purtable">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="vertical-align: middle;">
+                            PO Ref/Bill No.
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Purchase Date
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Vendor Name
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Status
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Mark For Payment
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Total Amount (&#8377;)
+                        </th>
+                        @*<th class="text-center" style="vertical-align: middle;">
+                                Received Amount (&#8377;)
+                            </th>
+                            <th class="text-center" style="vertical-align: middle;">
+                                Due Amount (&#8377;)
+                            </th>*@
+                        <th class="text-center" style="vertical-align: middle;width:8%">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.PurchaseInvoiceKeyViewList)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                @if (!item.IsPoCancelled)
+                                {
+                                    <span class="badge badge-soft-success text-dark rounded-pill">@(item.BillNo?? item.PORefNo)</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-soft-danger text-dark rounded-pill">@(item.BillNo?? item.PORefNo)</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @item.PurchaseDate.ToString("dd MMM yyyy")
+                            </td>
+                            <td class="text-center">
+                                @item.VendorName
+                            </td>
+                            <td class="text-center">
+                                @if (!item.IsPoCancelled)
+                                {
+                                    <span class="badge badge-soft-success text-dark rounded-pill">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-soft-danger text-dark rounded-pill">Cancelled</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @if (item.HasMarkForPayment)
+                                {
+                                    <span class="badge badge-soft-success rounded-pill">Yes</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-soft-danger rounded-pill">No</span>
+                                }
+
+                            </td>
+
+                            <td class="text-center">
+                                @item.IncludingTaxAmt.ToString("0.00")
+                            </td>
+                            @*<td class="text-center">
+                                    @item.AmountReceived.ToString("0.00")
+                                </td>
+                                <td class="text-center">
+                                    @item.BalanceAmount.ToString("0.00")
+                                </td>*@
+                            <td class="text-center">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <a href="/POPayment/PODetails?ID=@item.PurchaseInvoiceID" class="btn-action-icon bg-light-gray" title="View Po Details" target="_blank">
+                                            <i class="fe fe-eye"></i>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="dropdown dropdown-action me-3 ">
+                                            <a href="#"
+                                               class="btn-action-icon bg-primary-light"
+                                               data-bs-toggle="dropdown"
+                                               aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <ul>
+                                                    @if (item.BalanceAmount == item.IncludingTaxAmt)
+                                                    {
+
+                                                        <li>
+                                                            <a href="@Url.Action("EditPurchaseInvoice", new { InvID = item.PurchaseInvoiceID, PageNo = Model.PagingInfo.CurrentPage, PageSize = Model.PagingInfo.ItemsPerPage, SearchTerm = ViewBag.SearchTerm })" class="dropdown-item " data-toggle="tooltip" data-placement="bottom" title="Edit">
+                                                                <i class="fe fe-edit-2 me-2"></i> Edit
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <form action="/Invoice/CancelledPO" method="post" data-otf-ajax="true" data-otf-target="#DataGrid">
+                                                                @Html.AntiForgeryToken()
+                                                                @Html.Hidden("ID", (string)item.PurchaseInvoiceID)
+                                                                <a href="@Url.Action("CancelledPO", "Invoice", new {Area="", ID = item.PurchaseInvoiceID, PageNo = Model.PagingInfo.CurrentPage, PageSize = Model.PagingInfo.ItemsPerPage, ListCount = Model.PurchaseInvoiceKeyViewList.Count(), SearchTerm = @ViewBag.SearchTerm })" class="RefCancel dropdown-item grid-button" data-toggle="tooltip" data-placement="bottom" title="Cancel/Active PO" data-record="@item.PORefNo">
+                                                                    @if (!@item.IsPoCancelled)
+                                                                    {
+                                                                        <i class="fe fe-x me-2"></i>
+                                                                        <span title="Cancelled reference No."> Cancel</span>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <i class="fe fe-check me-2"></i>
+                                                                        <span title="Cancelled reference No."> Active</span>
+                                                                        <i class="fe fe-check text-success"></i>
+                                                                    }
+                                                                </a>
+                                                            </form>
+                                                        </li>
+                                                        if (User.IsInRole("Super Admin"))
+                                                        {
+                                                            <li>
+                                                                <form action="/Invoice/MarkForPayment" method="post" data-otf-ajax="true" data-otf-target="#DataGrid">
+                                                                    @Html.AntiForgeryToken()
+                                                                    @Html.Hidden("ID", (string)item.PurchaseInvoiceID)
+                                                                    @if (!@item.HasMarkForPayment)
+                                                                    {
+                                                                        <a href="@Url.Action("MarkForPayment", "Invoice", new {Area="", ID = item.PurchaseInvoiceID, PageNo = Model.PagingInfo.CurrentPage, PageSize = Model.PagingInfo.ItemsPerPage, ListCount = Model.PurchaseInvoiceKeyViewList.Count(), SearchTerm = @ViewBag.SearchTerm })" class="approval dropdown-item grid-button" data-toggle="tooltip" data-placement="bottom" title="Mark For Payment" data-record="@item.PORefNo">
+                                                                            <span><i class="fe fe-briefcase " title="Mark For Payment"></i> Mark For Payment</span>
+                                                                        </a>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <a href="@Url.Action("MarkForPayment", "Invoice", new {Area="", ID = item.PurchaseInvoiceID, PageNo = Model.PagingInfo.CurrentPage, PageSize = Model.PagingInfo.ItemsPerPage, ListCount = Model.PurchaseInvoiceKeyViewList.Count(), SearchTerm = @ViewBag.SearchTerm })" class="declined dropdown-item grid-button" data-toggle="tooltip" data-placement="bottom" title="Undo Mark Payment" data-record="@item.PORefNo">
+                                                                            <span><i class="fe fe-refresh-cw" title="Undo Mark Payment"></i> Undo Mark Payment</span>
+                                                                        </a>
+                                                                    }
+                                                                </form>
+                                                            </li>
+
+                                                            <li>
+                                                                <form action="/Invoice/DeletePO" method="post" data-otf-ajax="true" data-otf-target="#DataGrid">
+                                                                    @Html.AntiForgeryToken()
+                                                                    @Html.Hidden("ID", (string)item.PurchaseInvoiceID)
+                                                                    <a href="@Url.Action("DeletePO", new { ID = item.PurchaseInvoiceID, PageNo = Model.PagingInfo.CurrentPage, PageSize = Model.PagingInfo.ItemsPerPage,SearchTerm=ViewBag.SearchTerm, ListCount = Model.PurchaseInvoiceKeyViewList.Count() })" class="delete dropdown-item grid-button" data-toggle="tooltip" data-placement="bottom" title="Delete" data-record="@(item.PORefNo??item.BillNo)">
+                                                                        <span><i class="fe fe-trash" title="Delete PO"></i> Delete PO</span>
+                                                                    </a>
+                                                                </form>
+                                                            </li>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+
+                                                        <li>
+                                                            <del>
+                                                                <a href="javascript:void(0)" class="dropdown-item disabled" data-toggle="tooltip" data-placement="bottom" title="Disabled Edit Button" disabled>
+                                                                    <i class="fe fe-edit-2 me-2"></i> Edit
+                                                                </a>
+                                                            </del>
+                                                        </li>
+                                                        <li>
+                                                            <del>
+                                                                <a href="javascript:void(0)" class="dropdown-item disabled" data-toggle="tooltip" data-placement="bottom" title="Disabled Cancelled/Avtive Button">
+                                                                    <i class="fe fe-x me-2"></i> Cancelled
+                                                                </a>
+                                                            </del>
+                                                        </li>
+                                                        <li>
+                                                            <del>
+                                                                <a href="javascript:void(0)" class="dropdown-item disabled" data-toggle="tooltip" data-placement="bottom" title="Disabled Mark Payment">
+                                                                    <i class="fe fe-briefcase me-2"></i> Mark For Payment
+                                                                </a>
+                                                            </del>
+                                                        </li>
+                                                    }
+                                                    @if (!string.IsNullOrEmpty(item.PORefNo))
+                                                    {
+                                                        <li>
+                                                            <a href="/Invoice/ExportPO?POID=@item.PurchaseInvoiceID" class="dropdown-item " data-toggle="tooltip" data-placement="bottom" title="Generate PO">
+                                                                <i class="fe fe-download me-2"></i> Download
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="ns-grid-pager" data-otf-target="#DataGrid">
+            <div class="visible-lg visible-md visible-sm visible-xs col-lg-12 col-sm-12 ns-pagination" data-otf-target="#DataGrid" data-otf-actionlink="/invoice/PurchaseInvoiceList">
+                <span class="badge bg-warning text-dark">Showing @Model.PurchaseInvoiceKeyViewList.Count() of @Model.TotalRecords Record(s)</span>
+                @Html.PageLinks(Model.PagingInfo, x => Url.Action("PurchaseInvoiceList", new { PageNo = x }))
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <img src="~/Content/Images/no_record.png" /><br />
+            <span class="text-muted">No records available or your searched record in not available..</span>
+        </div>
+    }
+    @*error message*@
+    <div id="ErrMsg" style="display:none;">
+        <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+    </div>
+</div>

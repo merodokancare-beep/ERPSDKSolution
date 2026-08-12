@@ -1,0 +1,117 @@
+@model SDKHRMS.Entities.ViewModels.FiscalWiseCount
+<div id="DataGrid">
+    @if (Model != null)
+    {
+        <div class="row g-2 g-sm-3">
+            <div class="col-xl-3 col-sm-6 col-6">
+                <div class="card stat-card shadow-sm border-0" style="background: #131825; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="dash-widget-icon" style="background: linear-gradient(135deg, #7539FF 0%, #A855F7 100%); color: white; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; box-shadow: 0 6px 16px rgba(117, 57, 255, 0.35); flex-shrink: 0;">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </span>
+                            <div class="dash-count text-end ms-2 overflow-hidden">
+                                <div class="dash-title text-uppercase text-truncate" style="color: #94A3B8; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em;">Sales Invoices</div>
+                                <div class="dash-counts" style="font-size: 1.5rem; font-weight: 800; color: #F8FAFC; line-height: 1.2;">
+                                    <span>@Model.SaleInvCount</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress mt-2" style="height: 4px; background: rgba(255,255,255,0.08); border-radius: 9999px;">
+                            <div class="progress-bar" role="progressbar" style="width: @(Model.SaleInvPer)%; background: linear-gradient(90deg, #7539FF, #A855F7); border-radius: 9999px;"
+                                 aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="mt-2 text-end">
+                            <a href="/invoice/saleinvoicelist" style="color: #A855F7; font-size: 0.75rem; font-weight: 700; text-decoration: none;">View All <i class="fas fa-arrow-right ms-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6 col-6">
+                <div class="card stat-card shadow-sm border-0" style="background: #131825; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="dash-widget-icon" style="background: linear-gradient(135deg, #0EA5E9 0%, #38BDF8 100%); color: white; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; box-shadow: 0 6px 16px rgba(14, 165, 233, 0.35); flex-shrink: 0;">
+                                <i class="fas fa-shopping-cart"></i>
+                            </span>
+                            <div class="dash-count text-end ms-2 overflow-hidden">
+                                <div class="dash-title text-uppercase text-truncate" style="color: #94A3B8; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em;">Purchase Orders</div>
+                                <div class="dash-counts" style="font-size: 1.5rem; font-weight: 800; color: #F8FAFC; line-height: 1.2;">
+                                    <span>@Model.POCount</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress mt-2" style="height: 4px; background: rgba(255,255,255,0.08); border-radius: 9999px;">
+                            <div class="progress-bar" role="progressbar" style="width: @(Model.POCountPer)%; background: linear-gradient(90deg, #0EA5E9, #38BDF8); border-radius: 9999px;"
+                                 aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="mt-2 text-end">
+                            <a href="/invoice/purchaseinvoicelist" style="color: #38BDF8; font-size: 0.75rem; font-weight: 700; text-decoration: none;">View All <i class="fas fa-arrow-right ms-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6 col-6">
+                <div class="card stat-card shadow-sm border-0" style="background: #131825; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="dash-widget-icon" style="background: linear-gradient(135deg, #10B981 0%, #34D399 100%); color: white; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35); flex-shrink: 0;">
+                                <i class="fas fa-folder-open"></i>
+                            </span>
+                            <div class="dash-count text-end ms-2 overflow-hidden">
+                                <div class="dash-title text-uppercase text-truncate" style="color: #94A3B8; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em;">Open Projects</div>
+                                <div class="dash-counts" style="font-size: 1.5rem; font-weight: 800; color: #F8FAFC; line-height: 1.2;">
+                                    <span>@Model.OpenProject</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress mt-2" style="height: 4px; background: rgba(255,255,255,0.08); border-radius: 9999px;">
+                            <div class="progress-bar" role="progressbar" style="width: @(Model.OpenProjPer)%; background: linear-gradient(90deg, #10B981, #34D399); border-radius: 9999px;"
+                                 aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="mt-2 text-end">
+                            <a href="/Projects/ProjectOverView?Status=Open" style="color: #34D399; font-size: 0.75rem; font-weight: 700; text-decoration: none;">View All <i class="fas fa-arrow-right ms-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6 col-6">
+                <div class="card stat-card shadow-sm border-0" style="background: #131825; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="dash-widget-icon" style="background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%); color: white; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35); flex-shrink: 0;">
+                                <i class="fas fa-folder"></i>
+                            </span>
+                            <div class="dash-count text-end ms-2 overflow-hidden">
+                                <div class="dash-title text-uppercase text-truncate" style="color: #94A3B8; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em;">Closed Projects</div>
+                                <div class="dash-counts" style="font-size: 1.5rem; font-weight: 800; color: #F8FAFC; line-height: 1.2;">
+                                    <span>@Model.ClosedProject</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress mt-2" style="height: 4px; background: rgba(255,255,255,0.08); border-radius: 9999px;">
+                            <div class="progress-bar" role="progressbar" style="width: @(Model.ClosedProjPer)%; background: linear-gradient(90deg, #F59E0B, #FBBF24); border-radius: 9999px;"
+                                 aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="mt-2 text-end">
+                            <a href="/Projects/ProjectOverView?Status=Closed" style="color: #FBBF24; font-size: 0.75rem; font-weight: 700; text-decoration: none;">View All <i class="fas fa-arrow-right ms-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <img src="~/Content/Images/no_record.png" /><br />
+            <span class="text-muted">No records available or your searched record in not available..</span>
+        </div>
+    }
+</div>
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>

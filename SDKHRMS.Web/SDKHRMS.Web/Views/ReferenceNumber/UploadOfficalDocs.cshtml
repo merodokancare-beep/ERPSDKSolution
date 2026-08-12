@@ -1,0 +1,205 @@
+﻿@model SDKHRMS.Entities.ViewModels.OfficalLetterVM
+@{
+    ViewBag.Title = "UploadOfficalDocs";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<div class="row">
+    <div class="col-xl-2 col-lg-4 col-sm-6 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Ref No.</div>
+                        <div class="dash-counts">
+                            <p>@Model.ReferenceDetails.RefNumber</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-sm-6 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+
+                    <div class="dash-count">
+                        <div class="dash-title">Ref. Issuance Date</div>
+                        <div class="dash-counts">
+                            <p>@Model.ReferenceDetails.RefDate.ToString("dd MMM yyyy")</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-sm-6 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+
+                    <div class="dash-count">
+                        <div class="dash-title">Letter To</div>
+                        <div class="dash-counts">
+                            <p>@Model.ReferenceDetails.LetterTO</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-sm-6 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+
+                    <div class="dash-count">
+                        <div class="dash-title">Ref Type</div>
+                        <div class="dash-counts">
+                            <p>@Model.ReferenceDetails.RefType</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-8 col-sm-12 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Remarks</div>
+                        <div class="dash-counts">
+                            <p>@Model.ReferenceDetails.DescORSubject</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="card customer-details-group">
+    <div class="card-body">
+        @using (Html.BeginForm("UploadOfficalDocs", "ReferenceNumber", FormMethod.Post, new { id = "docs", role = "form", enctype = "multipart/form-data" }))
+        {
+            <div class="row align-items-center">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true)
+                @Html.HiddenFor(m => m.RefNoID)
+
+                <div class="col-xl-4 col-lg-6 col-md-6 col-12">
+                    <div class="customer-details">
+                        <div class="d-flex align-items-center">
+                            @Html.TextBoxFor(model => model.OfficalLetterAdd.DocName, new { @class = "form-control", @placeholder = "Docs Name", @id = "name", @autocomplete = "off" })
+                            @Html.ValidationMessageFor(model => model.OfficalLetterAdd.DocName)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-6 col-12">
+                    <div class="customer-details">
+                        <div class="d-flex align-items-center">
+                            @Html.TextBoxFor(m => m.UploadFile, new { @type = "file", @accept = ".pdf,.jpg,.png,.jpeg", @class = "btn btn-warning" })
+                            @Html.ValidationMessageFor(m => m.UploadFile)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-6 col-12">
+                    <div class="customer-details">
+                        <div class="d-flex align-items-center">
+                            <button type="reset" onclick="location.href='@Url.Action("ReferenceNumberList")'" class="btn btn-primary cancel me-2">Cancel</button>
+                            <input type="submit" value="Save" id="save" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+
+@*<link href="~/Content/datepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<div class="page-title-wrapper">
+    <div class="page-title-heading text-primary">
+        <div class="page-title-icon">
+            <i class="fa fa-hand-o-right"></i>
+        </div>
+        <div>
+            <div class="page-title-main-text linebreak">
+                Uploads Documents
+            </div>
+            <div class="page-title-sub-text">Uploads Documents /Add</div>
+        </div>
+    </div>
+    <div class="page-title-actions"></div>
+
+</div>
+<div class="page-content clearfix">
+    <div class="row" style="padding: 0 25px 0 25px;">
+        <div class="col-md-12">
+            <h4 class=" text-center">Reference Number Details</h4>
+        </div>
+        <div class="col-md-8 pull-left no-padding">
+            <label class="control-label">Ref No.: @Model.ReferenceDetails.RefNumber</label>
+        </div>
+        <div class="col-md-4 pull-left no-padding">
+            <label class="control-label">Ref Date: @Model.ReferenceDetails.RefDate.ToString("dd MMM yyyy")</label>
+        </div>
+        <div class="col-md-8 pull-left no-padding">
+            <label class="control-label">Letter To: @Model.ReferenceDetails.LetterTO</label>
+        </div>
+        <div class="col-md-4 pull-left no-padding">
+            <label class="control-label">Ref Type: @Model.ReferenceDetails.RefType</label>
+        </div>
+        <div class="col-md-12 pull-left no-padding">
+            <label class="control-label">Remarks: @Model.ReferenceDetails.DescORSubject</label>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm("UploadOfficalDocs", "ReferenceNumber", FormMethod.Post, new { id = "docs", role = "form", enctype = "multipart/form-data" }))
+{
+    <div class="page-content clearfix">
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m => m.RefNoID)
+        <div class="col-md-12 margin-bottom20">
+            <div class="col-md-12">
+                <label class="col-md-4 control-label required">Documents Name</label>
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.OfficalLetterAdd.DocName, new { @class = "form-control", @placeholder = "Docs Name", @id = "name", @autocomplete = "off" })
+                    @Html.ValidationMessageFor(model => model.OfficalLetterAdd.DocName)
+                </div>
+
+                <div class="col-md-12 margin-top20">
+                    <label class="col-md-4 control-label required">Upload Documents</label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.UploadFile, new { @type = "file", @accept = ".pdf,.jpg,.png,.jpeg", @class = "btn btn-warning" })
+                        @Html.ValidationMessageFor(m => m.UploadFile)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="well well-sm no-margin-bottom col-md-12 col-lg-12 text-right">
+            <div class="form-horizontal">
+                @Html.ActionLink("Back to List", "ReferenceNumberList", null, new { @class = "btn btn-default pull-left" })
+                <input type="submit" value="Save" id="save" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+

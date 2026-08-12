@@ -1,0 +1,141 @@
+﻿@model SDKHRMS.Entities.ViewModels.PettyCashVM
+@{
+    int i = 2;
+    decimal TotalCredit = @Model.PrettyCashBook.Sum(x => x.CreditAmt) + @Model.TotalTrans.TotalReceived;
+    decimal TotalDebit = @Model.PrettyCashBook.Sum(x => x.DebitAmt) + @Model.TotalTrans.TotalPayment;
+}
+<div id="DataGrid" class="">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <span>Petty Cash Book for</span><br />
+                <b class="control-label">@Model.MonthName, @ViewBag.YearNo</b>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <span>Current Balance Till <strong>@DateTime.Today.ToString("dd MMM yyyy")</strong></span><br />
+                <b class="control-label">Rs. @Model.AvailableBalance.ToString("0.00")</b>
+            </div>
+        </div>
+    </div>
+
+    @*<table style="width:100%" id="ItemTable">
+            <thead>
+                <tr>
+                    <th class="text-left" style="vertical-align:middle; width:65%"><span class="text-info fontsize20 pull-left"> Petty Cash Book for @Model.MonthName, @ViewBag.YearNo</span></th>
+                    <th class="text-right" style="vertical-align:middle;width:35%"><span class="text-danger fontsize20 pull-right"> Current Balance: &#8377 @Model.AvailableBalance.ToString("0.00")</span></th>
+                </tr>
+            </thead>
+        </table>*@
+    @if (Model.PrettyCashBook.Count() > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-condensed table-bordered" id="purtable">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="vertical-align:middle;width:10%">
+                            SL No.
+                        </th>
+                        <th class="text-center" style="vertical-align:middle ;width:15%">
+                            Date
+                        </th>
+                        <th class="text-center" style="vertical-align:middle;">
+                            Particulars
+                        </th>
+                        <th class="text-center" style="vertical-align:middle ;width:15%">
+                            Credit(&#8377 )
+                        </th>
+                        <th class="text-center" style="vertical-align:middle ;width:15%">
+                            Debit (&#8377 )
+                        </th>
+                        <th class="text-center" style="vertical-align:middle;width:8%">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-center" style="vertical-align:middle">
+                            1
+                        </td>
+                        <td class="text-center" style="vertical-align:middle">
+                            @Convert.ToDateTime(01 + "-" + @Model.MonthName + "-" + @ViewBag.YearNo).ToString("dd MMM yyyy")
+                        </td>
+                        <td class="text-center" style="vertical-align:middle">
+                            <span>Opening Balance</span>
+                        </td>
+                        <td class="text-right" style="vertical-align:middle">
+                            <span>@Model.TotalTrans.CurrentBal.ToString("0.00")</span>
+                        </td>
+                        <td class="text-right" style="vertical-align:middle">
+                            <span>-</span>
+                        </td>
+                        <td class="" style="vertical-align:middle">
+                            <a href="javascript:void(0)" class="btn-action-icon bg-light-gray mb-2" data-toggle="tooltip" data-placement="bottom">
+                                <i class="fe fe-x-circle"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    @foreach (var item in Model.PrettyCashBook)
+                    {
+                        <tr>
+                            <td class="text-center" style="vertical-align:middle">
+                                @i
+                            </td>
+                            <td class="text-center" style="vertical-align:middle">
+                                @item.TransDate.ToString("dd MMM yyyy")
+                            </td>
+                            <td class="text-center" style="vertical-align:middle">
+                                Expense Head: @item.ExpenseType<br />
+                                Remarks: @item.Remarks
+                            </td>
+                            <td class="text-right" style="vertical-align:middle">
+                                @item.CreditAmt.ToString("0.00")
+                            </td>
+                            <td class="text-right" style="vertical-align:middle">
+                                @item.DebitAmt.ToString("0.00")
+                            </td>
+                            <td class="" style="vertical-align:middle">
+                                @if ((item.TransDate.AddDays(15) > DateTime.Now) && (item.ExpenseType.Contains("Bank")) && item.CreditAmt > 0)
+                                {
+                                    <a href="/PettyCash/AddPettyCash?id=@item.PettyCashID" title="Edit Details" class="btn-action-icon bg-light-gray mb-2" data-toggle="tooltip" data-placement="bottom">
+                                        <i class="fe fe-edit-2"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="javascript:void(0)" class="btn-action-icon bg-light-gray mb-2" data-toggle="tooltip" data-placement="bottom">
+                                        <i class="fe fe-minus"></i>
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                    <tr>
+                        <td colspan="3" class="text-right TotalSec fontsize16 font-bold">Total</td>
+                        <td class="text-right TotalSec fontsize16 font-bold">&#8377 @TotalCredit.ToString("0.00")</td>
+                        <td class="text-right TotalSec fontsize16 font-bold">&#8377 @TotalDebit.ToString("0.00")</td>
+                        <td class="TotalSec fontsize16 font-bold">
+                            <a href="javascript:void(0)" class="btn-action-icon bg-light-gray mb-2" data-toggle="tooltip" data-placement="bottom">
+                                <i class="fe fe-minus"></i>
+                            </a>
+                        </td>
+
+                    </tr>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <img src="~/Content/Images/no_record.png" /><br />
+            <span class="text-muted">No records available or your searched record in not available for @Model.MonthName, @ViewBag.Year...</span>
+        </div>
+    }
+    @*error message*@
+    <div id="ErrMsg" style="display:none;">
+        <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+    </div>
+</div>

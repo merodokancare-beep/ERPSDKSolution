@@ -1,0 +1,108 @@
+﻿@model  SDKHRMS.Entities.ViewModels.ProjectViewModel
+@{
+    ViewBag.Title = "Projects";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+    List<string> Status = new List<string> { "Open", "Closed" };
+}
+
+<link href="~/Content/Tabspanel.css" rel="stylesheet" />
+<link href="~/Content/Plugins/Select2/newselect2.css" rel="stylesheet" />
+<div class="page-header">
+    <div class="content-page-header">
+        <h5>Project List Details</h5>
+        <div class="list-btn">
+            <ul class="filter-list">
+                <li>
+                    <a class="btn btn-primary" href="/configuration/addProject">
+                        <i class="fa fa-plus-circle me-2" aria-hidden="true"></i> Add New Project
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card ribbon-wrapper">
+            <div class="card-header card-buttons">
+                <form method="get" action="/Projects/ProjectOverView" class="row" data-search="true" data-otf-ajax="true" data-otf-target="#DataGrid" id="sForm">
+                    <div class="form-group mb-0 row">
+                        <div class="col-md-6 mb-3">
+                            @Html.DropDownList("ClientID", new SelectList(Model.VendorDD, "VenderID", "Vendername", @ViewBag.Vendor), "- Select Client --", new { @class = "form-control ddSelect2", id = "client" })
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            @Html.DropDownList("Status", new SelectList(Status, @ViewBag.Status), "- Select Status --", new { @class = "form-control ddSelect2", id = "status" })
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <button onclick="location.href='@Url.Action("ProjectOverView")'" type="button" class="btn btn-primary" id="clearSearchBtn">Clear Results</button>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            @Html.DropDownList("ProjID", new SelectList(string.Empty, "ProjectID", "ProjectID"), "----Select Project----", new { @class = "form-control ddSelect2", id = "proj" })
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="card-body">
+                @Html.Partial("_pvProjectOverviewList", Model)
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+@section Scripts{
+    <script src="~/Content/Plugins/Select2/select2.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.ddSelect2').select2({ width: '100%' });
+            //Cashcading for Project On Client DD Change Function
+            var ClientChange = function () {
+                var id = $('#client').val();
+                if (id == "") {
+                    $("#proj").empty();
+                    $("#proj").append('<option value="">--- Select Project ---</option>');
+                    $('#proj').val("");
+                }
+                else {
+                    $.ajax({
+                        type: 'GET',
+                        url: '/Projects/GetProjectListByClient',
+                        data: { ClientID: id },
+                        datatype: 'json',
+                        success: function (data) {
+                            $("#proj").empty();
+                            $("#proj").append('<option value="">--- Select Project List ---</option>');
+                            $.each(data, function (i, item) {
+                                $("#proj").append('<option value="' + item.Value + '">' + item.Text + '</option>');
+                            });
+                            $('#proj').val("");
+                        },
+                        error: function (ex) {
+                            alert('Failed to retrieve data.' + ex);
+                        }
+                    })
+                }
+            }
+            $(document).on('change', '#client', ClientChange);
+
+            $(document).on('change', '#client', function () {
+                $('#sForm').submit();
+            })
+            $(document).on('change', '#status', function () {
+                $('#sForm').submit();
+            })
+            $(document).on('change', '#proj', function () {
+                $('#sForm').submit();
+            })
+
+        });
+    </script>
+}
+
+
+
+
+

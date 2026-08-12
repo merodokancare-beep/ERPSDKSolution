@@ -1,0 +1,33 @@
+﻿@model SDKHRMS.Web.Models.IndexViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<div class="page-title-wrapper">
+    <div class="page-title-heading text-primary">
+        <div class="page-title-icon">
+            <i class="glyphicon glyphicon-lock"></i>
+        </div>
+        <div>
+            <div class="page-title-main-text linebreak">
+                My Profile
+            </div>
+            <div class="page-title-sub-text">Change Password Success</div>
+        </div>
+    </div>
+    <div class="page-title-actions"></div>
+</div>
+
+<div class="page-content clearfix">
+    <h3 class="text-success"><i class="glyphicon glyphicon-ok-circle"></i> @ViewBag.StatusMessage</h3>
+</div>
+
+<div class="page-content clearfix">
+    @Html.ActionLink("Back to Dashboard", "Dashboard", "Home", null, new { @class = "btn btn-danger pull-right" })
+</div>
+
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>

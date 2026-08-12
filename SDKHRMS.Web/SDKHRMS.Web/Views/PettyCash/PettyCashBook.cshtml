@@ -1,0 +1,153 @@
+﻿@model SDKHRMS.Entities.ViewModels.PettyCashVM
+@{
+    ViewBag.Title = "Petty cash Book";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<link href="~/Content/Plugins/Select2/newselect2.css" rel="stylesheet" />
+<div class="page-header">
+    <div class="content-page-header">
+        <h5>Petty Cash Details</h5>
+        <div class="list-btn">
+            <ul class="filter-list">
+                <li>
+                    <a class="btn btn-primary" href="/PettyCash/AddPettyCash">
+                        <i class="fa fa-plus-circle me-2" aria-hidden="true"></i>Add New Petty Cash
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header card-buttons">
+                <form method="get" action="/PettyCash/PettyCashBook" data-search="true" data-otf-ajax="true" data-otf-target="#DataGrid" id="sForm">
+                    <div class="form-group mb-0 row">
+                        <div class="col-md-5">
+                            @Html.DropDownList("YearNo", new SelectList(Model.YearDD, "YearNo", "YearNo", @ViewBag.YearNo), "----Select Year----", new { @class = "form-control ddSelect2", id = "yr" })
+                        </div>
+                        <div class="col-md-5">
+                            @Html.DropDownList("MonthNo", new List<SelectListItem>{
+                                new SelectListItem{Text="January", Value="1"},
+                                new SelectListItem{Text="February", Value="2"},
+                                new SelectListItem{Text="March", Value="3"},
+                                new SelectListItem{Text="April", Value="4"},
+                                new SelectListItem{Text="May", Value="5"},
+                                new SelectListItem{Text="June", Value="6"},
+                                new SelectListItem{Text="July", Value="7"},
+                                new SelectListItem{Text="August", Value="8"},
+                                new SelectListItem{Text="September", Value="9"},
+                                new SelectListItem{Text="October", Value="10"},
+                                new SelectListItem{Text="November", Value="11"},
+                                new SelectListItem{Text="December", Value="12"}, }, "--- Select Month ---", new { @class = "form-control ddSelect2", Value = @ViewBag.MonNo, @id = "month" })
+                        </div>
+                        <div class="col-md-2">
+                            <button onclick="location.href='@Url.Action("PettyCashBook")'" type="button" class="btn btn-primary" id="clearSearchBtn">Clear Results</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="card-body">
+                @Html.Partial("_pvPettyCashBook", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@*<style>
+        .fontsize16 {
+            font-size: 16px !important;
+        }
+
+        .TotalSec {
+            background-color: #ccc;
+        }
+
+        .fontsize20 {
+            font-size: 16px !important;
+        }
+    </style>
+    <link href="~/Content/Plugins/Select2/select2.min.css" rel="stylesheet" />
+    <div class="page-title-wrapper">
+        <div class="page-title-heading text-primary">
+            <div class="page-title-icon">
+                <i class="fa fa-hand-o-right"></i>
+            </div>
+            <div>
+                <div class="page-title-main-text linebreak">
+                    Petty Cash Master
+                </div>
+                <div class="page-title-sub-text">Petty Cash/Petty Cash Book</div>
+            </div>
+        </div>
+        <div class="page-title-actions"></div>
+    </div>
+    <div class="page-content">
+        <div class="well well-sm clearfix">
+            <div class="col-md-9 no-horizantal-padding pull-left">
+                <form method="get" action="/PettyCash/PettyCashBook" data-search="true" data-otf-ajax="true" data-otf-target="#DataGrid" id="sForm">
+                    <div class="col-md-6">
+                        @Html.DropDownList("YearNo", new SelectList(Model.YearDD, "YearNo", "YearNo", @ViewBag.YearNo), "----Select Year----", new { @class = "form-control ddSelect2", id = "yr" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.DropDownList("MonthNo", new List<SelectListItem>{
+                                    new SelectListItem{Text="January", Value="1"},
+                                    new SelectListItem{Text="February", Value="2"},
+                                    new SelectListItem{Text="March", Value="3"},
+                                    new SelectListItem{Text="April", Value="4"},
+                                    new SelectListItem{Text="May", Value="5"},
+                                    new SelectListItem{Text="June", Value="6"},
+                                    new SelectListItem{Text="July", Value="7"},
+                                    new SelectListItem{Text="August", Value="8"},
+                                    new SelectListItem{Text="September", Value="9"},
+                                    new SelectListItem{Text="October", Value="10"},
+                                    new SelectListItem{Text="November", Value="11"},
+                                    new SelectListItem{Text="December", Value="12"}, }, "--- Select Month ---", new { @class = "form-control ddSelect2", Value = @ViewBag.MonNo, @id = "month" })
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-3 no-horizantal-padding pull-right">
+                &nbsp;&nbsp;<a href="/PettyCash/PettyCashBook" class="btn btn-success hidden" id="clearSearchBtn">Clear !</a>
+                @Html.ActionLink("Add New", "AddPettyCash", "PettyCash", new { @class = "btn btn-danger pull-right" })
+            </div>
+        </div>
+        <div class="">
+            @Html.Partial("_pvPettyCashBook", Model)
+        </div>
+    </div>*@
+
+
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+@section Scripts{
+    <script src="~/Content/Plugins/Select2/select2.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.ddSelect2').select2({ width: '100%' });
+            $(document).on('change', '#yr', function () {
+                $('#sForm').submit();
+                //clearbtn();
+            })
+            $(document).on('change', '#month', function () {
+                $('#sForm').submit();
+                //clearbtn();
+            })
+            //var clearbtn = function () {
+            //    if ($("#inputsearch").val() != "" || $('#type').val() != "") {
+            //        $("#clear").removeClass("hidden")
+            //    }
+            //    else {
+            //        $("#clear").addClass("hidden")
+            //    }
+            //}
+        });
+    </script>
+}
+

@@ -1,0 +1,52 @@
+﻿@model Microsoft.AspNet.Identity.EntityFramework.IdentityRole
+@{
+    ViewBag.Title = "AddRole";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="page-title-wrapper">
+    <div class="page-title-heading text-primary">
+        @*<div class="page-title-icon">
+                <i class="glyphicon glyphicon-user"></i>
+            </div>*@
+        <div>
+            <div class="page-title-main-text linebreak">
+                Manage Role
+            </div>
+            <div class="page-title-sub-text">Manage Role /Add Role</div>
+        </div>
+    </div>
+    <div class="page-title-actions"></div>
+
+</div>
+@using (Html.BeginForm())
+{
+    <div class="col-md-12 page-content clearfix">
+
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true)
+            <div class="form-group">
+                <div class="col-md-12">
+                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Role" })
+                    @Html.ValidationMessageFor(model => model.Name)
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="well well-sm no-margin-bottom col-md-12 col-lg-12 text-right">
+        <div class="form-horizontal">
+            @Html.ActionLink("Back To List", "RoleList", "RoleCreator", null, new { @class = "btn btn-default pull-left" })
+            <input type="submit" value="Save" id="MyProfile" class="btn btn-primary" />
+        </div>
+    </div>
+}
+@*@Html.Partial("pvRoleList",Model);*@
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+
+

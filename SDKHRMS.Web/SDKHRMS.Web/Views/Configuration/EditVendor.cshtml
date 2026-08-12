@@ -1,0 +1,85 @@
+﻿@model  SDKHRMS.Entities.ViewModels.VendorClientAdd
+@{
+    ViewBag.Title = "Configuration : Vendor Master";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<div class="page-header">
+    <div class="content-page-header">
+        <h5>Client/Vendor Master</h5>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Configure Clients/Vendors</h5>
+            </div>
+            <div class="card-body card-buttons">
+                @using (Html.BeginForm("Editvendor", "Configuration", FormMethod.Post, new { data_toggle = "validator", @novalidate = true }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.HiddenFor(m => m.ClientVendorAdd.VenderID)
+                    @Html.HiddenFor(m => m.PageParameter.PageNo)
+                    @Html.HiddenFor(m => m.PageParameter.PageSize)
+                    @Html.HiddenFor(m => m.PageParameter.SearchTerm)
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.ClientVendorAdd.VenderName, new { @class = "control-label required" })
+                                @Html.TextBoxFor(m => m.ClientVendorAdd.VenderName, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Client/Vendor Name" })
+                                @Html.ValidationMessageFor(m => m.ClientVendorAdd.VenderName)
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.ClientVendorAdd.GSTNo, new { @class = "control-label" })
+                                @Html.TextBoxFor(m => m.ClientVendorAdd.GSTNo, new { @class = "form-control", autocomplete = "off", @placeholder = "GST Number" })
+                                @Html.ValidationMessageFor(m => m.ClientVendorAdd.GSTNo)
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.ClientVendorAdd.ContactName, new { @class = "control-label" })
+                                @Html.TextBoxFor(m => m.ClientVendorAdd.ContactName, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Contact Person Name" })
+                                @Html.ValidationMessageFor(m => m.ClientVendorAdd.ContactName)
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.ClientVendorAdd.Email, new { @class = "control-label" })
+                                @Html.TextBoxFor(m => m.ClientVendorAdd.Email, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Email ID" })
+                                @Html.ValidationMessageFor(m => m.ClientVendorAdd.Email)
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.ClientVendorAdd.ContactNo, new { @class = "control-label " })
+                                @Html.TextBoxFor(m => m.ClientVendorAdd.ContactNo, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Contact Person Number" })
+                                @Html.ValidationMessageFor(m => m.ClientVendorAdd.ContactNo)
+                            </div>
+                        </div>
+                        <div class="col-xl-12">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.ClientVendorAdd.VenderAddress, new { @class = "control-label required" })
+                                @Html.TextAreaFor(m => m.ClientVendorAdd.VenderAddress, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Client/Vendor Address", @style = "resize:none;" })
+                                @Html.ValidationMessageFor(m => m.ClientVendorAdd.VenderAddress)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <button type="reset" onclick="location.href='@Url.Action("Vendorlist")'" class="btn btn-primary cancel me-2">Cancel</button>
+                        <input type="submit" value="Save" id="save" class="btn btn-primary" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+
+

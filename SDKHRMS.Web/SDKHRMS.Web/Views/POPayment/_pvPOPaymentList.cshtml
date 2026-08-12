@@ -1,0 +1,129 @@
+﻿@model  SDKHRMS.Entities.ViewModels.POPaymentVM
+<div id="DetailsTabPane">
+    @if (Model.POPaymentList.Count() > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-condensed table-borderless">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="vertical-align: middle; text-align: left;;width:95%">
+                            Procurement Details
+                        </th>
+                        <th style="vertical-align: middle; text-align: left;">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.POPaymentList)
+                    {
+                        <tr>
+                            <td>
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width:60%">
+                                                Reference/Bill No.:<span class="text-primary"> @(item.PORefNo ?? item.BillNo)</span>
+                                            </td>
+                                            <td style="width:20%">
+                                                Dated:<span class="text-primary"> @item.PurchaseDate.ToString("dd MMM yyyy")</span>
+                                            </td>
+                                            <td style="width:20%">
+                                                Total Amount:<span class="text-primary"> @item.IncludingTaxAmt.ToString("0.00")</span>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Vendor:<span class="text-primary"> @item.VenderName</span>
+                                            </td>
+                                            <td>
+                                                GST Input:<span class="text-primary"> @item.TotalGSTInput.ToString("0.00")</span>
+                                            </td>
+                                            <td>
+                                                Paid:<span class="text-primary"> @item.AmountPaid.ToString("0.00")</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                Project:<span class="text-primary"> @(item.ProjectName ?? "Not Linked")</span>
+                                            </td>
+                                            <td>
+                                                Balance:<span class="text-primary"> @item.BalanceAmount.ToString("0.00")</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="dropdown dropdown-action me-3 mb-3">
+                                            <a href="#"
+                                               class="btn-action-icon bg-primary-light"
+                                               data-bs-toggle="dropdown"
+                                               aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <ul>
+                                                    <li>
+                                                        <a href="/POPayment/POSettlement?id=@item.PurchaseInvoiceID" class="dropdown-item" data-toggle="tooltip" data-placement="bottom">
+                                                            @if (item.POStatus == "Active" || item.POStatus == "Partial Settled")
+                                                            {
+                                                                <span><i class="fe fe-external-link me-2"></i> Settle</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span><i class="fe fe-external-link me-2"></i> View</span>
+                                                            }
+                                                        </a>
+                                                    </li>
+                                                    @*<li>
+                                                            @if (item.POStatus == "Active")
+                                                            {
+                                                                <form action="/POPayment/POPaymentDeclined?id=@item.PurchaseInvoiceID" method="post" data-otf-ajax="true" data-otf-target="#DataGrid">
+                                                                    @Html.AntiForgeryToken()
+                                                                    @Html.Hidden("ID", (string)item.PurchaseInvoiceID)
+                                                                    <a href="@Url.Action("POPaymentDeclined", "POPayment", new {Area="", ID = item.PurchaseInvoiceID})" class="declined dropdown-item" data-toggle="tooltip " data-placement="bottom" data-record="@item.PORefNo">
+                                                                        <i class="fe fe-alert-triangle me-2"></i> Payment Declined PO
+                                                                    </a>
+                                                                </form>
+                                                            }
+                                                        </li>*@
+                                                    <li>
+                                                        @if (!string.IsNullOrEmpty(item.UploadBill))
+                                                        {
+                                                            <a href="~/UploadFile/Payments/@item.UploadBill" target="_blank" class="dropdown-item" title="Uploaded Files"><i class="fe fe-file me-2"></i> View File</a>
+                                                        }
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="ns-grid-pager col-md-12" data-otf-target="#DetailsTabPane">
+                <div class="visible-lg visible-md visible-sm visible-xs col-lg-12 col-sm-12 ns-pagination" data-otf-target="#DataGrid" data-otf-actionlink="/POPayment/Index">
+                    <span class="badge bg-warning text-dark">Showing @Model.PagingInfo.TotalItems &nbsp;Record(s) of @Model.TotalRecords Record(s)</span>
+                    @Html.PageLinks(Model.PagingInfo, x => Url.Action("index", "POPayment", new { PageNo = x }))
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <img src="~/Content/Images/no_record.png" /><br />
+            <span class="text-muted">No records available or your searched record in not available..</span>
+        </div>
+    }
+</div>
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>

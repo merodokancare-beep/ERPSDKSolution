@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Microsoft.AspNet.Identity.EntityFramework.IdentityRole>
+@{
+    ViewBag.Title = "RoleList";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+
+<div class="page-title-wrapper">
+    <div class="page-title-heading text-primary">
+        <div class="page-title-icon">
+            <i class="fa fa-hand-o-right"></i>
+            </div>
+        <div>
+            <div class="page-title-main-text linebreak">
+                Manage Role 
+            </div>
+            <div class="page-title-sub-text">Manage Role/Roles List</div>
+        </div>
+    </div>
+    <div class="page-title-actions"></div>
+    <a href="@Url.Action("AddRole", "RoleCreator", new { @Area = "" })" class="btn btn-primary pull-right" title="Add New Role" data-modal="">
+        <i class="glyphicon glyphicon-plus"></i>
+    </a>
+</div>
+<div class="col-md-12">
+    <div class="page-content clearfix">
+        @Html.Partial("_pvRoleList", Model)
+    </div>
+</div>
+
+
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>

@@ -1,0 +1,36 @@
+﻿@model  SDKHRMS.Entities.ViewModels.GSTInput
+<div id="DataGrid">
+    @if (Model != null)
+    {
+        <div class="row text-center text-muted">
+            <div class="col-4">
+                <div class="mt-4">
+                    <p class="mb-2 text-truncate"><i class="fas fa-circle text-primary me-1"></i> Total IGST</p>
+                    <h5><i class="fas fa-indian-rupee-sign"></i> @Model.TotalIGST</h5>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="mt-4">
+                    <p class="mb-2 text-truncate"><i class="fas fa-circle text-success me-1"></i> Total CGST</p>
+                    <h5><i class="fas fa-indian-rupee-sign"></i> @Model.TotalCGST</h5>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="mt-4">
+                    <p class="mb-2 text-truncate"><i class="fas fa-circle text-danger me-1"></i> TotalSGST</p>
+                    <h5><i class="fas fa-indian-rupee-sign"></i> @Model.TotalSGST</h5>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <img src="~/Content/Images/no_record.png" /><br />
+            <span class="text-muted">No records available or your searched record in not available..</span>
+        </div>
+    }
+</div>
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>

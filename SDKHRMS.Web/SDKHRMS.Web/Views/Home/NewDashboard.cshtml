@@ -1,0 +1,248 @@
+@model SDKHRMS.Entities.ViewModels.NewDashboardVM
+
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+@*<style type="text/css">
+</style>*@
+<link href="~/Content/datetimepicker/jquery.datetimepicker.min.css" rel="stylesheet" />
+<link href="~/Content/assets/plugins/apexchart/apexcharts.css" rel="stylesheet" />
+<div class="page-header">
+    <div class="d-flex align-items-start align-items-sm-center justify-content-between flex-column flex-sm-row gap-2 mb-3">
+        <div>
+            <h4 class="fw-bold mb-1 dashboard-title" style="color: #F8FAFC; font-size: 1.3rem;">
+                <i class="fa-solid fa-chart-pie me-2" style="color: #7539FF;"></i>ERP Dashboard
+            </h4>
+            <p class="mb-0 dashboard-subtitle" style="color: #94A3B8; font-size: 0.82rem;">Welcome back, @User.Identity.Name &mdash; here's your business overview</p>
+        </div>
+        <div class="d-flex align-items-center gap-2 flex-wrap dashboard-filters">
+            <input class="form-control form-control-sm dashboarddate" type="text" placeholder="Start Date" id="startdate"
+                   value="@(Model.StartDate != null ? Model.StartDate.Value.ToString("dd MMM yyyy") : "")"
+                   style="background: #1A2030; border: 1px solid rgba(255,255,255,0.12); color: #F8FAFC; border-radius: 8px; width: 130px;" />
+            <input class="form-control form-control-sm dashboarddate" type="text" placeholder="End Date" id="enddate"
+                   value="@(Model.EndDate != null ? Model.EndDate.Value.ToString("dd MMM yyyy") : "")"
+                   style="background: #1A2030; border: 1px solid rgba(255,255,255,0.12); color: #F8FAFC; border-radius: 8px; width: 130px;" />
+            <a class="btn btn-sm fw-semibold" href="javascript:void(0)" id="btnsubmit"
+               style="background: linear-gradient(135deg, #7539FF 0%, #A855F7 100%); color: #fff; border: none; border-radius: 8px; padding: 6px 16px; box-shadow: 0 4px 12px rgba(117,57,255,0.35);">
+                <i class="fa-solid fa-check me-1"></i>Submit
+            </a>
+            <a class="btn btn-sm fw-semibold" href="/home/newdashboard"
+               style="background: rgba(255,255,255,0.06); color: #94A3B8; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 6px 12px;">
+                <i class="fa-solid fa-rotate me-1"></i>Clear
+            </a>
+        </div>
+    </div>
+    <i><span id="DateErrMsg" class="text-danger" style="font-size: 0.8rem;"></span></i>
+</div>
+
+<div class="row" id="countdtls">
+    @*Count Details*@
+</div>
+<div class="clearfix">&nbsp;</div>
+<div class="row no-padding">
+    <div class="col-md-8 d-flex">
+        <div class="card flex-fill">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title"> Direct Payment Details for <span id="DirectText"></span></h5>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="directpaymentgraph">
+                    @*Direct Payment*@
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <div class="justify-content-between align-items-center">
+                    <h5 class="card-title">GST Payable for <span id="PayableText"></span></h5>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="gstpayablegraph">
+                    @*GST Payable*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="clearfix">&nbsp;</div>
+<div class="row no-padding">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <div class="justify-content-between align-items-center">
+                    <h5 class="card-title"> Project Wise Details <span id="ProjwiseText"></span></h5>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="projectwisegraph">
+                    @*project wise Payment*@
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card ">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title">GST Input for <span id="InputText"></span></h5>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="gstinputgraph">
+                    @*GST Input*@
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="clearfix">&nbsp;</div>
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+@section Scripts{
+    @*<script src="~/Content/assets/plugins/c3-chart/d3.v5.min.js"></script>*@
+    @*<script src="~/Content/assets/plugins/c3-chart/c3.min.js"></script>*@
+    <script src="~/Content/datetimepicker/jquery.datetimepicker.full.min.js"></script>
+    <script src="~/Content/assets/plugins/apexchart/apexcharts.js"></script>
+    <script src="~/Content/assets/plugins/apexchart/DashboardChart.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.dashboarddate').datetimepicker({
+                theme: 'light',
+                format: 'd M Y',
+                timepicker: false,
+                scrollInput: false,
+                maxDate: 0
+            });
+            // LoadCount Details
+            var loadcountdetails = function (sdate, edate) {
+                if (typeof sdate !== 'string') {
+                    sdate = $('#startdate').val();
+                    edate = $('#enddate').val();
+                }
+                if (sdate != "" && edate != "") {
+                    $('#countdtls').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif" /><h2>Please wait....</h2></div>');
+                    $.ajax({
+                        type: 'GET',
+                        url: '/Home/GetCountDetails',
+                        data: { SDate: sdate, EDate: edate },
+                        success: function (data) {
+                            $('#countdtls').empty().append(data);
+                        },
+                        error: function () {
+                            $('#countdtls').empty().append('<div class="panel-body"><img src="/Content/Images/img-warning.png" height="50" width="50"/><b>Could not load data. Please click here to reload...</b><button id="btncountdetails"> <i class="fa fa-refresh"></i> Reload</button></div>');
+                        }
+                    });
+                }
+            }
+            $(document).on('click', "#btncountdetails", function () { daterange(); });
+
+            var daterange = function () {
+                if ($('#startdate').val() != "" && $('#enddate').val() != "") {
+                    var d1 = Date.parse($('#startdate').val());
+                    var d2 = Date.parse($('#enddate').val());
+                    if (isNaN(d1) || isNaN(d2) || d1 <= d2) {
+                        var FromDate = $('#startdate').val();
+                        var ToDate = $('#enddate').val();
+                        $('#PayableText').text(FromDate + " - " + ToDate);
+                        $('#InputText').text(FromDate + " - " + ToDate);
+                        $('#DirectText').text(FromDate + " - " + ToDate);
+                        $('#ProjwiseText').text(FromDate + " - " + ToDate);
+                        loadcountdetails(FromDate, ToDate)
+                        GstPayableChart(FromDate, ToDate);
+                        GstInputChart(FromDate, ToDate);
+                        DirectPaymentChart(FromDate, ToDate);
+                        ProjwiseDetails(FromDate,ToDate);
+                    }
+                    else {
+                        $('#DateErrMsg').text('End date must be greater then start date. Please check and tyr again..');
+                        $('#countdtls').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
+                        $('#directpayment').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
+                        $('#gstinput').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
+                        $('#gstpayable').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
+                        $('#directpayment').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
+                        $('#projectwise').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
+                    }
+                }
+                else {
+                    $('#DateErrMsg').text('Please select both a Start & End Date, then click the Submit button..');
+                    $('#countdtls').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
+                    $('#directpayment').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
+                    $('#gstinput').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
+                    $('#gstpayable').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
+                    $('#directpayment').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
+                    $('#projectwise').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
+                }
+            }
+            daterange();
+            $(document).on('click', "#btnsubmit", daterange);
+            //// Load GST Input Details
+            //var loadgstinput = function (sdate, edate) {
+            //    if (sdate != "" && edate != "") {
+            //        $('#gstinput').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif" /><h2>Please wait....</h2></div>');
+            //        $.ajax({
+            //            type: 'GET',
+            //            url: '/Home/GetGSTInputDetails',
+            //            data: { SDate: sdate, EDate: edate },
+            //            success: function (data) {
+            //                $('#gstinput').empty().append(data);
+            //            },
+            //            error: function () {
+            //                $('#gstinput').empty().append('<div class="panel-body"><img src="/Content/Images/img-warning.png" height="50" width="50"/><b>Could not load data. Please click here to reload...</b><button id="btngstinput"> <i class="fa fa-refresh"></i> Reload</button></div>');
+            //            }
+            //        });
+            //    }
+            //}
+            //$(document).on('click', "#btngstinput", loadgstinput);
+            //// Load GST Payable Details
+            //var loadgstpayable = function (sdate, edate) {
+            //    if (sdate != "" && edate != "") {
+            //        $('#gstpayable').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif" /><h2>Please wait....</h2></div>');
+            //        $.ajax({
+            //            type: 'GET',
+            //            url: '/Home/GetGSTPayableDetails',
+            //            data: { SDate: sdate, EDate: edate },
+            //            success: function (data) {
+            //                $('#gstpayable').empty().append(data);
+            //            },
+            //            error: function () {
+            //                $('#gstpayable').empty().append('<div class="panel-body"><img src="/Content/Images/img-warning.png" height="50" width="50"/><b>Could not load data. Please click here to reload...</b><button id="btngstpayable"> <i class="fa fa-refresh"></i> Reload</button></div>');
+            //            }
+            //        });
+            //    }
+            //}
+            //$(document).on('click', "#btngstpayable", loadgstpayable);
+            //// Load Direct Payment Details
+            //var loaddirectpayment = function (sdate, edate) {
+            //    if (sdate != "" && edate != "") {
+            //        $('#directpayment').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif" /><h2>Please wait....</h2></div>');
+            //        $.ajax({
+            //            type: 'GET',
+            //            url: '/Home/GetDirectPaymentDetails',
+            //            data: { SDate: sdate, EDate: edate },
+            //            success: function (data) {
+            //                $('#directpayment').empty().append(data);
+            //            },
+            //            error: function () {
+            //                $('#directpayment').empty().append('<div class="panel-body"><img src="/Content/Images/img-warning.png" height="50" width="50"/><b>Could not load data. Please click here to reload...</b><button id="btndirectpayment"> <i class="fa fa-refresh"></i> Reload</button></div>');
+            //            }
+            //        });
+            //    }
+            //}
+            //$(document).on('click', "#btndirectpayment", loaddirectpayment);
+
+
+        });
+    </script>
+}
+

@@ -1,0 +1,56 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+@{
+    Layout = null;
+    Response.StatusCode = 404;
+}
+<html>
+<head>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <title>Error</title>
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="">
+                <img src="~/Content/Images/LOGOSDK.png" style="height:50px;" />
+            </a>
+        </div>
+    </nav>
+
+    <div class="col-md-12 clearfix" style=" padding-bottom:20px; margin-top:50px;">
+        <div class="col-md-12 margin-top20">
+            <a class="btn btn-default cpl-md-1 pull-right" href="@Url.Action("Login","Account")">Go To LogIn</a>
+        </div>
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="row text-center" style="margin-top:50px;">
+                    <img src="~/Content/Images/img-warning.png" style="height:100px;" />
+                    <div>
+                        <h1 class="text-success font-b">
+                            Access Denied !!
+                        </h1>
+                        <h3> You do not have necessary permission to access the requested link.</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*error message*@
+    <div id="ErrMsg" style="display:none;">
+        <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+</body>
+</html>
+

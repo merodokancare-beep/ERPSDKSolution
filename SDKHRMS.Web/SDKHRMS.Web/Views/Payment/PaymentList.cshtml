@@ -1,0 +1,103 @@
+﻿@model SDKHRMS.Entities.ViewModels.PaymentViewModel
+@{
+    ViewBag.Title = "Payments";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<div class="page-header">
+    <div class="content-page-header">
+        <h5>Payment Manager</h5>
+        <div class="list-btn">
+            <ul class="filter-list">
+                <li>
+                    <a class="btn btn-primary" href="@Url.Action("AddPayment","Payment",new{PayType="Received"})">
+                        <i class="fa fa-plus-circle me-2" aria-hidden="true"></i>Add Payment Received
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card ribbon-wrapper">
+            <div class="card-header card-buttons">
+                  <div class="ribbon ribbon-success ribbon-left"> Payment Received List <i class="fe fe-arrow-down-left"></i></div>
+                <div class="form-group mb-0 row">
+                    <div class="col-md-10">
+                        <form method="get" action="@Url.Action("PaymentList")" data-search="true" data-otf-ajax="true" data-otf-target="#DataGrid">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1"><i class="fe fe-search"></i></span>
+                                <input type="text"
+                                       id="inputsearch"
+                                       class="form-control"
+                                       placeholder="Search"
+                                       aria-label="Search"
+                                       name="searchTerm"
+                                       aria-describedby="basic-addon1" />
+                                <button class="btn btn-primary" id="search-btn" type="submit">
+                                    Search
+                                </button>
+                                <button onclick="location.href='@Url.Action("PaymentList")'" type="button" class="btn btn-primary d-none" id="clearSearchBtn">Clear Results</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                @Html.Partial("_pvPaymentList", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<div class="page-title-wrapper">
+    <div class="page-title-heading text-primary">
+        <div class="page-title-icon">
+            <i class="fa fa-hand-o-right"></i>
+        </div>
+        <div>
+            <div class="page-title-main-text linebreak">
+                Payment Manager
+            </div>
+            <div class="page-title-sub-text">Payment/Received List</div>
+        </div>
+    </div>
+    <div class="page-title-actions"></div>
+</div>
+<div class="page-content">
+    <div class="well well-sm clearfix row">
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-9">
+                    <form method="get" action="@Url.Action("PaymentList")" data-search="true" data-otf-ajax="true" data-otf-target="#DataGrid">
+                        <div class="input-group">
+                            <input type="text" name="searchTerm" autocomplete="off" class="form-control" placeholder="Search by Expense Type..." />
+                            <span class="input-group-btn">
+                                <button class="btn btn-success pull-left" id="search-btn" value="Search By Name"> <i class="glyphicon glyphicon-search"></i> </button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-3 no-horizantal-padding pull-right">
+                    &nbsp;&nbsp;<a href="@Url.Action("PaymentList")" class="btn btn-success hidden" id="clearSearchBtn">Clear !</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 no-horizantal-padding">
+            <a href="@Url.Action("AddPayment","Payment",new{PayType="Received"})" class="btn btn-danger pull-right">Add Payment Received</a>-->
+            @*<a href="@Url.Action("AddPayment","Payment",new{PayType="Released"})" class="btn btn-danger pull-right margin-right10">Add Payment Released</a>*@
+<!--</div>
+    </div>
+    <hr />
+    <div class="">
+        @Html.Partial("_pvPaymentList", Model)
+    </div>
+</div>-->
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>

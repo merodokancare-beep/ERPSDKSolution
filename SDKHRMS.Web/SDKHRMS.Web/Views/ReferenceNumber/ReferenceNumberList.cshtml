@@ -1,0 +1,96 @@
+﻿@model SDKHRMS.Entities.ViewModels.ReferenceNumberViewModel
+@{
+    ViewBag.Title = "ReferenceNumberList";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+@{
+    List<string> RefType = new List<string> { "Challan", "Letter", "Proforma Invoice", "Purchase Order" };
+}
+<link href="~/Content/Plugins/Select2/newselect2.css" rel="stylesheet" />
+<style>
+    #ItemTable th {
+        text-align: center;
+        background: #b4d7e6;
+        color: #000000;
+    }
+</style>
+<div class="page-header">
+    <div class="content-page-header">
+        <h5>Reference Number List</h5>
+        <div class="list-btn">
+            <ul class="filter-list">
+                <li>
+                    <a class="btn btn-primary" href="/referencenumber/AddReferenceNumber">
+                        <i class="fa fa-plus-circle me-2" aria-hidden="true"></i>Issue Reference No.
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header card-buttons">
+                <div class="form-group mb-0 row">
+                    <div class="col-md-10">
+                        <form method="get" action="@Url.Action("ReferenceNumberList")" data-search="true" data-otf-ajax="true" data-otf-target="#DataGrid" id="sForm">
+                            <div class="input-group mb-3 row">
+                                <div class="col-md-6">
+                                    @Html.DropDownList("FYR", new SelectList(Model.FiscalYearDDList, "FiscalYear", "FiscalYear", @ViewBag.FiscalYear), "----Select Year----", new { @class = "form-control ddSelect2", id = "yr", @Value = @ViewBag.FiscalYear })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.DropDownList("RefType", new SelectList(RefType, @ViewBag.Type), "-- View All --", new { @class = "form-control ddSelect2", id = "type", @Value = @ViewBag.FiscalYear })
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <span class="badge bg-danger">Cancelled Ref. No.</span>
+                <span class="badge bg-success">Active Ref. No.</span>
+            </div>
+            <div class="card-body">
+                @Html.Partial("_pvReferenceNoList", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    @*@Scripts.Render("~/bundles/jqueryval")*@
+    <script src="~/Content/Plugins/Select2/select2.min.js"></script>
+    <script type="text/javascript">
+        //$('.modal').appendTo('body');
+        $(document).on('change', '#yr', function () {    // for on change
+            $("#sForm").submit();
+        })
+        $(document).on('change', '#type', function () {    // for on change
+            $("#sForm").submit();
+        })
+
+        $(document).ready(function () {
+            $('.ddSelect2').select2({ width: '100%' });
+            var expandRow = function () {
+                var trval = $(this).attr("id");
+                var REFID = trval.split('_');
+                $.ajax({
+                    url: "/ReferenceNumber/OfficalDocsListByID",
+                    type: 'GET',
+                    data: { ID: REFID[1] },
+                    success: function (data) {
+                        $('#' + REFID[1]).html(data);
+                        //console.log(data);
+                    }
+                });
+            }
+            $(document).on('click', '.RefID', expandRow);
+
+        });
+    </script>
+}
+
+
+
+
+

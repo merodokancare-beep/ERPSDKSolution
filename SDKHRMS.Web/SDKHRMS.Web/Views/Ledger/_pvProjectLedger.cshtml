@@ -1,0 +1,69 @@
+﻿
+@model  SDKHRMS.Entities.ViewModels.ProjectLedgerVM
+<div id="DataGrid">
+    @if (Model.LedgerViews.Count() > 0)
+    {
+        <div class="alert alert-info">
+            <i>
+                Showing Results From <b class="text-warning">@Model.StartDate</b> To  <b class="text-warning">@Model.EndDate</b>
+            </i>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-condensed table-bordered" id="saleinvtable">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="vertical-align: middle; width: 10%">
+                            Date
+                        </th>
+                        <th class="text-center" style="vertical-align: middle; width: 60%">
+                            Narration
+                        </th>
+                        <th class="text-center" style="vertical-align: middle; width: 15%">
+                            Debit (&#8377;)
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;width:15%">
+                            Credit (&#8377;)
+                        </th>
+                        @*<th class="text-center" style="vertical-align: middle;width:5%;">
+                                Action
+                            </th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.LedgerViews)
+                    {
+                        <tr>
+                            <td class="" style="vertical-align:middle;">
+                                Date: @item.TransDate.Value.ToString("dd MMM yyyy")
+                            </td>
+                            <td class="text-center" style="vertical-align:middle;">
+                                @item.Remarks
+                            </td>
+                            <td class="text-center" style="vertical-align:middle;">
+                                @item.Debit.ToString("0.00")
+                            </td>
+                            <td class="text-center" style="vertical-align:middle;">
+                                @item.Credit.ToString("0.00")
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="2" class="text-center"><b>Total</b></td>
+                        <td class="text-center"><b>@Model.LedgerViews.Sum(x => x.Debit).ToString("0.00")</b></td>
+                        <td class="text-center"><b>@Model.LedgerViews.Sum(x => x.Credit).ToString("0.00")</b></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <img src="~/Content/Images/no_record.png" /><br />
+            <span class="text-muted">No records available or your searched record in not available..</span>
+        </div>
+    }
+</div>
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>

@@ -1,0 +1,58 @@
+﻿@model SDKHRMS.Entities.ViewModels.ReferenceNumberViewModel
+
+<div id="DataGrid">
+    @if (@Model.OfficalLetterDocList.Count() > 0)
+    {
+
+        <table class="table table-hover table-striped table-responsive" id="ItemTable">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Details</th>
+                    <th scope="col">File</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{int n = 1;}
+                @foreach (var item in @Model.OfficalLetterDocList)
+                {
+                    <tr>
+                        <td class="text-center" style="vertical-align: middle;">
+                            @n
+                        </td>
+                        <td class="text-center" style="vertical-align: middle;">
+                            @item.DocName
+                        </td>
+                        <td class="text-center" style="vertical-align: middle;">
+                            <a href="/UploadFile/OfficalLetterDocs/@item.DocPath" class="btn btn-sm btn-outline-light" target="_blank">View Attachment</a>
+                        </td>
+                        <td class="text-center" style="vertical-align:middle; width: 10px;">
+                            <form action="@Url.Action("DeleteOfficalDoc", "ReferenceNumber", new { Area = "" })" method="post" data-otf-ajax="true" data-otf-target="#DataGrid">
+                                @Html.AntiForgeryToken()
+                                @Html.Hidden("ID", item.DocID)
+                                <a href="@Url.Action("DeleteOfficalDoc","ReferenceNumber", new { Area = "", DocID = @item.DocID, RefID = @item.ReferenceID, FileName = @item.DocPath  })" class="delete btn-action-icon bg-danger-light" data-toggle="tooltip" data-placement="bottom" title="Delete Unit Details" data-record="@item.DocName">
+                                    <i class="fe fe-trash-2"></i>
+                                </a>
+                            </form>
+
+                        </td>
+                    </tr>
+                    n++;
+                }
+
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h3>No record found...</h3>
+    }
+
+
+</div>
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+
+

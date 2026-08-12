@@ -1,0 +1,77 @@
+/* Iconsax Webfont CSS */
+@import url('https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css');
+
+@font-face {
+  font-family: 'iconsax';
+  src: url('../fonts/iconsax.eot?yjegnn');
+  src: url('../fonts/iconsax.eot?yjegnn#iefix') format('embedded-opentype'),
+       url('../fonts/iconsax.ttf?yjegnn') format('truetype'),
+       url('../fonts/iconsax.woff?yjegnn') format('woff'),
+       url('../fonts/iconsax.svg?yjegnn#iconsax') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+.isax {
+  font-family: 'iconsax' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: inline-block;
+}
+
+/* Common icon mappings for Kanakku navigation */
+.isax-home-2:before { content: "\eab2"; }
+.isax-element-4:before { content: "\ea34"; }
+.isax-element-45:before { content: "\ea34"; }
+.isax-shapes-1:before { content: "\ebe4"; }
+.isax-shapes5:before { content: "\ebe4"; }
+.isax-category-2:before { content: "\e9b4"; }
+.isax-category-25:before { content: "\e9b4"; }
+.isax-profile-2user:before { content: "\eb7b"; }
+.isax-profile-2user5:before { content: "\eb7b"; }
+.isax-receipt-item:before { content: "\eb99"; }
+.isax-receipt-item5:before { content: "\eb99"; }
+.isax-box:before { content: "\e96f"; }
+.isax-box5:before { content: "\e96f"; }
+.isax-strongbox:before { content: "\ec19"; }
+.isax-strongbox5:before { content: "\ec19"; }
+.isax-lifebuoy:before { content: "\ead1"; }
+.isax-lifebuoy5:before { content: "\ead1"; }
+.isax-bookmark-2:before { content: "\e96c"; }
+.isax-bookmark-25:before { content: "\e96c"; }
+.isax-note:before { content: "\eb4c"; }
+.isax-note5:before { content: "\eb4c"; }
+.isax-setting-2:before { content: "\ebde"; }
+.isax-setting-25:before { content: "\ebde"; }
+.isax-search-normal:before { content: "\ebcb"; }
+.isax-notification-bing:before { content: "\eb57"; }
+.isax-notification-bing5:before { content: "\eb57"; }
+.isax-moon:before { content: "\eb36"; }
+.isax-sun-1:before { content: "\ec1d"; }
+.isax-add:before { content: "\e908"; }
+.isax-document-text:before { content: "\ea26"; }
+.isax-document-text-1:before { content: "\ea27"; }
+.isax-money-send:before { content: "\eb30"; }
+.isax-money-add:before { content: "\eb2a"; }
+.isax-money-recive:before { content: "\eb2d"; }
+.isax-document:before { content: "\ea18"; }
+.isax-document-download:before { content: "\ea1e"; }
+.isax-document-forward:before { content: "\ea21"; }
+.isax-clock:before { content: "\e9c6"; }
+.isax-close-circle:before { content: "\e9c8"; }
+.isax-profile-circle:before { content: "\eb7d"; }
+.isax-logout:before { content: "\eae9"; }
+.isax-setting:before { content: "\ebdd"; }
+.isax-row-horizontal:before { content: "\ebb7"; }
+.isax-grid-9:before { content: "\ea96"; }
+.isax-grid-4:before { content: "\ea91"; }
+.isax-grid-2:before { content: "\ea8f"; }
+.isax-slider-vertical-1:before { content: "\ec00"; }
+.isax-sidebar-left:before { content: "\ebf3"; }

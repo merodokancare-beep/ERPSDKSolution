@@ -1,0 +1,434 @@
+﻿@model SDKHRMS.Entities.ViewModels.InvoiceViewModel
+@{
+    Layout = null;
+    decimal CGST = @Model.ItemsViewList.Sum(x => x.CGSTAmt);
+    decimal SGST = @Model.ItemsViewList.Sum(x => x.SGSTAmt);
+    decimal TTax = CGST + SGST;
+    //decimal NetAmt = @Model.SaleInvoiceKeyModel.IncludingTaxAmt - @Model.SaleInvoiceKeyModel.AdvanceReceived;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>SDK Solutions ||Generate Invoice </title>
+    @*<link href="~/Content/invoice.css" rel="stylesheet" />*@
+    @Styles.Render("~/Content/css")
+
+    <style>
+        .fontsize18 {
+            font-size: 18px;
+            color: #4d4d4d;
+            font-weight: 600;
+        }
+
+        .fontsize16 {
+            font-size: 16px;
+            color: #4d4d4d;
+        }
+
+        .custom-table, .custom-table-all {
+            border-collapse: collapse;
+            border-spacing: 0;
+            width: 100%;
+            display: table;
+        }
+
+        .custom-table-all {
+            border: 1px solid #ccc;
+        }
+
+        .mt-30 {
+            margin-top: 30px;
+        }
+
+        .img-responsive {
+            display: block;
+            max-width: 20%;
+            height: auto;
+        }
+
+        .invoice-wrapper {
+            background: #fff;
+            margin: 60px 0 40px;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .inv-content {
+            border: none;
+        }
+
+        .invoice-header {
+            border: none;
+            padding: 0px;
+            /*border-b*/
+        }
+
+        /* .tax-invoice {
+            color: #7539FF;
+            font-weight: 700;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }*/
+
+        .invoice-title {
+            color: #0092cb;
+            font-size: 24px;
+            font-weight: 700;
+            /*margin-bottom: 10px;*/
+            display: inline-block;
+        }
+
+        .gst-details-four:last-child {
+            font-size: 16px;
+            margin: 0;
+            color: #4d4d4d;
+        }
+
+        .inv-header-right {
+            text-align: right;
+        }
+
+        .inv-details {
+            position: relative;
+        }
+
+        .inv-date:last-child {
+            margin-right: 0;
+            /*margin-bottom: 20px;*/
+        }
+
+        .inv-date {
+            width: 100%;
+            float: right;
+            color: #000;
+            font-size: 18px;
+            font-weight: normal;
+        }
+
+            .inv-date span {
+                color: #4d4d4d;
+                /*font-weight: 700;*/
+                font-size: 18px;
+                margin-left: 3px;
+            }
+
+        .inv-customer-add {
+            border: solid 1px #ccc;
+            border-radius: 15px;
+            padding: 15px;
+            color: #4d4d4d;
+        }
+
+        .inv-customer-add-header {
+            color: #0092cb;
+            font-size: 18px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .inv-total {
+            color: #0092cb;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .total-amountdetails {
+            padding: 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+            .total-amountdetails p {
+                /*text-align: center;*/
+                font-size: 16px;
+                margin: 0;
+                padding: 20px 0;
+            }
+
+            .total-amountdetails span {
+                color: #4d4d4d;
+            }
+
+        .border-top {
+            border-top: solid 1px #ccc;
+        }
+
+        .border-bottom {
+            border-bottom: solid 1px #ccc;
+        }
+
+        img {
+            max-width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+<body style="background:#fff;">
+    <div class="inv-customer-add">
+        <div class="col-md-12 text-center border-bottom">
+            <div class="invoice-title tax-invoice" style="color: #4d4d4d !important ">TAX INVOICE</div>
+            @*<div>
+                    <img class="logo-lightmode" src="~/Content/Images/LOGOSDK.png" alt="Logo">
+                </div>*@
+            <div class="company-details">
+                <span class="company-name invoice-title">M/S SDK Solutions</span>
+                <div class="gst-details-four">
+                    @*<span class="">M/S SDK Solutions</span><br />*@
+                    <span class="">3057/3/11/N, Jyoti Nagar, P.O Sevok Road, Siliguri, WB - 734001</span><br />
+                    <span class="">Email: info@sdksolutions.in || Mobile No.: +91 97331 16514 || GSTIN: 19AMVPA4565H1ZM</span><br /><br />
+                </div>
+            </div>
+        </div>
+        <div class="inv-content">
+
+            <div class="col-md-12 mt-30">
+                <table class="" width="100%" style="width:100%;page-break-inside: avoid">
+                    <tr style="page-break-inside: avoid">
+                        <td class="text-left" style="width:55%;">
+                            <strong class="inv-customer-add-header">Invoice To: </strong>
+                        </td>
+                        <td class="text-left" style="width:5%">
+                            &nbsp;
+                        </td>
+                        <td class="inv-header-right" style="width:40%;">
+                            <strong class="inv-customer-add-header">Invoice Details: </strong>
+                    </tr>
+                    <tr style="color: #000;">
+                        <td class="text-left" style="width:55%;">
+                            <span class="fontsize18">To,</span><br />
+                            <span class="fontsize16">@Model.SaleInvoiceKeyModel.InvoiceTo</span><br />
+                            <span class="fontsize16">@Model.VendorDetails.VenderName</span><br />
+                            <span class="fontsize16">@Model.VendorDetails.VenderAddress</span><br />
+                            @if (!string.IsNullOrEmpty(@Model.VendorDetails.GSTNo) && @Model.VendorDetails.GSTNo.Length > 5)
+                            {
+                                <span class="fontsize16">GSTIN: @Model.VendorDetails.GSTNo</span><br />
+                            }
+                        </td>
+                        <td class="text-left" style="width:5%">
+                            &nbsp;
+                        </td>
+                        <td class="inv-header-right" style="width:40%;">
+                            <div class="inv-details">
+                                <div class="inv-date">Invoice Date:<span>@Model.SaleInvoiceKeyModel.InvoiceDate.ToString("dd MMM yyyy")</span></div>
+                                <div class="inv-date">Invoice No.:<span>@Model.SaleInvoiceKeyModel.ReferenceNo</span></div>
+                                @if (!string.IsNullOrEmpty(@Model.SaleInvoiceKeyModel.OrderNo))
+                                {
+                                    <div class="inv-date">Order Date:<span>@Model.SaleInvoiceKeyModel.OrderDate.Value.ToString("dd MMM yyyy")</span></div>
+                                    <div class="inv-date">Order No.:<span>@Model.SaleInvoiceKeyModel.OrderNo</span></div>
+
+                                }
+                            </div>
+
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br />
+            @if (Model.ItemsViewList.Count() > 0)
+            {
+                <div class="col-md-12 border-top">
+                    <table class="table table-bordered mt-30" width="100%">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="vertical-align:middle">
+                                    Sl No.
+                                </th>
+                                <th class="text-center" style="vertical-align:middle">
+                                    Item Name
+                                </th>
+                                <th class="text-center" style="vertical-align:middle">
+                                    HSN Code
+                                </th>
+                                <th class="text-center" style="vertical-align:middle">
+                                    GST %
+                                </th>
+                                <th class="text-center" style="vertical-align:middle">
+                                    Qty
+                                </th>
+                                <th class="text-center" style="vertical-align:middle">
+                                    Rate (&#8377)
+                                </th>
+                                <th class="text-center" style="vertical-align:middle">
+                                    Amount (&#8377)
+                                </th>
+                                @if (@Model.ItemsViewList[0].IGSTAmt != 0)
+                                {
+                                    <th class="text-center" style="vertical-align:middle">
+                                        IGST (&#8377)
+                                    </th>
+                                }
+                                else
+                                {
+                                    <th class="text-center" style="vertical-align:middle">
+                                        CGST (&#8377)
+                                    </th>
+                                    <th class="text-center" style="vertical-align:middle">
+                                        SGST (&#8377)
+                                    </th>
+                                }
+                                <th class="text-center" style="vertical-align:middle">
+                                    Total (&#8377)
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{int i = 1;}
+                            @foreach (var item in Model.ItemsViewList)
+                            {
+                                <tr style="page-break-inside: avoid; color: #000;">
+                                    <td class="text-center" style="vertical-align:middle">
+                                        @i
+                                    </td>
+                                    <td class="text-left" style="vertical-align:middle">
+                                        @item.ItemName
+                                    </td>
+                                    <td class="text-center" style="vertical-align:middle">
+                                        @item.ItemHSNCode
+                                    </td>
+                                    <td class="text-center" style="vertical-align:middle">
+                                        @item.GSTPercentage
+                                    </td>
+                                    <td class="text-center" style="vertical-align:middle">
+                                        @item.Qty
+                                    </td>
+                                    <td class="text-right" style="vertical-align:middle">
+                                        @item.Rate.ToString("0.00")
+                                    </td>
+                                    <td class="text-right" style="vertical-align:middle">
+                                        @item.Amount.ToString("0.00")
+                                    </td>
+                                    @if (@item.IGSTAmt != 0)
+                                    {
+                                        <td class="text-right" style="vertical-align:middle">
+                                            @item.IGSTAmt.ToString("0.00")
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-right" style="vertical-align:middle">
+                                            @item.CGSTAmt.ToString("0.00")
+                                        </td>
+                                        <td class="text-right" style="vertical-align:middle">
+                                            @item.SGSTAmt.ToString("0.00")
+                                        </td>
+                                    }
+                                    <td class="text-right" style="vertical-align:middle">
+                                        @item.TotalAmt.ToString("0.00")
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+
+                            <tr style="background:#ccc;color:#000; page-break-inside: avoid">
+                                <td colspan="6" class="text-right">Total</td>
+                                <td class="text-right">@Model.ItemsViewList.Sum(x => x.Amount).ToString("0.00")</td>
+                                @if (@Model.ItemsViewList[0].IGSTAmt != 0)
+                                {
+                                    <td class="text-right">@Model.ItemsViewList.Sum(x => x.IGSTAmt).ToString("0.00")</td>
+                                }
+                                else
+                                {
+                                    <td class="text-right">@Model.ItemsViewList.Sum(x => x.CGSTAmt).ToString("0.00")</td>
+                                    <td class="text-right">@Model.ItemsViewList.Sum(x => x.SGSTAmt).ToString("0.00")</td>
+                                }
+                                <td class="text-right">@Model.ItemsViewList.Sum(x => x.TotalAmt).ToString("0.00")</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <hr />
+                    <div class="col-md-12 inv-header-right">
+                        <div class="inv-details">
+                            <div class="inv-date">Total Taxable Value: &#8377 @Model.ItemsViewList.Sum(x => x.Amount).ToString("0.00")</div>
+                            <div class="inv-date">Total Taxable Value: &#8377 @Model.ItemsViewList.Sum(x => x.Amount).ToString("0.00")</div>
+                            @*<strong class="pull-right inv-total">Total Taxable Value: &#8377 @Model.ItemsViewList.Sum(x => x.Amount).ToString("0.00")</strong>*@<br />
+                            @if (@Model.ItemsViewList[0].IGSTAmt != 0)
+                            {
+                                <div class="inv-date">Total Tax Amount: &#8377 @Model.ItemsViewList.Sum(x => x.IGSTAmt).ToString("0.00")</div>
+                            }
+                            else
+                            {
+                                <div class="inv-date">Total Tax Amount: &#8377 @TTax.ToString("0.00")</div>
+                            }
+                            @if (@ViewBag.RoundOfValue.ToString("0.00") != "0.00")
+                            {
+                                <div class="inv-date">Total Amount: &#8377 @Model.ItemsViewList.Sum(x => x.TotalAmt).ToString("0.00")</div>
+                                <div class="inv-date">Round Of Value: &#8377  @ViewBag.RoundOfValue.ToString("0.00")</div>
+                                <div class="inv-date">Total Value of Invoice: &#8377 @ViewBag.RoundOfAmount.ToString("0.00")</div>
+                            }
+                            else
+                            {
+                                <div class="inv-date">Total Value of Invoice: &#8377 @Model.ItemsViewList.Sum(x => x.TotalAmt).ToString("0.00")</div>
+                            }
+
+                            @if (@Model.SaleInvoiceKeyModel.AdvanceReceived > 0)
+                            {
+                                <div class="inv-date">@Model.SaleInvoiceKeyModel.ReceivedRemarks: (&#8377 @Model.SaleInvoiceKeyModel.AdvanceReceived.ToString("0.00"))</div>
+                                <div class="inv-date">Net Payable Amount: &#8377 @Model.SaleInvoiceKeyModel.BalanceAmount.ToString("0.00")</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="total-amountdetails">
+                    <p>Total amount ( in words): <span>Rupees @Model.FigureAmount Only.</span></p>
+                </div>
+            }
+            else
+            {
+                <div class="col-md-12" style="margin-top:30px; margin-bottom:20px;">
+                    <h3>No record found...</h3>
+                </div>
+            }
+            <div class="col-md-12 mt-30">
+                <table class="" width="100%" style="width:100%;page-break-inside: avoid">
+                    <tr style="color: #000;">
+                        <td class="text-left" style="width:65%;">
+                            <span class="fontsize18">Account Details</span><br />
+                            <span class="fontsize16">Name: SDK Solutions</span><br />
+                            <span class="fontsize16">Bank Name: IDFC First</span><br />
+                            <span class="fontsize16">Branch: Gangtok Branch</span><br />
+                            <span class="fontsize16">IFSC: IDFB0061232</span><br />
+                            @*<span class="fontsize16">SWIFT Code: IDFBINBBMUM</span><br />*@
+                            <span class="fontsize16">Account No.: 10152651115</span>
+                        </td>
+                        <td class="text-left" style="width:5%">
+                            &nbsp;
+                        </td>
+                        <td class="text-left" style="width:30%;">
+                            <div class="text-center">
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <span class="">Authorised Signatory</span><br />
+                                <span class="">SDK Solutions</span><br />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br />
+            <div class="col-md-12 mt-30">
+                <div class="terms-condition">
+                    <span>Declaration:</span>
+                    <ol>
+                        <li>
+                            <small>Please pay by A/C payee cheque only in fabour of <b>"SDK Solutions"</b></small><br />
+                        </li>
+                        <li>
+                            <small>Goods once sold cannot be exchange or taken back</small><br />
+                        </li>
+                        <li>
+                            <small>All disputes subject to 'West Bengal' jurisdiction</small><br />
+                        </li>
+                        <li>
+                            <small>Warranty of all items are covered by the principles or by their authorised service center. We do not have any legal of financial liability for the same</small><br />
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

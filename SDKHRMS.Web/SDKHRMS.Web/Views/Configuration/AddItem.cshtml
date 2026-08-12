@@ -1,0 +1,68 @@
+﻿@model  SDKHRMS.Entities.ViewModels.MstConfigurationViewModel
+@{
+    ViewBag.Title = "Configuration : Item Master";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<div class="page-title-wrapper">
+    <div class="page-title-heading text-primary">
+        <div class="page-title-icon">
+            <i class="fa fa-hand-o-right"></i>
+        </div>
+        <div>
+            <div class="page-title-main-text linebreak">
+                Item Master
+            </div>
+            <div class="page-title-sub-text">Configuration/Items/Add</div>
+        </div>
+    </div>
+    <div class="page-title-actions">
+    </div>
+</div>
+@using (Html.BeginForm())
+{
+    <div class="page-content clearfix">
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        <div class="col-md-12">
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.LabelFor(m => m.utblMstItem.ItemName, new { @class = "control-label required" })
+                        @Html.TextBoxFor(m => m.utblMstItem.ItemName, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Item Name" })
+                        @Html.ValidationMessageFor(m => m.utblMstItem.ItemName)
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(m => m.utblMstItem.ItemHSNCode, new { @class = "control-label required" })
+                        @Html.TextBoxFor(m => m.utblMstItem.ItemHSNCode, new { @class = "form-control", autocomplete = "off", @placeholder = "HSN Code" })
+                        @Html.ValidationMessageFor(m => m.utblMstItem.ItemHSNCode)
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(m => m.utblMstItem.GSTPercentage, new { @class = "control-label required" })
+                        @Html.TextBoxFor(m => m.utblMstItem.GSTPercentage, new { @class = "form-control", autocomplete = "off", @placeholder = "Gst %" })
+                        @Html.ValidationMessageFor(m => m.utblMstItem.GSTPercentage)
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row margin-top10">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        @Html.LabelFor(m => m.utblMstItem.ItemDescription, new { @class = "control-label" })
+                        @Html.TextAreaFor(m => m.utblMstItem.ItemDescription, new { @class = "form-control", autocomplete = "off", @placeholder = "Enter Item Description", @style = "resize:none;" })
+                        @Html.ValidationMessageFor(m => m.utblMstItem.ItemDescription)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="well well-sm no-margin-bottom col-md-12 col-lg-12 text-right">
+        <div class="form-horizontal">
+            @Html.ActionLink("Back to List", "Itemlist", null, new { @class = "btn btn-default pull-left" })
+            <input type="submit" value="Save" id="save" class="btn btn-primary" />
+        </div>
+    </div>
+}
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>

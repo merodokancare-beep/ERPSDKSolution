@@ -1,0 +1,155 @@
+﻿@model System.Data.DataTable
+@{
+    int total_rows = Model.Rows.Count;
+}
+<style type="text/css">
+    .highlight {
+        background-color: #fff;
+    }
+    /*Table scroll */
+    .table-scroll {
+        position: relative;
+        /*max-width: 600px;*/
+        margin: auto;
+        overflow: hidden;
+        border: 1px solid #d9d9d9;
+    }
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 1px;
+    }
+    .table-scroll .colhead {
+        padding: 4px 8px;
+        border: 1.7px solid #d9d9d9;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+        background-color: #d9d9d9;
+        border-radius: 0px;
+    }
+    .table-scroll th, .table-scroll td {
+        padding: 4px 8px;
+        border: 1.5px solid #d9d9d9;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+        border-radius: 1px;
+    }
+    .table-scroll thead, .table-scroll tfoot {
+        background: #f9f9f9;
+    }
+</style>
+<div id="" class="">
+    @if (total_rows != 0)
+    {
+        <div id="table-scroll" class="table-scroll table-responsive">
+            <div class="table-wrap">
+                <table class="main-table">
+                    <thead>
+                        <tr>
+                            @foreach (System.Data.DataColumn col in Model.Columns)
+                            {
+                                if (col.ColumnName.ToString() == "EmpName")
+                                {
+                                    <th class="fixed-side text-center" scope="col">Employee Name</th>
+                                }
+                                else
+                                {
+                                    <th class="colhead text-center" scope="col" style="vertical-align: middle; white-space: nowrap">@col.ColumnName</th>
+                                }
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (System.Data.DataRow item in Model.Rows)
+                        {
+                            <tr>
+                                @foreach (System.Data.DataColumn col in Model.Columns)
+                                {
+                                    if (item[col.ColumnName].ToString() == "H")
+                                    {
+                                        <td class="highlight text-center" style="vertical-align: middle; white-space: nowrap; color: #ff6a00;">H</td>
+                                    }
+                                    else if (item[col.ColumnName].ToString() == "S")
+                                    {
+                                        <td class="highlight text-center" style="vertical-align: middle; white-space: nowrap; color: #ff6a00;">S</td>
+                                    }
+                                    else if (col.ColumnName.ToString() == "EmpName")
+                                    {
+                                        <th class="fixed-side highlight text-left" style="vertical-align: middle; white-space: nowrap;">@item[col.ColumnName]</th>
+                                    }
+                                    else if (item[col.ColumnName].ToString() == "NR")
+                                    {
+                                        <td class="highlight text-center" style="vertical-align: middle; white-space: nowrap;">NR</td>
+                                    }
+                                    else if (item[col.ColumnName].ToString() == "Ab")
+                                    {
+                                        <td class="highlight text-center" style="vertical-align: middle; white-space: nowrap;background-color: #fecccc; border: 1px solid #eaeaea;">Ab</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center" style="vertical-align: middle; white-space: nowrap; background-color:#c4f5c1; ">@item[col.ColumnName]</td>
+                                    }
+                                }
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class=" col-md-2" style="margin-top: 5px;">
+            <a href="@Url.Action("ExportAsPDF", "Attendance", new { month = @ViewBag.Month, year = @ViewBag.Year} )" class=" btn btn-sm btn-primary" target="_blank">Export As PDF</a>
+        </div>
+
+        <div class="table clearfix">
+            <div class="col-md-12 pull-left margin-top20">
+                <table class="table-condensed">
+                    <tr>
+                        <td>
+                            <strong>Legends: </strong>
+                        </td>
+                        <td>
+                            <strong style="background-color: #fecccc; border: 1px solid #eaeaea; "><span style="padding:12px;">Ab</span></strong>Absent
+                        </td>
+                        <td>
+                            <strong style="border: 1px solid #cccccc; color: #ff6a00; "><span style="padding:12px;">H</span></strong> Holiday
+                        </td>
+                        <td>
+                            <strong style="border: 1px solid #cccccc; background-color: #ff6a00; color: #c4f5c1"><span style="padding:12px;">Hw</span></strong> Holiday Work
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong style="background-color: #c4f5c1; border: 1px solid #eaeaea;"><span style="padding:12px;">P</span></strong> Present
+                        </td>
+                        <td>
+                            <strong style="border: 1px solid #cccccc;"><span style="padding:12px;">NR</span></strong>Not Reported
+                        </td>
+                        <td>
+                            <strong style="border: 1px solid #cccccc; color: #ff6a00; "><span style="padding:12px;">S</span></strong> Sunday
+                        </td>
+                        <td>
+                            <strong style="border: 1px solid #cccccc; background-color: #FFC107; color: #558B2F; "><span style="padding:12px;">Sw</span></strong> Sunday Work
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="clearfix col-md-12"></div>
+    }
+    else
+    {
+        <h3 class="text-center">No record found...</h3>
+    }
+</div>
+
+

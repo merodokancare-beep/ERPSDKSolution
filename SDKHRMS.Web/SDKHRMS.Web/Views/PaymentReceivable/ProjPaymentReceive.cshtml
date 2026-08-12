@@ -1,0 +1,273 @@
+﻿@model  SDKHRMS.Entities.ViewModels.ProjPaymentReceivedAdd
+@{
+    ViewBag.Title = "Payment: Receivables";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+    List<string> modes = new List<string>() { "Cash", "Cheque", "Netbanking", "Others" };
+    string mode = Model.ProjPaymentReceived != null ? Model.ProjPaymentReceived.ReceivedMode : "";
+    //string salinv = Model.ProjPaymentReceived != null ? Model.ProjPaymentReceived.SaleInvoiceID : "";
+}
+<link href="~/Content/datetimepicker/jquery.datetimepicker.min.css" rel="stylesheet" />
+<link href="~/Content/Plugins/Select2/newselect2.css" rel="stylesheet" />
+<div class="page-header">
+    <div class="content-page-header">
+        @*<h5>Payment Manager</h5>*@
+        <h5>Project's Payment Received</h5>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                @*<h5 class="card-title">Project's Payment Recieve</h5>*@
+                <h5 class="card-title">Add/Edit Project's Payment Details</h5>
+            </div>
+            <div class="card-body card-buttons">
+                @using (Html.BeginForm("ProjPaymentReceive", "PaymentReceivable", FormMethod.Post, new { data_toggle = "validator", @novalidate = true, enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    if (Model.ProjPaymentReceived != null)
+                    {
+                        @Html.HiddenFor(m => m.ProjPaymentReceived.ProjPaymentReceiveID)
+                        @Html.HiddenFor(m => m.ProjPaymentReceived.UploadedFile)
+                    }
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="form-group row">
+                                <label class="control-label required">Project Name</label>
+                                @Html.DropDownListFor(m => m.ProjPaymentReceived.ProjectID, new SelectList(Model.ProjectDD, "ProjectID", "ProjectName"), "-- Select Project Name --", new { @class = "form-control ddSelect2", @id = "proj" })
+                                @Html.ValidationMessageFor(m => m.ProjPaymentReceived.ProjectID)
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group row">
+                                <label class="required">Payment Receive Date</label>
+                                @if (@ViewBag.ID != 0)
+                                {
+                                    @Html.TextBoxFor(m => m.ProjPaymentReceived.ReceivedDate, new { @class = "form-control", @id = "txtdate", @Value = @Model.ProjPaymentReceived.ReceivedDate.ToString("dd MMM yyyy") })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(m => m.ProjPaymentReceived.ReceivedDate, new { @class = "form-control", @id = "txtdate" })
+                                }
+                                @Html.ValidationMessageFor(m => m.ProjPaymentReceived.ReceivedDate)
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group row">
+                                <label class="required">Payment Receive Mode</label>
+                                @Html.DropDownListFor(m => m.ProjPaymentReceived.ReceivedMode, new SelectList(modes), "-- Select Mode --", new { @class = "form-control ddSelect2", @id = "ddMode" })
+                                @Html.ValidationMessageFor(model => model.ProjPaymentReceived.ReceivedMode)
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="d-flex bd-highlight alert alert-info">
+                                @*<div class="p-2 w-75 bd-highlight">Amount Segregation</div>*@
+                                <div class="p-2 bd-highlight">
+                                    @Html.CheckBoxFor(m => m.ProjPaymentReceived.IsAdvance, new { @class = "control-label" })
+                                    <span>Is Advance Received? </span><i class="fa fa-info-circle text-info" title="Checked on Check box, If Receive Amount is Advance."></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group row">
+                                <label class="required">Sale Invoice </label>
+                                @Html.DropDownListFor(m => m.ProjPaymentReceived.SaleInvoiceID, new SelectList(string.Empty, "SaleInvoiceID", "InvRefNo"), "-- Select Invoice --", new { @class = "form-control ddSelect2", @id = "inv" })
+                                @Html.ValidationMessageFor(m => m.ProjPaymentReceived.SaleInvoiceID)
+                            </div>
+                        </div>
+                        <div class="col-xl-4">
+                            <div class="form-group row">
+                                <label class="required">TDS Amount</label>
+                                @Html.TextBoxFor(m => m.ProjPaymentReceived.TDSDeductionAmt, new { @class = "form-control", data_bs_toggle = "tooltip", data_bs_placement = "top", title = "TDS Deduction Amount (Refundable Amount)", @id = "tds", @Value = @Model.ProjPaymentReceived != null ? Model.ProjPaymentReceived.TDSDeductionAmt.ToString("0.00") : "" })
+                                @Html.ValidationMessageFor(m => m.ProjPaymentReceived.TDSDeductionAmt)
+                            </div>
+                        </div>
+                        <div class="col-xl-4">
+                            <div class="form-group row">
+                                <label class="required">GST Amount</label>
+                                @Html.TextBoxFor(m => m.ProjPaymentReceived.GstDeductionAmt, new { @class = "form-control", data_bs_toggle = "tooltip", data_bs_placement = "top", title = "GST Deduction Amount (Refundable Amount)", @id = "gst", @Value = @Model.ProjPaymentReceived != null ? Model.ProjPaymentReceived.GstDeductionAmt.ToString("0.00") : "" })
+                                @Html.ValidationMessageFor(m => m.ProjPaymentReceived.GstDeductionAmt)
+                            </div>
+                        </div>
+                        <div class="col-xl-4">
+                            <div class="form-group row">
+                                <label class="required">Security Deposit Amount</label>
+                                @Html.TextBoxFor(m => m.ProjPaymentReceived.SecurityDepositAmt, new { @class = "form-control", data_bs_toggle = "tooltip", data_bs_placement = "top", title = "Security Deposit Amount (Refundable Amount)", @id = "sd", @Value = @Model.ProjPaymentReceived != null ? Model.ProjPaymentReceived.SecurityDepositAmt.ToString("0.00") : "" })
+                                @Html.ValidationMessageFor(m => m.ProjPaymentReceived.SecurityDepositAmt)
+                            </div>
+                        </div>
+                        <div class="col-xl-4">
+                            <div class="form-group row">
+                                <label class="required">Other Deduction Amount</label>
+                                @Html.TextBoxFor(m => m.ProjPaymentReceived.OtherDeductionAmt, new { @class = "form-control", data_bs_toggle = "tooltip", data_bs_placement = "top", title = "Non-Refundable Deduction Amount (like Stamp,Cheque,etc)", @id = "other", @Value = @Model.ProjPaymentReceived != null ? Model.ProjPaymentReceived.OtherDeductionAmt.ToString("0.00") : "" })
+                                @Html.ValidationMessageFor(m => m.ProjPaymentReceived.OtherDeductionAmt)
+                            </div>
+                        </div>
+                        <div class="col-xl-4">
+                            <div class="form-group row">
+                                <label class="required">Net Amount Receive</label>
+                                @Html.TextBoxFor(m => m.ProjPaymentReceived.NetAmtReceived, new { @class = "form-control", @id = "net", data_bs_toggle = "tooltip", data_bs_placement = "top", title = "Net Amount Receive", @Value = @Model.ProjPaymentReceived != null ? Model.ProjPaymentReceived.NetAmtReceived.ToString("0.00") : "" })
+                                @Html.ValidationMessageFor(m => m.ProjPaymentReceived.NetAmtReceived)
+                            </div>
+                        </div>
+                        <div class="col-xl-4">
+                            <div class="form-group row">
+                                <label class="required">Total Amount Receive</label>
+                                <input type="text" id="tamt" class="form-control" readonly="readonly" />
+                            </div>
+                        </div>
+                        <div class="d-none row" id="bankdiv">
+                            <div class="col-xl-6">
+                                <div class="form-group row">
+                                    <label class="control-label required">Bank Name <i class="fe fe-info" title="Payment deposit into"></i></label>
+                                    @Html.DropDownListFor(model => model.ProjPaymentReceived.BankID, new SelectList(Model.BankDD, "BankID", "BankName"), "-- Select Bank --", new { @class = "form-control ddSelect2", @id = "txtbank" })
+                                    @Html.ValidationMessageFor(model => model.ProjPaymentReceived.BankID)
+                                </div>
+                            </div>
+                            <div class="col-xl-6">
+                                <div class="form-group row">
+                                    <label class="control-label">Upload File <small>.jpeg/.png/.pdf</small></label>
+                                    @Html.TextBoxFor(m => m.UploadFile, new { @class = "btn btn-sm btn-primary", type = "file", @id = "txtfile" })
+                                    @Html.ValidationMessageFor(m => m.UploadFile)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-12">
+                            <div class="form-group row">
+                                <label class="required">Payment Receive Remarks</label>
+                                @Html.TextAreaFor(m => m.ProjPaymentReceived.Remarks, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.ProjPaymentReceived.Remarks)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <button type="reset" onclick="location.href='@Url.Action("ProjPaymentReceiveList")'" class="btn btn-primary cancel me-2">Cancel</button>
+                        <input type="submit" value="Save" id="save" class="btn btn-primary" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+
+@section Scripts{
+    <script src="~/Content/datetimepicker/jquery.datetimepicker.full.min.js"></script>
+    <script src="~/Content/Plugins/Select2/select2.min.js"></script>
+    @*@Scripts.Render("~/bundles/jqueryval")*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.ddSelect2').select2({ width: '100%' });
+            $('#txtdate').datetimepicker({
+                theme: 'light',
+                format: 'd M Y',
+                timepicker: false,
+                scrollInput: false
+                /*minDate: 0*/
+            });
+            loadPaySection('@mode');
+            $('#ddMode').on('change', function () {
+                loadPaySection($(this).val());
+            });
+            function loadPaySection(value) {
+                if (value == 'Cash') {
+                    $('#txtbank').val('');
+                    $('#txtfile').val();
+                    $('#bankdiv').addClass('d-none');
+                } else if (value == '') {
+                    $('#bankdiv').addClass('d-none');
+                } else {
+                    $('#bankdiv').removeClass('d-none');
+                }
+            }
+            var setValue = function () {
+                //alert($('#amt').val())
+                if ($('#net').val() == "") {
+                    $('#net').val(0);
+                }
+                if ($('#tds').val() == "") {
+                    $('#tds').val(0);
+                }
+                if ($('#gst').val() == "") {
+                    $('#gst').val(0);
+                }
+                if ($('#sd').val() == "") {
+                    $('#sd').val(0);
+                }
+                if ($('#other').val() == "") {
+                    $('#other').val(0);
+                }
+            }
+            setValue();
+            $('#net').on('input', function () { TotalAmount() })
+            $('#tds').on('input', function () { TotalAmount() })
+            $('#gst').on('input', function () { TotalAmount() })
+            $('#sd').on('input', function () { TotalAmount() })
+            $('#other').on('input', function () { TotalAmount() })
+            var TotalAmount = function () {
+                var NetAmt = 0;
+                var TDSAmt = 0;
+                var GstAmt = 0;
+                var SecurityAmt = 0
+                var OtherAmt = 0;
+                var GTotal = 0;
+                NetAmt = parseFloat($('#net').val());
+                TDSAmt = parseFloat($('#tds').val());
+                GstAmt = parseFloat($('#gst').val());
+                SecurityAmt = parseFloat($('#sd').val());
+                OtherAmt = parseFloat($('#other').val());
+                GTotal = NetAmt + TDSAmt + GstAmt +  SecurityAmt + OtherAmt;
+                ($('#tamt').val(GTotal.toFixed(2)));
+            }
+            TotalAmount();
+
+            var SalInvDD = function () {
+                var id = $('#proj').val();
+                if (id == "") {
+                    $("#inv").empty();
+                    $("#inv").append('<option value="">--- Select Invoice ---</option>');
+                    $('#inv').val("");
+                }
+                else {
+                    $.ajax({
+                        type: 'GET',
+                        url: '/PaymentReceivable/GetSalInvListByProj',
+                        data: { ProjID: id },
+                        datatype: 'json',
+                        success: function (data) {
+                            $("#inv").empty();
+                            $("#inv").append('<option value="">--- Select Invoice List ---</option>');
+                            $.each(data, function (i, item) {
+                                $("#inv").append('<option value="' + item.Value + '">' + item.Text + '</option>');
+                            });
+                            $('#inv').val('@ViewBag.SalInv');
+                        },
+                        error: function (ex) {
+                            alert('Failed to retrieve data.' + ex);
+                        }
+                    })
+                }
+            }
+            $(document).on('change', '#proj', SalInvDD);
+            SalInvDD();
+            //$('#chkPayment').on('click', function () {
+            //    if ($(this).is(':checked')) {
+            //        $('#opening-div').removeClass('hidden');
+            //    } else {
+            //        $('#opening-div').addClass('hidden');
+            //        $('#txtAmount').val('');
+            //        $('#txtdate').val('');
+            //    }
+            //});
+        });
+    </script>
+}
+
+
+

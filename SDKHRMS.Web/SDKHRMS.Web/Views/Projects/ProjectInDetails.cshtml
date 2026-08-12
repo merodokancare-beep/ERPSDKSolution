@@ -1,0 +1,434 @@
+﻿@model SDKHRMS.Entities.ViewModels.ProjectOverview
+@{
+    ViewBag.Title = "Project Overview";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+    var ProjID = Model.ProjectView.ProjectID;
+    //decimal GSTAmt = Model.IncludingTaxAmt - Model.ExcludingTaxAmt;
+}
+<link href="~/Content/Plugins/Select2/select2.min.css" rel="stylesheet" />
+<div class="page-header">
+    <div class="content-page-header">
+        <h5>Project Overview</h5>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-6 col-lg-6 col-sm-12 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Project Name</div>
+                        <div class="dash-counts">
+                            <p>@Model.ProjectView.ProjectName</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-sm-4 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Status</div>
+                        <div class="dash-counts">
+                            <p>@Model.ProjectView.ProjStatus</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-sm-4 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Start Date</div>
+                        <div class="dash-counts">
+                            <p>@(Model.ProjectView.ProjStartDate.ToString("dd MMM yyyy"))</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-sm-4 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">End Date</div>
+                        <div class="dash-counts">
+                            <p>@(Model.ProjectView.ProjEndDate!=null? Model.ProjectView.ProjEndDate.Value.ToString("dd MMM yyyy"):"-")</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-6 col-lg-6 col-sm-12 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Client Name</div>
+                        <div class="dash-counts">
+                            <p>@Model.ProjectView.VendorName</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-sm-4 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Work Order Date</div>
+                        <div class="dash-counts">
+                            <p>@(Model.ProjectView.WODate.Value.ToString("dd MMM yyyy"))</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-sm-4 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">
+                            Work Order File:
+                        </div>
+                        <div class="dash-counts">
+                            <p>
+                                @if (!string.IsNullOrEmpty(Model.ProjectView.WOPath))
+                                {
+                                    <span><a href="~/UploadFile/WorkOrder/@Model.ProjectView.WOPath" class="dropdown-item" target="_blank"> <i class="fe fe-paperclip me-2"></i> View Attachment</a></span>
+                                }
+                                else
+                                {<span>File Not Uploaded</span>}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-sm-4 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">
+                            Completion Certificate:
+                        </div>
+                        <div class="dash-counts">
+                            <p>
+                                @if (!string.IsNullOrEmpty(Model.ProjectView.PCCPath))
+                                {
+                                    <a href="~/UploadFile/CompletionCertificate/@Model.ProjectView.PCCPath" class="dropdown-item" target="_blank"> <i class="fe fe-paperclip me-2"></i> View Attachment </a>
+                                }
+                                else
+                                {<span>File Not Uploaded</span>}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-6 col-lg-12 col-sm-12 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Project Description</div>
+                        <div class="dash-counts">
+                            <p>@Model.ProjectView.ProjDescription</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-sm-6 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Work Order No.</div>
+                        <div class="dash-counts">
+                            <p>@(Model.ProjectView.WONo??"-")</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-lg-6 col-sm-6 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body bg-primary-light">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Project Value</div>
+                        <div class="dash-counts">
+                            <p>Rs. @Model.ProjectView.ProjValue.ToString("0.00")</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-sm-4 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body bg-success-light">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Total Net Amount Received <i class="fe fe-info" title="Excluding Tax Deduction (i.e. TDS/IT/Stamp/etc)"></i></div>
+                        <div class="dash-counts">
+                            <p>Rs. @Model.ProjAmountTrans.TotalNetAmtReceived.ToString("0.00")</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-sm-4 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body bg-danger-light">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Total Tax Deduction <i class="fe fe-info" title="Including TDS/IT/Stamp/Security Deposit Amount"></i></div>
+                        <div class="dash-counts">
+                            <p>Rs. @Model.ProjAmountTrans.TotalTaxDeduction.ToString("0.00")</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-sm-4 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body bg-warning-light">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Total Amount Received <i class="fe fe-info" title="Total Net Amount + Total Tax Deduction"></i></div>
+                        <div class="dash-counts">
+                            <p>Rs. @Model.ProjAmountTrans.TotalAmtReceived.ToString("0.00")</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-sm-4 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body bg-info-light">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">Balance Amount<i class="fe fe-info" title="Project Value - Total Amount Received"></i></div>
+                        <div class="dash-counts">
+                            <p>Rs. @Model.ProjAmountTrans.ProjectBalance.ToString("0.00")</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-sm-4 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body bg-blue-light">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">GST Payable <i class="fe fe-info" title="As per Tax/Sale Invoice Generate"></i></div>
+                        <div class="dash-counts">
+                            <p>Rs. @Model.ProjAmountTrans.TotalGSTPayable.ToString("0.00")</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-sm-4 col-12 d-flex">
+        <div class="card inovices-card w-100">
+            <div class="card-body bg-blue-light">
+                <div class="dash-widget-header">
+                    <div class="dash-count">
+                        <div class="dash-title">GST Input <i class="fe fe-info" title="As per PO Generate"></i></div>
+                        <div class="dash-counts">
+                            <p>Rs. @Model.ProjAmountTrans.TotalGSTInput.ToString("0.00")</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+@*Tax Invoice*@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Sale Invoice Details</h5>
+            </div>
+            <div class="card-body card-buttons" id="taxinvoice">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+@*Payment Received*@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Payment Received Details</h5>
+            </div>
+            <div class="card-body card-buttons" id="paymentreceived">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+@*Procurement*@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Procurement Details</h5>
+            </div>
+            <div class="card-body card-buttons" id="procurement">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+@*Expenses*@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Expenses Details</h5>
+            </div>
+            <div class="card-body card-buttons" id="expenses">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+@section Scripts{
+    <script src="~/Content/Plugins/Select2/select2.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //Load Tax Invoice
+            var loadTaxInvoice = function () {
+                $('#taxinvoice').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif" /><h2>Please wait....</h2></div>');
+            $.ajax({
+                type: 'GET',
+                url: '/Projects/GetTaxInvoiceByProjID',
+                data: { id: '@ProjID' },
+                success: function (data) {
+                    $('#taxinvoice').empty().append(data);
+                },
+                error: function () {
+                    $('#taxinvoice').empty().append('<div class="panel-body"><img src="/Content/Images/img-warning.png" height="50" width="50"/><b>Could not load data. Please click here to reload...</b><button id="btntaxinvoice"> <i class="fa fa-refresh"></i> Reload</button></div>');
+                    //$('#gstinv').empty().append('<div class="margin-top-15"><b>Could not load data. Please click here to reload...</b><button id="btngstinv">Reload</button></div>');
+                }
+            });
+        }
+            $(document).on('click', "#btntaxinvoice", loadTaxInvoice);
+            loadTaxInvoice();
+            //Load Proj Payment
+            var loadPayment = function () {
+                $('#paymentreceived').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif" /><h2>Please wait....</h2></div>');
+            $.ajax({
+                type: 'GET',
+                url: '/Projects/GetPaymentReceivedByProjID',
+                data: { id: '@ProjID' },
+                success: function (data) {
+                    $('#paymentreceived').empty().append(data);
+                },
+                error: function () {
+                    $('#paymentreceived').empty().append('<div class="panel-body"><img src="/Content/Images/img-warning.png" height="50" width="50"/><b>Could not load data. Please click here to reload...</b><button id="btnpayment"> <i class="fa fa-refresh"></i> Reload</button></div>');
+                }
+            });
+        }
+            $(document).on('click', "#btnpayment", loadPayment);
+            loadPayment();
+            //Load PO Details
+            var loadPO = function () {
+                $('#procurement').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif" /><h2>Please wait....</h2></div>');
+            $.ajax({
+                type: 'GET',
+                url: '/Projects/GetPODetailsByProjID',
+                data: { id: '@ProjID' },
+                success: function (data) {
+                    $('#procurement').empty().append(data);
+                },
+                error: function () {
+                    $('#procurement').empty().append('<div class="panel-body"><img src="/Content/Images/img-warning.png" height="50" width="50"/><b>Could not load data. Please click here to reload...</b><button id="btnpo"> <i class="fa fa-refresh"></i> Reload</button></div>');
+                }
+            });
+        }
+            $(document).on('click', "#btnpo", loadPO);
+            loadPO();
+            //Load expenses Details
+            var loadExpenses = function () {
+                $('#expenses').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif" /><h2>Please wait....</h2></div>');
+            $.ajax({
+                type: 'GET',
+                url: '/Projects/GetExpenseByProjID',
+                data: { id: '@ProjID' },
+                success: function (data) {
+                    $('#expenses').empty().append(data);
+                },
+                error: function () {
+                    $('#expenses').empty().append('<div class="panel-body"><img src="/Content/Images/img-warning.png" height="50" width="50"/><b>Could not load data. Please click here to reload...</b><button id="btnexp"> <i class="fa fa-refresh"></i> Reload</button></div>');
+                }
+            });
+        }
+            $(document).on('click', "#btnexp", loadExpenses);
+            loadExpenses();
+        });
+
+    </script>
+}

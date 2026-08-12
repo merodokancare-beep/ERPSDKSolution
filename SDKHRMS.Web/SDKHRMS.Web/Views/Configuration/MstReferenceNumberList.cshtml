@@ -1,0 +1,75 @@
+﻿@model SDKHRMS.Entities.ViewModels.ReferenceNoVM
+@{
+    ViewBag.Title = "Configuration : Reference Number  Master";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+
+<div class="page-header">
+    <div class="content-page-header">
+        <h5>Ref. No. Master</h5>
+        <div class="list-btn">
+            <ul class="filter-list">
+                <li>
+                    <a class="btn btn-primary" href="/configuration/addMstReferenceNumber">
+                        <i class="fa fa-plus-circle me-2" aria-hidden="true"></i>Add Reference No
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header card-buttons">
+                <div class="form-group mb-0 row">
+                    <div class="col-md-10">
+                        <form method="get" action="@Url.Action("MstReferenceNumberlist")" data-search="true" data-otf-ajax="true" data-otf-target="#DataGrid">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1"><i class="fe fe-search"></i></span>
+                                <input type="text"
+                                       id="inputsearch"
+                                       class="form-control"
+                                       placeholder="Search by financial year..."
+                                       aria-label="Search"
+                                       name="searchTerm"
+                                       aria-describedby="basic-addon1" />
+                                <button class="btn btn-primary" id="search-btn" type="submit">
+                                    Search
+                                </button>
+                                <button onclick="location.href='@Url.Action("MstReferenceNumberlist")'" type="button" class="btn btn-primary d-none" id="clearSearchBtn">Clear Results</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                @Html.Partial("_pvMstReferenceNumberList", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#search-btn").on("click", function (e) {
+                if ($("#inputsearch").val() != "") {
+                    $("#clearSearchBtn").removeClass("d-none");
+                    $("#search-btn").addClass("d-none");
+                }
+                else {
+                    $("#clearSearchBtn").addClass("d-none");
+                    $("#search-btn").removeClass("d-none");
+
+                }
+            });
+        });
+    </script>
+}
+
+
+
+

@@ -1,0 +1,80 @@
+﻿@model  List<SDKHRMS.Entities.ViewModels.PaymentReleaseView>
+<div id="DataGrid">
+
+    @if (Model.Count() > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <tr>
+                    <td class="font-bold text-center">Date</td>
+                    <td class="font-bold text-center">Amount</td>
+                    <td class="font-bold text-center">Mode</td>
+                    <td class="font-bold text-center">Files</td>
+                    <td class="font-bold text-center">Remarks</td>
+                    @if (User.IsInRole("Super Admin"))
+                    {
+                        <td class="font-bold text-center">Action</td>
+                    }
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-center" style="vertical-align:middle;">@item.PaymentDate.ToString("dd MMM yyyy")</td>
+                        <td class="text-center" style="vertical-align:middle;">
+                            @item.PaymentAmt.ToString("0.00")
+                        </td>
+                        <td class="text-center" style="vertical-align:middle;">
+                            @item.PaymentMode
+                            @if (item.PaymentMode != "Cash")
+                            {
+                                <br />
+                                <span>
+                                    Bank : @item.BankName &nbsp;|&nbsp;Cheque/Transaction No. : @item.PaymentTransNo
+
+                                </span>
+                            }
+                        </td>
+                        <td class="text-center" style="vertical-align:middle;">
+                            @if (!string.IsNullOrEmpty(item.UploadedFile))
+                            {
+                                <a href="~/UploadFile/Payments/@item.UploadedFile" target="_blank" class=" pull-right"><i class="fe fe-file" title="View Uploaded File"></i> View Uploaded File</a>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </td>
+                        <td class="text-center" style="vertical-align:middle;">@item.Remarks</td>
+                        @if (User.IsInRole("Super Admin"))
+                        {
+                            @*<td class="text-center" style="vertical-align:middle;"><i class="fa fa-trash text-danger"></i></td>*@
+                            <td class="text-center" style="vertical-align:middle;">
+                                <form method="post" action="@Url.Action("DeleteDirectPaymentTrans", "DirectPayment", new { @Area = ""  })" data-otf-ajax="true" data-otf-target="#DataGrid">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" value="@item.PaymentID" name="PaymentID" />
+                                    <input type="hidden" value="@item.UploadedFile" name="UploadedFile" />
+                                    <input type="hidden" value="@item.DirectPaymentID" name="ID" />
+                                    <a href="@Url.Action("DeleteDirectPaymentTrans", "DirectPayment", new { PaymentID = item.PaymentID ,@Area = ""  })" class="delete" date-toggle="tooltip" data-placement="bottom" title="Delete" data-record="@item.PaymentAmt.ToString("0.00")">
+                                        <i class="fa fa-trash text-danger"></i>
+                                    </a>
+                                </form>
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <img src="~/Content/Images/no_record.png" /><br />
+            <span class="text-muted">No records available or your searched record in not available..</span>
+        </div>
+    }
+</div>
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+
+

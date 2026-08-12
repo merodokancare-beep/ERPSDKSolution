@@ -1,0 +1,88 @@
+﻿@model SDKHRMS.Entities.ViewModels.PurchaseInvoiceVM
+@{
+    ViewBag.Title = "Purchase Invoice List";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<link href="~/Content/Plugins/Select2/newselect2.css" rel="stylesheet" />
+<div class="page-header">
+    <div class="content-page-header">
+        <h5>Procurement Order List </h5>
+        <div class="list-btn">
+            <ul class="filter-list">
+                <li>
+                    <a class="btn btn-primary" href="@Url.Action("PurchaseInvoice","invoice")">
+                        <i class="fa fa-plus-circle me-2" aria-hidden="true"></i>Add PO
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header card-buttons">
+                <form method="get" action="@Url.Action("PurchaseInvoicelist")" data-search="true" data-otf-ajax="true" data-otf-target="#DataGrid" id="sForm">
+                    <div class="form-group mb-0 row">
+                        <div class="col-md-3">
+                            @Html.DropDownList("YearNo", new SelectList(Model.PurchaseYearDD, "YearNo", "YearNo", @ViewBag.YearNo), "----Select Year----", new { @class = "form-control ddSelect2", id = "yr" })
+                        </div>
+                        <div class="col-md-3">
+                            @Html.DropDownList("MonNo", new List<SelectListItem>{
+                                new SelectListItem{Text="January", Value="1"},
+                                new SelectListItem{Text="February", Value="2"},
+                                new SelectListItem{Text="March", Value="3"},
+                                new SelectListItem{Text="April", Value="4"},
+                                new SelectListItem{Text="May", Value="5"},
+                                new SelectListItem{Text="June", Value="6"},
+                                new SelectListItem{Text="July", Value="7"},
+                                new SelectListItem{Text="August", Value="8"},
+                                new SelectListItem{Text="September", Value="9"},
+                                new SelectListItem{Text="October", Value="10"},
+                                new SelectListItem{Text="November", Value="11"},
+                                new SelectListItem{Text="December", Value="12"}, }, "--- Select Month ---", new { @class = "form-control ddSelect2", Value = @ViewBag.MonNo, @id = "month" })
+                        </div>
+                        <div class="col-md-4">
+                            @Html.DropDownList("Vendor", new SelectList(Model.VendorDDList, "VenderID", "VenderName", @ViewBag.Vendor), "----Select Vendor----", new { @class = "form-control ddSelect2", id = "vendor" })
+                        </div>
+                        <div class="col-md-2">
+                            <button onclick="location.href='@Url.Action("PurchaseInvoicelist")'" type="button" class="btn btn-primary" id="clearSearchBtn">Clear Results</button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="card-body">
+                @Html.Partial("_pvPurchaseInvoiceList", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+@section Scripts{
+    <script src="~/Content/Plugins/Select2/select2.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.ddSelect2').select2({ width: '100%' });
+            $(document).on('change', '#yr', function () {
+                $('#sForm').submit();
+                //clearbtn();
+            })
+            $(document).on('change', '#month', function () {
+                $('#sForm').submit();
+                //clearbtn();
+            })
+            $(document).on('change', '#vendor', function () {
+                $('#sForm').submit();
+                //clearbtn();
+            })
+        });
+    </script>
+}
+

@@ -1,0 +1,203 @@
+﻿@model  SDKHRMS.Entities.ViewModels.POPaymentVM
+@{
+    ViewBag.Title = "PO Payment";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+@{
+    //List<string> PSType = new List<string> { "Purchase", "Sale" };
+}
+<link href="~/Content/Tabspanel.css" rel="stylesheet" />
+<link href="~/Content/Plugins/Select2/newselect2.css" rel="stylesheet" />
+<div class="page-header">
+    <div class="content-page-header">
+        <h5>Procurement's Payment Released List</h5>
+        @*<div class="list-btn">
+            <ul class="filter-list">
+                <li>
+                    <a class="btn btn-primary" href="/PurchaseInvoice/PurchaseInvoice">
+                        <i class="fa fa-plus-circle me-2" aria-hidden="true"></i>Add Procurement Payment
+                    </a>
+                </li>
+            </ul>
+        </div>*@
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card ribbon-wrapper">
+            <div class="card-header card-buttons">
+                @*<div class="ribbon ribbon-primary ribbon-left">Procurement Payment List <i class="fe fe-arrow-up-right"></i></div>*@
+                <form method="get" action="/POPayment/index" class="row" data-search="true" data-otf-ajax="true" data-otf-target="#DataGrid" id="sForm">
+                    <div class="form-group mb-0 row">
+                        <div class="col-md-6">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1"><i class="fe fe-search"></i></span>
+                                <input type="text"
+                                       id="inputsearch"
+                                       class="form-control"
+                                       placeholder="Search by Reference/Bill No..."
+                                       aria-label="Search"
+                                       name="SearchTerm"
+                                       aria-describedby="basic-addon1" />
+                                <button class="btn btn-primary" id="search-btn" type="submit">
+                                    Search
+                                </button>
+                                <button onclick="location.href='@Url.Action("index")'" type="button" class="btn btn-primary d-none" id="clearSearchBtn">Clear Results</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DropDownList("Vendor", new SelectList(Model.VendorDD, "VenderID", "Vendername", @ViewBag.Vendor), "- Select Vendor --", new { @class = "form-control ddSelect2", id = "vendor" })
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="card-body">
+
+                <p id="demo" style="color:blue;margin-top:10px;"></p>
+                <div>
+                    <div class="tabbable-line mt-3">
+                        <ul class="nav nav-tabs" id="RefTabList">
+                            <li id="tab_list_1" class="reftab"><a href="/" data-status="Active" class="aref" id="tab_default_1">Unsettled</a></li>
+                            <li id="tab_list_2" class="reftab"><a href="/" data-status="Partial Settled" class="aref" id="tab_default_2">Partial Settled</a></li>
+                            <li id="tab_list_3" class="reftab"><a href="/" data-status="Fully Settled" class="aref" id="tab_default_3">Fully Settled</a></li>
+                            @*<li id="tab_list_4" class="reftab"><a href="/" data-status="Declined" class="aref" id="tab_default_4">Declined</a></li>*@
+                        </ul>
+                    </div>
+                    <div>
+                        <div id="DetailsTabPane">
+                            <div id="ErrMsg" style="display:none;">
+                                <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Content/Plugins/Select2/select2.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.ddSelect2').select2({ width: '100%' });
+
+            $("#search-btn").on("click", function (e) {
+                if ($("#inputsearch").val() != "") {
+                    $("#clearSearchBtn").removeClass("d-none");
+                    $("#search-btn").addClass("d-none");
+                }
+                else {
+                    $("#clearSearchBtn").addClass("d-none");
+                    $("#search-btn").removeClass("d-none");
+
+                }
+            });
+
+            $(document).on('change', '#vendor', function () {
+                $('#sForm').submit();
+                //clearbtn();
+                var activetab = $('.reftab.active>a').attr('data-status');
+                loadpayments(activetab);
+            })
+            $(document).on('click', '#search-btn', function () {
+                var activetab = $('.reftab.active>a').attr('data-status');
+                loadpayments(activetab);
+                //var x = 'Showing Results for Search Key: "' + document.getElementById("inputsearch").value + '" <a href="/POPayment/index">&nbsp; <u>Clear Search</u></a>';
+                //document.getElementById("demo").innerHTML = x;
+            })
+
+            $('#tab_list_1').on('click', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: 'GET',
+                    url: '/POPayment/Index',
+                    data: { Status: 'Active', SearchTerm: $('#inputsearch').val(), Vendor: $('#vendor').val() },
+                    success: function (data) {
+                        $("#RefTabList>li").removeClass('active');
+                        $('#tab_list_1').addClass('active');
+                        $('#DetailsTabPane').empty().append(data);
+                    }
+                });
+            });
+
+            $('#tab_list_2').on('click', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: 'GET',
+                    url: '/POPayment/Index',
+                    data: { Status: 'Partial Settled', SearchTerm: $('#inputsearch').val(), Vendor: $('#vendor').val() },
+                    success: function (data) {
+                        $("#RefTabList>li").removeClass('active');
+                        $('#tab_list_2').addClass('active');
+                        $('#DetailsTabPane').empty().append(data);
+                    }
+                });
+            });
+            $('#tab_list_3').on('click', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: 'GET',
+                    url: '/POPayment/Index',
+                    data: { Status: 'Fully Settled', SearchTerm: $('#inputsearch').val(), Vendor: $('#vendor').val() },
+                    success: function (data) {
+                        $("#RefTabList>li").removeClass('active');
+                        $('#tab_list_3').addClass('active');
+                        $('#DetailsTabPane').empty().append(data);
+                    }
+                });
+            });
+
+            //$('#tab_list_4').on('click', function (e) {
+            //    e.preventDefault();
+            //    $.ajax({
+            //        type: 'GET',
+            //        url: '/POPayment/Index',
+            //        data: { Status: 'Declined', SearchTerm: $('#inputsearch').val(), Vendor: $('#vendor').val() },
+            //        success: function (data) {
+            //            $("#RefTabList>li").removeClass('active');
+            //            $('#tab_list_4').addClass('active');
+            //            $('#DetailsTabPane').empty().append(data);
+            //        }
+            //    });
+            //});
+
+            loadpayments('@ViewBag.Status');
+            function loadpayments(val) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/POPayment/Index',
+                    data: { Status: val, SearchTerm: $('#inputsearch').val(), Vendor: $('#vendor').val() },
+                    success: function (data) {
+                        $("#RefTabList>li").removeClass('active');
+                        if (val == "Active") {
+                            $('#tab_list_1').addClass('active');
+                        } else if (val == "Partial Settled") {
+                            $('#tab_list_2').addClass('active');
+                        } else if (val == "Fully Settled") {
+                            $('#tab_list_3').addClass('active');
+                        } else if (val == "Declined") {
+                            $('#tab_list_4').addClass('active');
+                        } else {
+                            $('#tab_list_1').addClass('active');
+                        }
+                        $('#DetailsTabPane').empty().append(data);
+                    }
+                });
+            }
+            //$('#search-btn').on('click', function () {
+            //    var activetab = $('.reftab.active>a').attr('data-status');
+            //    loadpayments(activetab);
+
+            //    var x = 'Showing Results for Search Key "' + document.getElementById("inputsearch").value + '" <a href="/payments/procurement">&nbsp; <u>Clear Search</u></a>';
+            //    document.getElementById("demo").innerHTML = x;
+            //});
+            });
+    </script>
+}
+
+
+
+
+

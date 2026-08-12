@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light" data-sidebar="light" data-color="primary" data-topbar="white" data-layout="default">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <title>@ViewBag.Title - ERP Management System</title>
+    <link rel="shortcut icon" type="image/x-icon" href="~/Content/Images/smalllogo.png">
+
+    <!-- Theme Script js (Applied before DOM renders to prevent theme flash) -->
+    <script src="~/Content/assets/js/theme-script.js"></script>
+
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="/Content/assets/css/bootstrap.min.css">
+
+    <!-- Tabler Icon CSS & Iconsax CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@("@tabler")/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="~/Content/assets/css/iconsax.css">
+
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="/Content/assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/Content/assets/plugins/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="/Content/assets/plugins/feather/feather.css">
+
+    <!-- Datatables & Main CSS -->
+    <link rel="stylesheet" href="/Content/assets/plugins/datatables/datatables.min.css">
+    <link rel="stylesheet" href="/Content/assets/css/style.css">
+    <link rel="stylesheet" href="~/Content/custom-erp.css">
+    <link rel="stylesheet" href="~/Content/ns-pager-style.css">
+    <link href="~/Content/Plugins/Toastr/toastr.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- Topbar Header Start -->
+        <div class="header">
+            <!-- Left Brand Logo + Toggle — 240px column aligns with sidebar -->
+            <div class="header-left">
+                <a href="/home/newdashboard" class="logo d-flex align-items-center flex-grow-1">
+                    <img src="/Content/Images/LOGOSDK1.png" alt="SDK Solutions Logo" class="img-fluid logo-normal" style="max-height: 38px;">
+                    <img src="/Content/Images/smalllogo.png" alt="SDK" class="img-fluid logo-small" style="max-height: 36px; display: none;">
+                </a>
+                <!-- Sidebar Collapse Toggle -->
+                <a id="toggle_btn" href="javascript:void(0);" class="text-white ms-auto" style="line-height:1; flex-shrink:0;">
+                    <i class="fa-solid fa-bars fs-18"></i>
+                </a>
+            </div>
+
+            <!-- Mobile menu toggle (small screens only) -->
+            <a id="mobile_btn" class="mobile_btn me-2 d-lg-none" href="#sidebar">
+                <span class="bar-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </a>
+
+            <!-- Middle Section: Quick Add Dropdown & Breadcrumbs -->
+            <div class="d-flex align-items-center gap-3 me-auto ps-3">
+                <!-- Quick Add Dropdown -->
+                <div class="dropdown">
+                    <a class="btn btn-primary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: linear-gradient(135deg, #7539FF 0%, #A855F7 100%); border: none; box-shadow: 0 4px 12px rgba(117, 57, 255, 0.4);" data-bs-toggle="dropdown" href="javascript:void(0);" role="button" title="Quick Add">
+                        <i class="fa-solid fa-plus text-white fs-14"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-start p-2 shadow-lg quick-add-menu" style="border-radius: 12px;">
+                        <li>
+                            <a href="/projects/ProjectOverView" class="dropdown-item d-flex align-items-center py-2">
+                                <i class="fa-solid fa-folder-plus me-2 text-primary"></i>New Project
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/invoice/saleinvoicelist" class="dropdown-item d-flex align-items-center py-2">
+                                <i class="fa-solid fa-file-invoice-dollar me-2 text-success"></i>Sale Invoice
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/invoice/purchaseinvoicelist" class="dropdown-item d-flex align-items-center py-2">
+                                <i class="fa-solid fa-cart-plus me-2 text-warning"></i>Purchase Order
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/Challan/DeliveryChallanList" class="dropdown-item d-flex align-items-center py-2">
+                                <i class="fa-solid fa-truck-ramp-box me-2 text-info"></i>Delivery Challan
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/PettyCash/PettyCashBook" class="dropdown-item d-flex align-items-center py-2">
+                                <i class="fa-solid fa-vault me-2 text-danger"></i>Petty Cash Entry
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="d-none d-lg-block">
+                    <ol class="breadcrumb breadcrumb-divide mb-0" style="background: transparent; --bs-breadcrumb-divider: '›';">
+                        <li class="breadcrumb-item"><a href="/home/newdashboard" style="color: #A855F7; font-weight: 600; text-decoration: none;"><i class="fa-solid fa-house me-1"></i>Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page" style="color: #F8FAFC; font-weight: 600;">ERP Dashboard</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <!-- Right Section: Search, Theme Toggle & User Profile -->
+            <div class="d-flex align-items-center gap-3 ms-auto pe-3">
+                <!-- Search Input Pill -->
+                <div class="search-pill-wrapper d-none d-sm-block">
+                    <input type="text" class="form-control form-control-sm rounded-pill px-3 header-search-input" placeholder="Search..." style="width: 190px;">
+                </div>
+
+                <!-- Theme Switcher Button -->
+                <a id="theme_toggle_btn" href="javascript:void(0);" class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center theme-toggle-btn" style="width: 36px; height: 36px; line-height: 1; flex-shrink: 0;" title="Toggle Light/Dark Mode">
+                    <i id="theme_toggle_icon" class="fa-solid fa-sun fs-14" style="color: #FBBF24;"></i>
+                </a>
+
+                <!-- User Profile Dropdown -->
+                <div class="dropdown profile-dropdown">
+                    <a href="javascript:void(0);" class="dropdown-toggle d-flex align-items-center gap-2 text-decoration-none" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                        <span class="avatar online rounded-circle overflow-hidden" style="width: 38px; height: 38px; border: 2px solid #7539FF; display: inline-block;">
+                            <img src="~/Content/Images/user-admin.png" alt="User" class="img-fluid rounded-circle">
+                        </span>
+                        <div class="d-none d-md-block text-start">
+                            <h6 class="fs-13 fw-bold mb-0 header-username" style="line-height: 1.2;">@User.Identity.Name</h6>
+                            <span class="badge" style="background: rgba(117, 57, 255, 0.22); color: #A855F7; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 9999px;">
+                                @(User.IsInRole("Super Admin") ? "Super Admin" : User.IsInRole("Admin") ? "Admin" : "Employee")
+                            </span>
+                        </div>
+                    </a>
+                    <div class="dropdown-menu p-2 shadow-lg dropdown-menu-end profile-dropdown-menu" style="min-width: 220px; border-radius: 12px;">
+                        <div class="d-flex align-items-center rounded p-2 mb-2 profile-user-box">
+                            <span class="avatar avatar-md me-2">
+                                <img src="~/Content/Images/user-admin.png" alt="user" class="rounded-circle" style="width: 36px; height: 36px;">
+                            </span>
+                            <div>
+                                <h6 class="fs-13 fw-semibold mb-0 profile-user-name">@User.Identity.Name</h6>
+                                <p class="fs-11 text-muted mb-0">
+                                    @(User.IsInRole("Super Admin") ? "Super Admin" : User.IsInRole("Admin") ? "Admin" : "Employee")
+                                </p>
+                            </div>
+                        </div>
+                        <a class="dropdown-item d-flex align-items-center py-2" href="@Url.Action("ChangePassword", "Manage")">
+                            <i class="fa-solid fa-key me-2 text-warning"></i>Change Password
+                        </a>
+                        <hr class="dropdown-divider my-1">
+                        @using (Html.BeginForm("LogOff", "Account", null, FormMethod.Post, new { id = "logoutForm" }))
+                        {
+                            @Html.AntiForgeryToken()
+                        }
+                        <a class="dropdown-item logout d-flex align-items-center text-danger py-2" href="javascript:document.getElementById('logoutForm').submit()">
+                            <i class="fa-solid fa-right-from-bracket me-2"></i>Signout
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Topbar Header End -->
+
+
+        <!-- Sidebar Navigation Start -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-inner slimscroll" data-simplebar>
+                <div id="sidebar-menu" class="sidebar-menu">
+                    @if (!User.IsInRole("Employee"))
+                    {
+                        <ul>
+                            <li class="menu-title"><span>Main</span></li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fa-solid fa-chart-pie text-primary me-2"></i> <span> Dashboard</span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="/home/newdashboard"><i class="fa-solid fa-gauge me-1"></i> Admin Dashboard</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fa-solid fa-sliders text-info me-2"></i> <span> Configuration</span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="/Configuration/UnitList"><i class="fa-solid fa-box me-1"></i> Unit Master</a></li>
+                                    <li><a href="@Url.Action("HolidayList", "Configuration")"><i class="fa-solid fa-calendar-days me-1"></i> Holiday Master</a></li>
+                                    <li><a href="@Url.Action("VendorList", "Configuration")"><i class="fa-solid fa-users me-1"></i> Client/Vendor Master</a></li>
+                                    <li><a href="@Url.Action("ExpenseTypeList", "Configuration")"><i class="fa-solid fa-receipt me-1"></i> Expense Type Master</a></li>
+                                    <li><a href="@Url.Action("FinancialYearList", "Configuration")"><i class="fa-solid fa-calendar me-1"></i> Financial Year Master</a></li>
+                                    <li><a href="@Url.Action("MstReferenceNumberList", "Configuration")"><i class="fa-solid fa-hashtag me-1"></i> Reference Number Master</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <ul>
+                            <li class="menu-title"><span>Projects Management</span></li>
+                            <li>
+                                <a href="/projects/ProjectOverView"><i class="fa-solid fa-folder-open text-warning me-2"></i> <span>Projects List</span></a>
+                            </li>
+                            <li>
+                                <a href="/Challan/DeliveryChallanList"><i class="fa-solid fa-truck-ramp-box text-success me-2"></i> <span>Delivery List</span></a>
+                            </li>
+                        </ul>
+
+                        <ul>
+                            <li class="menu-title"><span>Payment Manager</span></li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fa-solid fa-hand-holding-dollar text-emerald me-2"></i> <span>Payment Receive</span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="/paymentreceivable/index">Direct Payment Received <i class="fa-solid fa-arrow-down-left text-success ms-1"></i></a></li>
+                                    <li><a href="/paymentreceivable/ProjPaymentReceiveList">Project's Payment Received <i class="fa-solid fa-arrow-down-left text-success ms-1"></i></a></li>
+                                </ul>
+                            </li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fa-solid fa-money-bill-transfer text-danger me-2"></i> <span>Payment Release</span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="/popayment/index">Procurement's Payment <i class="fa-solid fa-arrow-up-right text-danger ms-1"></i></a></li>
+                                    <li><a href="/directpayment/index">Direct Payment Released <i class="fa-solid fa-arrow-up-right text-danger ms-1"></i></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <ul>
+                            <li class="menu-title"><span>Sales &amp; Purchase</span></li>
+                            <li>
+                                <a href="/invoice/saleinvoicelist"><i class="fa-solid fa-file-invoice-dollar text-indigo me-2"></i> <span>Sale Invoices</span></a>
+                            </li>
+                            <li>
+                                <a href="/invoice/purchaseinvoicelist"><i class="fa-solid fa-cart-shopping text-amber me-2"></i> <span>Purchase Order</span></a>
+                            </li>
+                        </ul>
+
+                        <ul>
+                            <li class="menu-title"><span>Reference &amp; Petty Cash</span></li>
+                            <li>
+                                <a href="/ReferenceNumber/ReferenceNumberList"><i class="fa-solid fa-hashtag text-purple me-2"></i> <span>Issue Reference No.</span></a>
+                            </li>
+                            <li>
+                                <a href="/PettyCash/PettyCashBook"><i class="fa-solid fa-vault text-rose me-2"></i> <span>Petty Cash Book</span></a>
+                            </li>
+                        </ul>
+
+                        <ul>
+                            <li class="menu-title"><span>Reports &amp; Analysis</span></li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fa-solid fa-chart-line text-cyan me-2"></i> <span>Ledger Reports</span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="/Ledger/BankLedger"><i class="fa-solid fa-building-columns me-1 text-muted"></i> Bank Ledger</a></li>
+                                    <li><a href="/Ledger/VendorLedger"><i class="fa-solid fa-user-tag me-1 text-muted"></i> Vendor Ledger</a></li>
+                                    <li><a href="/Ledger/ProjectLedger"><i class="fa-solid fa-diagram-project me-1 text-muted"></i> Project Ledger</a></li>
+                                    <li><a href="/Ledger/ExpensesLedger"><i class="fa-solid fa-money-bill-wave me-1 text-muted"></i> Expenses Head Ledger</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <ul>
+                            <li class="menu-title"><span>Main</span></li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="isax isax-element-45"></i> <span> Dashboard</span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="/home/dashboard"><i class="ti ti-chart-pie me-1"></i> Dashboard</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li class="menu-title"><span>Purchase</span></li>
+                            <li>
+                                <a href="/invoice/purchaseinvoicelist"><i class="isax isax-shopping-cart"></i> <span>Purchase Order</span></a>
+                            </li>
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+        <!-- Sidebar Navigation End -->
+
+        <!-- Page Content Wrapper Start -->
+        <div class="page-wrapper">
+            <div class="content container-fluid">
+                @RenderBody()
+            </div>
+        </div>
+        <!-- Page Content Wrapper End -->
+
+    </div>
+
+    <!-- Error/Confirmation Modal -->
+    <div class="modal modal-styled fade" id="myErroMsgModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg bg-gradient-danger text-white rounded-3">
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-3">
+                        <i class="isax isax-warning-2 fs-48 text-white"></i>
+                    </div>
+                    <h5 class="text-white fw-bold mb-2">Confirmation</h5>
+                    <p class="text-white-50 fs-13 mb-3">
+                        <span id="Msg"></span>
+                    </p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <input type="button" id="myErroMsgModalNoButton" class="btn btn-sm btn-light text-dark px-3 fw-semibold" data-bs-dismiss="modal" onclick="CloseMyModal()" value="No" />
+                        <input type="button" id="myErroMsgModalYesButton" class="btn btn-sm btn-dark text-white px-3 fw-semibold hidden" onclick="OkMyModal()" value="Yes" />
+                    </div>
+                    <input type="hidden" id="eventSender" name="name" value=" " />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core JavaScript Files -->
+    <script src="/Content/assets/js/jquery-3.6.3.min.js"></script>
+    <script src="/Content/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="/Content/assets/js/feather.min.js"></script>
+    <script src="/Content/assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="/Content/assets/plugins/apexchart/apexcharts.min.js"></script>
+    <script src="/Content/assets/plugins/apexchart/chart-data.js"></script>
+    <script src="/Content/assets/js/script.js"></script>
+    <script src="~/Scripts/CustomAjax.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Content/assets/plugins/toastr/toastr.min.js"></script>
+
+    @RenderSection("scripts", required: false)
+
+    <!-- Sidebar Toggle: Direct DOM control to ensure collapse works regardless of CSS specificity -->
+    <script>
+    (function () {
+        var SIDEBAR_FULL = 240;
+        var SIDEBAR_MINI = 80;
+        var isCollapsed = false;
+
+        function isMobile() {
+            return window.innerWidth < 992;
+        }
+
+        /* ── Desktop sidebar collapse/expand ── */
+        function collapseSidebar() {
+            if (isMobile()) return;  // let mobile_btn / script.js handle mobile
+
+            var sidebar = document.getElementById('sidebar');
+            var pageWrapper = document.querySelector('.page-wrapper');
+            var headerLeft = document.querySelector('.header-left');
+            var logoNormal = document.querySelector('.logo-normal');
+            var logoSmall = document.querySelector('.logo-small');
+            var toggleIcon = document.querySelector('#toggle_btn i');
+
+            if (!sidebar) return;
+
+            if (!isCollapsed) {
+                // Collapse to icon strip
+                sidebar.style.left   = '';
+                sidebar.style.width  = SIDEBAR_MINI + 'px';
+                if (pageWrapper) pageWrapper.style.marginLeft = SIDEBAR_MINI + 'px';
+                if (headerLeft) {
+                    headerLeft.style.width    = SIDEBAR_MINI + 'px';
+                    headerLeft.style.minWidth = SIDEBAR_MINI + 'px';
+                    headerLeft.style.maxWidth = SIDEBAR_MINI + 'px';
+                    headerLeft.style.padding  = '0 12px';
+                    headerLeft.style.borderRight = 'none';
+                }
+                if (logoNormal) logoNormal.style.display = 'none';
+                if (logoSmall)  logoSmall.style.display  = 'block';
+                if (toggleIcon) toggleIcon.style.transform = 'rotate(90deg)';
+
+                document.querySelectorAll('.sidebar-menu ul li a span:not(.menu-arrow)').forEach(function(el){ el.style.display = 'none'; });
+                document.querySelectorAll('.sidebar-menu .menu-title').forEach(function(el){ el.style.display = 'none'; });
+
+                document.body.classList.add('mini-sidebar');
+                isCollapsed = true;
+            } else {
+                // Expand to full width
+                sidebar.style.left   = '';
+                sidebar.style.width  = SIDEBAR_FULL + 'px';
+                if (pageWrapper) pageWrapper.style.marginLeft = SIDEBAR_FULL + 'px';
+                if (headerLeft) {
+                    headerLeft.style.width       = '240px';
+                    headerLeft.style.minWidth    = '240px';
+                    headerLeft.style.maxWidth    = '240px';
+                    headerLeft.style.padding     = '0 14px 0 16px';
+                    headerLeft.style.borderRight = '1px solid rgba(255,255,255,0.08)';
+                }
+                if (logoNormal) logoNormal.style.display = 'block';
+                if (logoSmall)  logoSmall.style.display  = 'none';
+                if (toggleIcon) toggleIcon.style.transform = 'rotate(0deg)';
+
+                document.querySelectorAll('.sidebar-menu ul li a span:not(.menu-arrow)').forEach(function(el){ el.style.display = ''; });
+                document.querySelectorAll('.sidebar-menu .menu-title').forEach(function(el){ el.style.display = ''; });
+
+                document.body.classList.remove('mini-sidebar');
+                isCollapsed = false;
+            }
+        }
+
+        /* ── On window resize: reset inline styles if crossing 992px ── */
+        window.addEventListener('resize', function () {
+            var sidebar     = document.getElementById('sidebar');
+            var pageWrapper = document.querySelector('.page-wrapper');
+            var headerLeft  = document.querySelector('.header-left');
+            var logoNormal  = document.querySelector('.logo-normal');
+            var logoSmall   = document.querySelector('.logo-small');
+
+            if (isMobile()) {
+                // Reset everything — CSS media query takes over
+                if (sidebar) { sidebar.style.width = ''; sidebar.style.left = ''; }
+                if (pageWrapper) pageWrapper.style.marginLeft = '';
+                if (headerLeft) { headerLeft.style.width = ''; headerLeft.style.minWidth = ''; headerLeft.style.maxWidth = ''; headerLeft.style.padding = ''; headerLeft.style.borderRight = ''; }
+                if (logoNormal) logoNormal.style.display = '';
+                if (logoSmall)  logoSmall.style.display  = '';
+                isCollapsed = false;
+                document.body.classList.remove('mini-sidebar');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            /* Apply transitions AFTER initial layout settles */
+            setTimeout(function () {
+                var sidebar     = document.getElementById('sidebar');
+                var pageWrapper = document.querySelector('.page-wrapper');
+                var headerLeft  = document.querySelector('.header-left');
+                if (!isMobile()) {
+                    if (sidebar) sidebar.style.transition = 'width 0.25s cubic-bezier(0.4, 0, 0.2, 1), left 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                    if (pageWrapper) pageWrapper.style.transition = 'margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
+                    if (headerLeft) headerLeft.style.transition = 'width 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
+                }
+            }, 50);
+
+            /* Desktop: collapse/expand on toggle_btn click */
+            var toggleBtn = document.getElementById('toggle_btn');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!isMobile()) collapseSidebar();
+                });
+            }
+
+            /* Desktop hover expand */
+            var sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                sidebar.addEventListener('mouseenter', function () {
+                    if (isMobile() || !isCollapsed) return;
+                    sidebar.style.width = SIDEBAR_FULL + 'px';
+                    document.querySelectorAll('.sidebar-menu ul li a span:not(.menu-arrow)').forEach(function(el){ el.style.display = ''; });
+                    document.querySelectorAll('.sidebar-menu .menu-title').forEach(function(el){ el.style.display = ''; });
+                });
+                sidebar.addEventListener('mouseleave', function () {
+                    if (isMobile() || !isCollapsed) return;
+                    sidebar.style.width = SIDEBAR_MINI + 'px';
+                    document.querySelectorAll('.sidebar-menu ul li a span:not(.menu-arrow)').forEach(function(el){ el.style.display = 'none'; });
+                    document.querySelectorAll('.sidebar-menu .menu-title').forEach(function(el){ el.style.display = 'none'; });
+                });
+            }
+        });
+    })();
+    </script>
+</body>
+</html>

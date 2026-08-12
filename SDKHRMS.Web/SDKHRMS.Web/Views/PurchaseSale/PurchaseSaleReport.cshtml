@@ -1,0 +1,102 @@
+﻿@model  SDKHRMS.Entities.ViewModels.PurchaseSalesViewModel
+@{
+    ViewBag.Title = "Purchase & Sale";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+    List<int> last3Years = new List<int>();
+    int currentYear = DateTime.Now.Year;
+    for (int i = currentYear - 3; i <= currentYear; i++)
+    {
+        last3Years.Add(i);
+    }
+    //List<string> MonthList = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+}
+<div class="page-title-wrapper">
+    <div class="page-title-heading text-primary">
+        <div class="page-title-icon">
+            <i class="glyphicon glyphicon-shopping-cart"></i>
+        </div>
+        <div>
+            <div class="page-title-main-text linebreak">
+                Purchase &amp; Sale
+            </div>
+            <div class="page-title-sub-text">Purchase &amp; Sale Report</div>
+        </div>
+    </div>
+    <div class="page-title-actions">
+        @*<div class="btn btn-primary">
+                Menu
+            </div>*@
+    </div>
+</div>
+<div class="page-content">
+    <div class="col-md-12 well well-sm">
+        <div class=" col-md-1" style="margin-top:9px;"><strong>Month:</strong></div>
+        <div class=" col-md-3">
+            @Html.DropDownListFor(model => model.MonthList.Month, new List<SelectListItem>{
+                                        new SelectListItem{Text="January", Value="1"},
+                                        new SelectListItem{Text="February", Value="2"},
+                                        new SelectListItem{Text="March", Value="3"},
+                                        new SelectListItem{Text="April", Value="4"},
+                                        new SelectListItem{Text="May", Value="5"},
+                                        new SelectListItem{Text="June", Value="6"},
+                                        new SelectListItem{Text="July", Value="7"},
+                                        new SelectListItem{Text="August", Value="8"},
+                                        new SelectListItem{Text="September", Value="9"},
+                                        new SelectListItem{Text="October", Value="10"},
+                                        new SelectListItem{Text="November", Value="11"},
+                                        new SelectListItem{Text="December", Value="12"}, }, "--- Select Month ---", new { @class = "form-control", @Value = @ViewBag.MonName, @id = "Month" })
+        </div>
+        <div class=" col-md-1" style="margin-top:9px;"><strong>Year:</strong></div>
+        <div class=" col-md-3">
+            @Html.DropDownListFor(model => model.MonthList.Year, new SelectList(last3Years, @ViewBag.Year), "--- Select Year ---", new { @class = "form-control", @id = "Year" })
+        </div>
+        @*<div class=" col-md-1">
+            <button class="btn btn-sm btn-info" id="ClearList">Clear</button>
+        </div>*@
+    </div>
+    <div class="clearfix">
+        @Html.Partial("_pvPurchaseSaleReport", Model)
+    </div>
+</div>
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(document).on('#Month').val('@ViewBag.MonName');
+            $('#Month,#Year').on('change', function () {
+                $('#DataGrid').show();
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("PurchaseSaleReport", "PurchaseSale", new { Area = "" })',
+                    data: { month: $('#Month').val(), year: $('#Year').val() },
+                    success: function (data) {
+                        $('#DataGrid').html(data);
+                        //$('#DataGrid').empty().append(data);
+                    }
+                });
+            })
+            @*$("#ClearList").click(function () {
+                var theDate = new Date();
+                var currMonth = theDate.getMonth();
+                var currYear = theDate.getFullYear();
+                $("#Month").val(currMonth + 1);
+                $("#Year").val(currYear);
+                $('#DataGrid').show();
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("PurchaseSaleReport", "PurchaseSale", new { Area = "" })',
+                    data: { month: $('#Month').val(), year: $('#Year').val() },
+                    success: function (data) {
+                        $('#DataGrid').html(data);
+                        //$('#DataGrid').empty().append(data);
+                    }
+                });
+            })*@
+        });
+    </script>
+}
+
+
+
+
+

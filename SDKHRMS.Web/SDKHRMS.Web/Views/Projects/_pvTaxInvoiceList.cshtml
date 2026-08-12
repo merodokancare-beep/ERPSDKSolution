@@ -1,0 +1,129 @@
+﻿@model  List<SDKHRMS.Entities.ViewModels.TaxInvoiceView>
+<div id="DataGrid">
+    @if (Model.Count() > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-condensed table-bordered" id="saleinvtable">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Reference No.
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Date
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Status
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            IGST Amount (&#8377;)
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            CGST Amount (&#8377;)
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            SGST Amount (&#8377;)
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Net Amount (&#8377;)
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Total Amount (&#8377;)
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;width:60px;">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                @if (!item.IsCancelled)
+                                {
+                                    <span class="badge badge-soft-success text-dark rounded-pill">@item.ReferenceNo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-soft-danger text-dark rounded-pill">@item.ReferenceNo</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @item.InvoiceDate.ToString("dd MMM yyyy")
+                            </td>
+                            <td class="text-center">
+                                @if (!item.IsCancelled)
+                                {
+                                    <span class="badge badge-soft-success text-dark rounded-pill">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-soft-danger text-dark rounded-pill">Cancelled</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @item.IGSTAmount.ToString("0.00")
+                            </td>
+                            <td class="text-center">
+                                @item.CGSTAmount.ToString("0.00")
+                            </td>
+                            <td class="text-center">
+                                @item.SGSTAmount.ToString("0.00")
+                            </td>
+                            <td class="text-center">
+                                @item.NetAmount.ToString("0.00")
+                            </td>
+                            <td class="text-center">
+                                @item.TotalAmount.ToString("0.00")
+                            </td>
+                            <td>
+                                <div class="dropdown dropdown-action me-3">
+                                    <a href="#"
+                                       class="btn-action-icon bg-primary-light"
+                                       data-bs-toggle="dropdown"
+                                       aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <ul>
+                                            <li>
+                                                <a href="/Invoice/SaleInvoiceDetails?ID=@item.SaleInvoiceID" class="dropdown-item " data-toggle="tooltip" data-placement="bottom" title="View Tax Invoice Details" target="_blank">
+                                                    <i class="fe fe-eye "></i> View
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="/Invoice/ExportSaleInvoice?InvID=@item.SaleInvoiceID" class="dropdown-item " data-toggle="tooltip" data-placement="bottom" title="Generate Invoice">
+                                                    <i class="fe fe-download me-2"></i> Download
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="3" class="text-center"><b>Total</b></td>
+                        <td class="text-center"><b>@Model.Sum(x => x.IGSTAmount).ToString("0.00")</b></td>
+                        <td class="text-center"><b>@Model.Sum(x => x.CGSTAmount).ToString("0.00")</b></td>
+                        <td class="text-center"><b>@Model.Sum(x => x.SGSTAmount).ToString("0.00")</b></td>
+                        <td class="text-center"><b>@Model.Sum(x => x.NetAmount).ToString("0.00")</b></td>
+                        <td class="text-center"><b>@Model.Sum(x => x.TotalAmount).ToString("0.00")</b></td>
+                        <td class="text-center"><b>-</b></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <img src="~/Content/Images/no_record.png" /><br />
+            <span class="text-muted">No records available or your searched record in not available..</span>
+        </div>
+    }
+</div>
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>

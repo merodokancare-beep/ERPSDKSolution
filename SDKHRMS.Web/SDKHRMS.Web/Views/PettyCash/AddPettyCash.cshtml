@@ -1,0 +1,211 @@
+﻿@model  SDKHRMS.Entities.ViewModels.PettyCashAdd
+@{
+    ViewBag.Title = "Petty Cash: Receivables";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<link href="~/Content/datetimepicker/jquery.datetimepicker.min.css" rel="stylesheet" />
+<link href="~/Content/Plugins/Select2/newselect2.css" rel="stylesheet" />
+
+
+<div class="page-header">
+    <div class="content-page-header">
+        <h5> Add Petty Cash Details</h5>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            @*<div class="card-header">
+                    <h5 class="card-title">Configure Holidays</h5>
+                </div>*@
+            <div class="card-body card-buttons">
+                <form method="post" action="/PettyCash/AddPettyCash" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.HiddenFor(m => m.BankExpID)
+                    @if (Model.PettyCash != null)
+                    {
+                        @Html.HiddenFor(m => m.PrevUploadedFile)
+                        @Html.HiddenFor(m => m.PettyCash.PettyCashID)
+                    }
+                    <div class="row">
+                        <div class="col-xl-6">
+                            <div class="form-group row">
+                                <label class="control-label required">Expense Head</label>
+                                @Html.DropDownListFor(m => m.PettyCash.ExpenseTypeID, new SelectList(Model.ExpenseTypeDD, "ExpenseTypeID", "ExpenseType", @Model.BankExpID), "-- Select Expense Head --", new { @class = "form-control ddSelect2", @id = "ddExpense", @Disabled = "Disabled", @Value = Model.BankExpID })
+                                @Html.ValidationMessageFor(m => m.PettyCash.ExpenseTypeID)
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group row">
+                                <label class="required control-label">Available Current Balance</label>
+                                @Html.TextBoxFor(m => m.AvailableBalance, new { @class = "form-control text-danger", @id = "Avcash", @Value = @Model.AvailableBalance.ToString("0.00"), @disabled = "disabled" })
+                            </div>
+                        </div>
+                        <div class="col-xl-4">
+                            <div class="form-group row">
+                                <label class="required">Payment Receive Date</label>
+                                @Html.TextBoxFor(m => m.PettyCash.TransDate, new { @class = "form-control", @id = "txtdate", @Value = Model.PettyCash != null ? Model.PettyCash.TransDate.ToString("dd MMM yyyy") : "" })
+                                @Html.ValidationMessageFor(m => m.PettyCash.TransDate)
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4">
+                            <div class="form-group row">
+                                <label class="required">Payment Receive Amount</label>
+                                @Html.TextBoxFor(m => m.PettyCash.CreditAmt, new { @class = "form-control", @Value = Model.PettyCash != null ? Model.PettyCash.CreditAmt.Value.ToString("0.00") : "" })
+                                @Html.ValidationMessageFor(m => m.PettyCash.CreditAmt)
+                            </div>
+                        </div>
+                        <div class="col-xl-4">
+                            <div class="form-group row">
+                                <label class="required">Bank Name</label>
+                                @Html.DropDownListFor(m => m.PettyCash.BankID, new SelectList(Model.BankDD, "BankID", "BankName"), "---Select Bank Name---", new { @class = "form-control ddSelect2", @id = "BankID" })
+                                @Html.ValidationMessageFor(m => m.PettyCash.BankID)
+                            </div>
+                        </div>
+                        <div class="col-xl-7">
+                            <div class="form-group row">
+                                <label class="required">Remarks</label>
+                                @Html.TextBoxFor(m => m.PettyCash.Remarks, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.PettyCash.Remarks)
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group row">
+                                <label class="control-label">Upload File <small>.jpeg/.png/.pdf</small></label>
+                                @Html.TextBoxFor(m => m.UploadFile, new { @class = "btn btn-sm btn-primary", type = "file", @id = "txtfile" })
+                                @Html.ValidationMessageFor(m => m.UploadFile)
+                            </div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(@Model.PrevUploadedFile))
+                        {
+                            <div class="col-xl-2">
+                                <div class="form-group row">
+                                    <label class="control-label">Prev Uploaded File</label>
+                                    <a href="~/UploadFile/Payments/@Model.PrevUploadedFile" class="btn btn-sm btn-outline-dark pull-right" target="_blank">View File</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="text-end">
+                        <button type="reset" onclick="location.href='@Url.Action("pettycashbook")'" class="btn btn-primary cancel me-2">Cancel</button>
+                        <input type="submit" value="Save" id="save" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*<div class="page-title-wrapper">
+        <div class="page-title-heading text-primary">
+            <div class="page-title-icon">
+                <i class="fa fa-hand-o-right"></i>
+            </div>
+            <div>
+                <div class="page-title-main-text linebreak">
+                    Petty Cash Master
+                </div>
+                <div class="page-title-sub-text">Petty Cash/Receive Cash/Add</div>
+            </div>
+        </div>
+        <div class="page-title-actions">
+        </div>
+    </div>
+    <form method="post" action="/PettyCash/AddPettyCash" enctype="multipart/form-data">
+        <div class="page-content clearfix">
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            @if (Model.PettyCash != null)
+            {
+                @Html.HiddenFor(m => m.PettyCash.PettyCashID)
+            }
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-md-6 margin-top10">
+                            <label class="control-label required">Expense Head</label>
+                            @Html.DropDownListFor(m => m.PettyCash.ExpenseTypeID, new SelectList(Model.ExpenseTypeDD, "ExpenseTypeID", "ExpenseType"), "-- Select Expense Head --", new { @class = "form-control ddSelect2", @id = "ddExpense" })
+                            @Html.ValidationMessageFor(m => m.PettyCash.ExpenseTypeID)
+                        </div>
+                        <div class="col-md-3 margin-top10">
+                            <label class="required">Payment Receive Date</label>
+                            @Html.TextBoxFor(m => m.PettyCash.TransDate, new { @class = "form-control", @id = "txtdate", @Value = Model.PettyCash != null ? Model.PettyCash.TransDate.ToString("dd MMM yyyy") : "" })
+                            @Html.ValidationMessageFor(m => m.PettyCash.TransDate)
+                        </div>
+                        <div class="col-md-3 margin-top10">
+                            <label class="required control-label">Available Current Balance</label>
+                            @Html.TextBoxFor(m => m.AvailableBalance, new { @class = "form-control", @id = "Avcash", @Value = @Model.AvailableBalance.ToString("0.00"), @disabled = "disabled" })
+                        </div>
+                        <div class="col-md-6 margin-top10">
+                            <label class="required">Payment Receive Amount</label>
+                            @Html.TextBoxFor(m => m.PettyCash.CreditAmt, new { @class = "form-control", @Value = Model.PettyCash != null ? Model.PettyCash.CreditAmt.Value.ToString("0.00") : "" })
+                            @Html.ValidationMessageFor(m => m.PettyCash.CreditAmt)
+                        </div>
+                        <div class="col-md-6  margin-top10 hidden" id="bankdiv">
+                            <label class="required">Bank Name</label>
+                            @Html.DropDownListFor(m => m.PettyCash.BankID, new SelectList(Model.BankDD, "BankID", "BankName"), "---Select Bank Name---", new { @class = "form-control ddSelect2", @id = "BankID" })
+                            @Html.ValidationMessageFor(m => m.PettyCash.BankID)
+                        </div>
+                        <div class="col-md-12 margin-top10">
+                            <label class="required">Remarks</label>
+                            @Html.TextAreaFor(m => m.PettyCash.Remarks, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.PettyCash.Remarks)
+                        </div>
+                        <input type="hidden" name="ExpHeadName" value="" id="ExpHead" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="well well-sm no-margin-bottom col-md-12 col-lg-12 text-right">
+            <div class="form-horizontal">
+                <a class="btn btn-default pull-left" href="/PaymentReceivable/index">Back to List</a>
+                <input type="submit" value="Save" id="save" class="btn btn-primary" />
+            </div>
+        </div>
+    </form>*@
+
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+
+@section Scripts{
+    <script src="~/Content/datetimepicker/jquery.datetimepicker.full.min.js"></script>
+    <script src="~/Content/Plugins/Select2/select2.min.js"></script>
+    @*@Scripts.Render("~/bundles/jqueryval")*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.ddSelect2').select2({ width: '100%' });
+            $('#txtdate').datetimepicker({
+                theme: 'light',
+                format: 'd M Y',
+                timepicker: false,
+                //minDate: 0
+            });
+
+            @*loadPaySection('@mode');*@
+            var ChangeMode = function () {
+                if ($('#ddExpense').val() != "") {
+                    var SelectType = $("#ddExpense").find('option:selected').text();
+                    $('#ExpHead').val(SelectType)
+                    if (SelectType == 'Bank') {
+                        $('#bankdiv').removeClass("hidden");
+                    }
+                    else {
+                        $('#bankdiv').addClass("hidden");
+                    }
+                }
+            }
+            $(document).on('change', '#ddExpense', ChangeMode);
+            ChangeMode();
+
+        });
+    </script>
+}
+
+
+

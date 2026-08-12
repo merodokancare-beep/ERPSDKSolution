@@ -1,0 +1,74 @@
+﻿@model SDKHRMS.Entities.ViewModels.UnitVM
+@{
+    ViewBag.Title = "Configuration : Unit Master";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<div class="page-header">
+    <div class="content-page-header">
+        <h5>Unit Master</h5>
+        <div class="list-btn">
+            <ul class="filter-list">
+                <li>
+                    <a class="btn btn-primary" href="/configuration/addUnit">
+                        <i class="fa fa-plus-circle me-2" aria-hidden="true"></i>Add Unit
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header card-buttons">
+                <div class="form-group mb-0 row">
+                    <div class="col-md-10">
+                        <form method="get" action="/Configuration/UnitList" data-search="true" data-otf-ajax="true" data-otf-target="#DataGrid" id="sForm">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1"><i class="fe fe-search"></i></span>
+                                <input type="text" id="inputsearch" class="form-control" placeholder="Search by unit name..." aria-label="Search" name="searchTerm" aria-describedby="basic-addon1" />
+                                <button class="btn btn-primary" id="search-btn" type="button">Search</button>
+                                <button onclick="location.href='@Url.Action("Unitlist")'" type="button" class="btn btn-primary d-none" id="clearSearchBtn">Clear Results</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                @Html.Partial("_pvUnitList", Model)
+            </div>
+        </div>
+    </div>
+</div>
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(document).on('click', '#search-btn', function () {
+                $('#sForm').submit();
+                clearbtn();
+            })
+            $("#inputsearch").keypress(function (event) {
+                if (event.which == 13) {
+                    clearbtn();
+                }
+            });
+            var clearbtn = function () {
+                if ($("#inputsearch").val() != "") {
+                    $("#clearSearchBtn").removeClass("d-none");
+                    $("#search-btn").addClass("d-none");
+                }
+                else {
+                    $("#clearSearchBtn").addClass("d-none");
+                    $("#search-btn").removeClass("d-none");
+                }
+            }
+            clearbtn();
+        });
+    </script>
+}

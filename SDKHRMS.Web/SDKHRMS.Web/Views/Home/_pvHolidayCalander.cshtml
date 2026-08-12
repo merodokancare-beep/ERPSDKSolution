@@ -1,0 +1,246 @@
+﻿@model SDKHRMS.Entities.ViewModels.DashboardViewModel
+@*@{
+    System.Globalization.DateTimeFormatInfo mfi = new System.Globalization.DateTimeFormatInfo();
+    string MonthName = mfi.GetMonthName(@ViewBag.Month).ToString();
+}*@
+<div id="childcalendarview" class="animated fadeIn">
+    @if (Model.MonthlyCalList != null)
+    {
+        if (Model.MonthlyCalList.Count() > 0)
+        {
+            int count = 1;
+            int itemcount = 0;
+            int flag = 0;
+            int incrcount = 0;
+            int boxcount = 0;
+            bool extratr = false;
+            <div>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-dark text-red" style="width: 14.2857%;">SUN</th>
+                                <th class="text-center bg-dark text-white" style="width: 14.2857%;">MON</th>
+                                <th class="text-center bg-dark text-white" style="width: 14.2857%;">TUE</th>
+                                <th class="text-center bg-dark text-white" style="width: 14.2857%;">WED</th>
+                                <th class="text-center bg-dark text-white" style="width: 14.2857%;">THU</th>
+                                <th class="text-center bg-dark text-white" style="width: 14.2857%;">FRI</th>
+                                <th class="text-center bg-dark text-white" style="width: 14.2857%;">SAT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @for (var k = 1; k <= (Model.MonthlyCalList.Count() / 7) + 2; k++)
+                            {
+                                if (extratr == false)
+                                {
+                                    <tr>
+                                        @foreach (var item in Model.MonthlyCalList)
+                                        {
+                                            if (incrcount >= flag)
+                                            {
+                                                if (count == 1)
+                                                {
+                                                    for (var i = 1; i <= 7; i++)
+                                                    {
+                                                        if (item.CalDay == "Sunday" && i == 1)
+                                                        {
+                                                            <td class="text-center">
+                                                                @if (@item.IsHoliday == true)
+                                                                {
+                                                                <div class="text-danger big">@item.CalDate</div>
+                                                                }
+                                                                else
+                                                                {
+                                                                <div class="text-danger">@item.CalDate</div>
+                                                                }
+                                                            </td>
+                                                                itemcount = item.CalDate;
+                                                                break;
+                                                        }
+                                                        else if (item.CalDay == "Monday" && i == 2)
+                                                        {
+                                                            <td class="text-center">
+                                                                @if (@item.IsHoliday == true)
+                                                                {
+                                                                    <div class="text-danger big">@item.CalDate</div>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <div class="big">@item.CalDate</div>
+                                                                }
+                                                            </td>
+                                                                itemcount = item.CalDate;
+                                                                break;
+                                                        }
+                                                        else if (item.CalDay == "Tuesday" && i == 3)
+                                                        {
+                                                            <td class="text-center">
+                                                                @if (@item.IsHoliday == true)
+                                                                {
+                                                                    <div class="text-danger big">@item.CalDate</div>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <div class="big">@item.CalDate</div>
+                                                                }
+                                                            </td>
+                                                                itemcount = item.CalDate;
+                                                                break;
+                                                        }
+                                                        else if (item.CalDay == "Wednesday" && i == 4)
+                                                        {
+                                                            <td class="text-center">
+                                                                @if (@item.IsHoliday == true)
+                                                                {
+                                                                    <div class="text-danger big">@item.CalDate</div>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <div class="big">@item.CalDate</div>
+                                                                }
+                                                            </td>
+                                                                itemcount = item.CalDate;
+                                                                break;
+                                                        }
+                                                        else if (item.CalDay == "Thursday" && i == 5)
+                                                        {
+                                                            <td class="text-center">
+                                                                @if (@item.IsHoliday == true)
+                                                                {
+                                                                    <div class="text-danger big">@item.CalDate</div>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <div class="big">@item.CalDate</div>
+                                                                }
+                                                            </td>
+                                                                itemcount = item.CalDate;
+                                                                break;
+                                                        }
+                                                        else if (item.CalDay == "Friday" && i == 6)
+                                                        {
+                                                            <td class="text-center">
+                                                                @if (@item.IsHoliday == true)
+                                                                {
+                                                                    <div class="text-danger big">@item.CalDate</div>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <div class="big">@item.CalDate</div>
+                                                                }
+                                                            </td>
+                                                                itemcount = item.CalDate;
+                                                                break;
+                                                        }
+                                                        else if (item.CalDay == "Saturday" && i == 7)
+                                                        {
+                                                            <td class="text-center">
+                                                                @if (@item.IsHoliday == true)
+                                                                {
+                                                                    <div class="text-danger big">@item.CalDate</div>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <div class="big">@item.CalDate</div>
+                                                                }
+                                                            </td>
+                                                                itemcount = item.CalDate;
+                                                                break;
+                                                        }
+                                                        else
+                                                        {
+                                                            <td></td>
+                                                        }
+                                                        incrcount = incrcount + 1;
+                                                        boxcount = boxcount + 1;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center">
+                                                        @if (@item.IsHoliday == true)
+                                                        {
+                                                            <div class="text-danger big">@item.CalDate</div>
+                                                        }
+                                                        else
+                                                        {
+                                                            if (@item.CalDay == "Sunday")
+                                                            {
+                                                                 <div class="big text-danger" >@item.CalDate</div>
+                                                            }
+                                                            else
+                                                            {
+                                                                 <div class="big">@item.CalDate</div>
+                                                            }
+                                                           
+                                                        }
+                                                    </td>
+                                                        itemcount = item.CalDate;
+                                                        boxcount = boxcount + 1;
+                                                }
+                                            }
+                                            count = 2;
+                                            incrcount = incrcount + 1;
+                                            if (incrcount >= (6 + (flag + 1)))
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        @if (itemcount >= Model.MonthlyCalList.Count() && boxcount > 0 && boxcount < 7)
+                                        {
+
+                                            for (var j = boxcount; j < 7; j++)
+                                            {
+                                                <td></td>
+                                            }
+                                            extratr = true;
+                                        }
+                                    </tr>
+                                        flag = itemcount + 1;
+                                        incrcount = 1;
+                                        boxcount = 0;
+
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="col-md-12 row-top-15">
+                <div class="table-responsive">
+                    <table class="table table-condensed table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-dark text-red" style="width: 14.2857%;">SUN</th>
+                                <th class="text-center bg-dark text-white" style="width: 14.2857%;">MON</th>
+                                <th class="text-center bg-dark text-white" style="width: 14.2857%;">TUE</th>
+                                <th class="text-center bg-dark text-white" style="width: 14.2857%;">WED</th>
+                                <th class="text-center bg-dark text-white" style="width: 14.2857%;">THU</th>
+                                <th class="text-center bg-dark text-white" style="width: 14.2857%;">FRI</th>
+                                <th class="text-center bg-dark text-white" style="width: 14.2857%;">SAT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    }
+
+
+</div>

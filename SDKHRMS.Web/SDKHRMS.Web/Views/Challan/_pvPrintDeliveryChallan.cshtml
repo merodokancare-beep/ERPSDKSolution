@@ -1,0 +1,159 @@
+﻿@model SDKHRMS.Entities.ViewModels.DeliveryChallanViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>SDK Solution ||Challan </title>
+    @Styles.Render("~/Content/css")
+    <style>
+        .fontsize18 {
+            font-size: 18px !important;
+        }
+
+        .fontsize16 {
+            font-size: 16px !important;
+            color: #000;
+        }
+
+        .custom-table, .custom-table-all {
+            border-collapse: collapse;
+            border-spacing: 0;
+            width: 100%;
+            display: table;
+        }
+
+        .custom-table-all {
+            border: 1px solid #ccc;
+        }
+        img {
+            max-width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+<body style="background:#fff;">
+    <div class="col-md-12">
+        @*<div class="col-md-12 text-center">
+                <h2 class="font-bold"><u>TAX INVOICE</u></h2>
+            </div>*@
+        <div class="col-md-12 margin-top10">
+            <div class="row">
+                <div class="col-md-7 pull-left" style="margin-top:-10px;">
+                    <img src="~/Content/Images/LOGOSDK.png" class="" /><br />
+                    <strong class="fontsize18 header-color"> M/S SDK Solutions</strong><br />
+                    <span class="fontsize16">3057/3/11/N, Jyoti Nagar, P.O Sevok Road, Siliguri, WB - 734001 </span><br />
+                    <span class="fontsize16">Email: info@sdksolutions.in || GSTIN: 19AMVPA4565H1ZM</span><br />
+                </div>
+                <div class="col-md-5 pull-right">
+                    <strong class="fontsize18"><span class="text-info">Delivery Challan</span></strong><br />
+                    <span class="fontsize16">Challan No.: @Model.ChallanDetailsKey.CHRefNo </span><br />
+                    <span class="fontsize16">Date: @Model.ChallanDetailsKey.CHDate.ToString("dd MMM yyyy")</span><br />
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="col-md-12 margin-top10">
+            <table class="" width="100%" style="width:100%;page-break-inside: avoid">
+                <tr style="page-break-inside: avoid">
+                    <td class="text-left">
+                        <strong class="fontsize18 text-info">Details Of  Consignee: </strong>
+                    </td>
+                </tr>
+                <tr style="color: #000;">
+                    <td class="text-left">
+                        <span class="fontsize16">To,</span><br />
+                        <span class="fontsize16">@Model.ChallanDetailsKey.CHToName</span><br />
+                        <span class="fontsize16">@Model.ChallanDetailsKey.VendorName</span><br />
+                        <span class="fontsize16">@Model.ChallanDetailsKey.ClientAddress</span><br />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <hr />
+    </div>
+
+    @if (Model.ChallanItemList.Count() > 0)
+    {
+        <div class="col-md-12" style="margin-top:20px;">
+            <table class="table table-bordered" width="100%">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="vertical-align:middle;width:10%;">
+                            Sl No.
+                        </th>
+                        <th class="text-center" style="vertical-align: middle; width: 70%;">
+                            Item Name
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;width:20%;">
+                            Quantity
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{int i = 1;}
+                    @foreach (var item in Model.ChallanItemList)
+                    {
+                        <tr style="page-break-inside: avoid; color: #000;">
+                            <td class="text-center" style="vertical-align:middle">
+                                @i
+                            </td>
+                            <td class="text-left" style="vertical-align:middle">
+                                @item.ItemName
+                            </td>
+                            <td class="text-center" style="vertical-align:middle">
+                                @item.Quantity @item.UnitName
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                </tbody>
+            </table>
+            <hr />
+        </div>
+        <hr />
+    }
+    else
+    {
+        <div class="col-md-12" style="margin-top:30px; margin-bottom:20px;">
+            <h3>No record found...</h3>
+        </div>
+    }
+    <div class="clearfix"></div>
+    <div class="col-md-12 margin-top10">
+        <table class="" width="100%" style="width:100%;page-break-inside: avoid">
+            <tr style="page-break-inside: avoid">
+                <td class="text-left" style="width:65%;">
+                    <strong class="fontsize16 text-info">Receiver Details Below:</strong>
+                </td>
+                <td class="text-left" style="width:5%">
+                    &nbsp;
+                </td>
+                <td class="text-left" style="width:30%;">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr style="color: #000;">
+                <td class="text-left" style="width:65%;">
+                    <span class="fontsize16">Name:</span><br /><br />
+                    <span class="fontsize16">Contact No.:</span><br /><br />
+                    <span class="fontsize16">Signature: </span><br /><br />
+                    <span class="fontsize16">Seal & Stamp: </span><br /><br />
+
+                </td>
+                <td class="text-left" style="width:5%">
+                    &nbsp;
+                </td>
+                <td class="text-left" style="width:30%;">
+                    <br /><br />
+                    <img src="~/Content/Images/sdksign.png" height="100" style="margin-top:5px; margin-bottom:5px" /><br />
+                    <span class="">Authorised Signatory</span><br />
+                    <span class="">SDK Solution</span><br />
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,182 @@
+﻿@model SDKHRMS.Entities.ViewModels.PaymentReceivedVM
+<div id="DataGrid" class="">
+    @if (Model.ReceivePayment.Count() > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-condensed table-borderless" id="purtable">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="vertical-align: middle; ">
+                            Date
+                        </th>
+                        <th style="vertical-align: middle; text-align: left;">
+                            Particular
+                        </th>
+                        <th style="vertical-align: middle; text-align: left; ">
+                            Amount
+                        </th>
+                        <th style="vertical-align: middle; text-align: left;">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ReceivePayment)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                @item.ReceivedDate.ToString("dd MMM yyyy")
+                            </td>
+
+                            <td>
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                Expense Head:<span class="text-primary"> @item.ExpenseType</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Remarks:<span class="text-primary"> @item.Remarks</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+
+                            <td>
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                Amount:<span class="text-primary"> @item.AmtReceived.ToString("#,#.00", System.Globalization.CultureInfo.CreateSpecificCulture("hi-IN"))</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Mode:<span class="text-primary"> @item.ReceivedMode</span>
+                                            </td>
+                                        </tr>
+                                        @if (@item.ReceivedMode != "Cash")
+                                        {
+                                            <tr>
+                                                <td>
+                                                    Chq/Trans No.:<span class="text-primary"> @item.TransactionNo</span>
+                                                </td>
+                                                <td>
+                                                    Bank:<span class="text-primary"> @item.BankName</span>
+                                                </td>
+                                            </tr>
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td>
+                                @if (item.ReceivedMode != "Cash")
+                                {
+                                    if (!string.IsNullOrEmpty(@item.UploadedFile))
+                                    {
+                                        <a href="/UploadFile/Payments/@item.UploadedFile" target="_blank" class="btn-action-icon bg-light-gray text-success float-start me-2"> <i class="fe fe-file"></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a class="btn-action-icon bg-light-gray text-light float-start me-2 disabled"> <i class="fe fe-file"></i></a>
+
+                                    }
+                                }
+                                else
+                                {
+                                    <a class="btn-action-icon bg-light-gray text-light float-start me-2 disabled"> <i class="fe fe-file"></i></a>
+
+                                }
+                                @if (User.IsInRole("Super Admin"))
+                                {
+                                    <a href="/PaymentReceivable/Edit?id=@item.ReceivedID" data-toggle="tooltip" data-placement="bottom" title="Edit" class="btn-action-icon bg-light-gray text-primary me-2 float-start">
+                                        <i class="fe fe-edit-2"></i>
+                                    </a>
+                                    <form action="/PaymentReceivable/delete" method="post" data-otf-ajax="true" data-otf-target="#DataGrid">
+                                        @Html.AntiForgeryToken()
+                                        @Html.Hidden("id", @item.ReceivedID)
+                                        <a href="@Url.Action("delete", "PaymentReceivable", new { id = @item.ReceivedID })" class="delete btn-action-icon bg-danger-light" data-toggle="tooltip" data-placement="bottom" title="Delete" data-record="@item.Remarks">
+                                            <i class="fe fe-trash-2"></i>
+                                        </a>
+                                    </form>
+                                }
+                            </td>
+
+
+                            @*<td class="" style="vertical-align:middle;">
+                                    <span class="pull-left">Expense Head: <b>@item.ExpenseType</b></span>
+                                    <span class="pull-right">Date: <b>@item.ReceivedDate.ToString("dd MMM yyyy")</b></span>
+                                    <br />
+                                    <span class="pull-left">Remarks: <b>@item.Remarks</b></span>
+                                </td>
+                                <td class="text-center" style="vertical-align:middle;">
+                                    <b><i class="fa fa-rupee"></i> @item.AmtReceived.ToString("#,#.00", System.Globalization.CultureInfo.CreateSpecificCulture("hi-IN"))</b>
+                                    <br />
+                                    <span> Mode: <b>@item.ReceivedMode</b></span>
+
+                                    @if (item.ReceivedMode != "Cash")
+                                    {
+                                        if (!string.IsNullOrEmpty(item.UploadedFile))
+                                        {
+                                            <a href="@item.UploadedFile" target="_blank" class="small"> (Click To See File)</a>
+                                        }
+                                        <br />
+                                        <small>Bank: <b>@item.BankName</b> - Chq/Tr No.: <b>@item.TransactionNo</b></small>
+                                    }
+                                </td>
+                                <td class="text-center" style="vertical-align:middle;">
+                                    @if (User.IsInRole("Super Admin"))
+                                    {
+                                        <a href="/PaymentReceivable/Edit?id=@item.ReceivedID" title="Edit Receive Direct Payment Details">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                        <br />
+                                        <form method="post" action="@Url.Action("delete", "PaymentReceivable", new { Area = "" })" data-otf-ajax="true" data-otf-target="#DataGrid">
+                                            @Html.Hidden("id", item.ReceivedID)
+                                            @Html.AntiForgeryToken()
+                                            <a href="@Url.Action("delete", "PaymentReceivable", new { Area = "", id = item.ReceivedID })" class="delete" date-toggle="tooltip" data-placement="bottom" title="Delete" data-record="@item.Remarks">
+                                                <i class="fa fa-trash text-danger"></i>
+                                            </a>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </td>*@
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="ns-grid-pager" data-otf-target="#DataGrid">
+            @*<div class="hidden-xs col-md-3 col-sm-3">
+                    Showing @Model.ReceivePayment.Count() of @Model.TotalRecords Record(s)
+
+                </div>
+                <div class="visible-lg visible-md visible-sm visible-xs col-md-9 col-sm-9 ns-pagination" data-otf-target="#DataGrid" data-otf-actionlink="/PaymentReceivable/index">
+                    @Html.PageLinks(Model.PagingInfo, x => Url.Action("Index", "PaymentReceivable", new { PageNo = x }))
+                </div>*@
+            <div class="visible-lg visible-md visible-sm visible-xs col-lg-12 col-sm-12 ns-pagination" data-otf-target="#DataGrid" data-otf-actionlink="/configuration/UnitList">
+                <span class="badge bg-warning text-dark">Showing @Model.ReceivePayment.Count() of @Model.TotalRecords Record(s)</span>
+                @Html.PageLinks(Model.PagingInfo, x => Url.Action("PaymentReceivable", new { PageNo = x }))
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <img src="~/Content/Images/no_record.png" /><br />
+            <span class="text-muted">No records available or your searched </span>
+        </div>
+    }
+    @*error message*@
+    <div id="ErrMsg" style="display:none;">
+        <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+    </div>
+</div>

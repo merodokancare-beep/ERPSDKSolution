@@ -1,0 +1,68 @@
+﻿
+.forny-container {
+    background-size: contain;
+    display: flex;
+    align-items: center;
+}
+
+.forny-inner {
+    display: block;
+    height: auto;
+}
+
+.forny-form {
+    padding: 2.5rem;
+    background: white;
+    border-radius: 12px;
+}
+
+@media (min-width: 768px) {
+    .forny-container {
+        /*background: url('../Images/sdktexture.jpg') center center no-repeat;*//*, url('../img/bg-03-01.svg') center center no-repeat;*/
+        background-color: hsla(216, 33%, 97%, 1);
+    }
+
+    .forny-form {
+        box-shadow: 0 3px 6px hsla(0, 0%, 0%, 0.1);
+    }
+}
+
+/* FORMS */
+
+.forny-form .form-group {
+    margin-bottom: 2rem;
+    /*background: hsla(216, 33%, 97%, 1);*/
+    border-radius: 20px;
+    transition: box-shadow 0.3s;
+    /*border: 1px solid hsla(216, 33%, 97%, 1);*/
+}
+
+.forny-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    color: black;
+}
+
+.forny-inner {
+     /*min-height: 100vh;*/
+    display: flex;
+    flex-direction: column;
+}
+
+.forny-form {
+    margin: auto;
+}
+
+@media (min-width: 768px) {
+    .forny-inner {
+        height: auto;
+        width: 35rem;
+    }
+
+    .forny-form {
+        width: 35rem;
+    }
+}

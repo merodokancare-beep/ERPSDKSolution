@@ -1,0 +1,80 @@
+﻿@model SDKHRMS.Entities.ViewModels.UnitVM
+<div id="DataGrid" class="">
+    @if (Model.UnitList.Count() > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-condensed table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Unit Name
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Description
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.UnitList)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                @item.UnitName
+                            </td>
+                            <td class="text-center">
+                                @item.UnitDescription
+                            </td>
+                            <td class="text-center" style="width: 100px;">
+                                <div style="float: right;">
+                                    <div style="float:left; padding-right: 8px;">
+                                        <a href="/Configuration/AddUnit?id=@item.UnitID" title="Edit Unit Details" class="btn-action-icon bg-light-gray">
+                                            <i class="fe fe-edit-2"></i>
+                                        </a>
+                                    </div>
+                                    <div style="float:left; padding-right: 10px;">
+                                        <form action="/Cofiguration/DeleteUnit" method="post" data-otf-ajax="true" data-otf-target="#DataGrid">
+                                            @Html.AntiForgeryToken()
+                                            @Html.Hidden("id", @item.UnitID)
+                                            <a href="@Url.Action("DeleteUnit", new { id = @item.UnitID })" class="delete btn-action-icon bg-danger-light" data-toggle="tooltip" data-placement="bottom" title="Delete Unit Details" data-record="@item.UnitName">
+                                                <i class="fe fe-trash-2"></i>
+                                            </a>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="ns-grid-pager" data-otf-target="#DataGrid">
+            @*<div class="hidden-xs col-md-3 col-sm-3">
+                    Showing @Model.UnitList.Count() of @Model.TotalRecords Record(s)
+
+                </div>
+                <div class="visible-lg visible-md visible-sm visible-xs col-md-9 col-sm-9 ns-pagination" data-otf-target="#DataGrid" data-otf-actionlink="/configuration/UnitList">
+                    @Html.PageLinks(Model.PagingInfo, x => Url.Action("UnitList", new { PageNo = x }))
+                </div>*@
+            <div class="visible-lg visible-md visible-sm visible-xs col-lg-12 col-sm-12 ns-pagination" data-otf-target="#DataGrid" data-otf-actionlink="/configuration/UnitList">
+                <span class="badge bg-warning text-dark">Showing @Model.UnitList.Count() of @Model.TotalRecords Record(s)</span>
+                @Html.PageLinks(Model.PagingInfo, x => Url.Action("UnitList", new { PageNo = x }))
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <img src="~/Content/Images/no_record.png" /><br />
+            <span class="text-muted">No records available or your searched </span>
+        </div>
+    }
+    @*error message*@
+    <div id="ErrMsg" style="display:none;">
+        <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+    </div>
+</div>
+
+

@@ -1,0 +1,27 @@
+﻿@model List<SDKHRMS.Entities.ViewModels.NotificationView>
+<div class="">
+    <ul class="notification-list">
+        @foreach (var item in Model)
+        {
+            <li class="notification-message">
+                <a href="@item.AlertURL">
+                    <div class="media d-flex">
+                        <div class="avatar avatar-sm">
+                            <span class="avatar-title rounded-circle bg-info-light">
+                                @item.AlertCount
+                            </span>
+                        </div>
+                        <div class="media-body">
+                            <p class="noti-details">
+                                <span class="noti-title">
+                                    @item.AlertName
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </li>
+        }
+
+    </ul>
+</div>

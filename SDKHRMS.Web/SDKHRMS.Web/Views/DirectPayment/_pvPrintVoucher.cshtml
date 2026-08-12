@@ -1,0 +1,86 @@
+﻿@model SDKHRMS.Entities.ViewModels.DirectPaymentSettleVM
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>SDK Solution ||Print Voucher </title>
+    <style>
+        img {
+            max-width: 200px;
+            height: auto;
+        }
+    </style>
+    @Styles.Render("~/Content/css")
+</head>
+<body style="background:#fff;">
+    <div class="col-md-12">
+        <div class="col-md-12">
+            <img src="~/Content/Images/LOGOSDK1.png" />
+        </div>
+        <div class="col-md-12 text-center mb-10" style="font-size:20px;"><strong style="border-bottom:2px solid">Payment Voucher</strong></div>
+    </div>
+    <div class="col-md-12" style="margin-top:5px;">
+        <b>Date: @Model.DirectPayment.PaymentDate.ToString("dd MMM yyyy")</b><br />
+        <b>Expenses Type: @Model.DirectPayment.ExpenseTypeName</b><br />
+        <b>
+            Project Name: @if (!string.IsNullOrEmpty(@Model.DirectPayment.ProjectName))
+            {
+                <span>@Model.DirectPayment.ProjectName</span>
+            }
+            else
+            {
+                <span>N/A</span>
+            }
+        </b>
+    </div>
+    <div class="col-md-12" style="margin-top:5px;">
+        <table class="table table-bordered" width="100%">
+            <thead>
+                <tr>
+                    <th class="text-left fontsize16" style="vertical-align:middle">
+                        Description
+                    </th>
+                    <th class="text-right fontsize16" style="vertical-align:middle;width:25%">
+                        Amount (&#8377;)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-left">
+                        <span> Purpose: @Model.DirectPayment.Purpose</span><br />
+                        <span>Remarks: @Model.DirectPayment.Remarks</span>
+                    </td>
+                    <td class="text-center" style="vertical-align:middle;"><b>@Model.DirectPayment.PaymentAmt.ToString("0.00")</b></td>
+                </tr>
+                <tr><td class="text-left" colspan="2"><i>In Words Rupees:  @ViewBag.FigureAmount Only.</i></td></tr>
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <div class="col-md-12 margin-top20">
+        <table class="" width="100%" style="width: 100%; page-break-inside: avoid; color: #000;">
+            <tr>
+                <td class="text-left" style="width:56%;">
+                    <br />
+                    <br />
+                    <span class="">Accountant Signatory</span><br />
+                </td>
+                <td class="text-left" style="width:4%">
+                    &nbsp;
+                </td>
+                <td class="text-center" style="width:40%;">
+                    <br />
+                    <br />
+                    <span class="">Receiver Signatory</span><br />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>
+

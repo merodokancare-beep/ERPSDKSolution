@@ -1,0 +1,53 @@
+﻿@model  SDKHRMS.Entities.ViewModels.PurchaseSalesViewModel
+@{
+    ViewBag.Title = "Sale Manage";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+@{
+    List<string> PSType = new List<string> { "Purchase", "Sale" };
+}
+<div class="page-title-wrapper">
+    <div class="page-title-heading text-primary">
+        <div class="page-title-icon">
+            <i class="glyphicon glyphicon-shopping-cart"></i>
+        </div>
+        <div>
+            <div class="page-title-main-text linebreak">
+               Sale Manage
+            </div>
+            <div class="page-title-sub-text">Sale List</div>
+        </div>
+    </div>
+    <div class="page-title-actions">
+    </div>
+</div>
+<div class="page-content">
+    <div class="well well-sm clearfix">
+        <div class="col-md-9 no-horizantal-padding pull-left">
+            <form method="get" action="@Url.Action("SaleList")" data-search="true" data-otf-ajax="true" data-otf-target="#DataGrid">
+                <div class="input-group">
+                    <input type="text" name="searchTerm" autocomplete="off" class="form-control" placeholder="Search by Clent name..." />
+                    <span class="input-group-btn">
+                        <button class="btn btn-success pull-left" id="search-btn" value="Search By Name"> <i class="glyphicon glyphicon-search"></i> </button>
+                    </span>
+                </div>
+
+            </form>
+        </div>
+        <div class="col-md-3 no-horizantal-padding pull-right">
+            &nbsp;&nbsp;<a href="@Url.Action("SaleList")" class="btn btn-success hidden" id="clearSearchBtn">Clear !</a>
+            @Html.ActionLink("Add Sale", "AddSale", null, new { @class = "btn btn-danger pull-right" })
+        </div>
+    </div>
+    <div class="" id="DataGrid">
+        @Html.Partial("_pvPurchaseSaleList", Model)
+    </div>
+</div>
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+
+
+

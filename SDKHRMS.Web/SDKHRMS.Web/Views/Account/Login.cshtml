@@ -1,0 +1,232 @@
+@using SDKHRMS.Web.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "SDK Enterprise ERP - Login";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="~/Content/Images/smalllogo.png">
+    <title>SDK Enterprise ERP - Login</title>
+    
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/assets/plugins/fontawesome/css/all.min.css">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/custom-erp.css" rel="stylesheet" />
+
+    <style>
+        body {
+            background: radial-gradient(circle at 15% 15%, rgba(79, 70, 229, 0.15), transparent 45%),
+                        radial-gradient(circle at 85% 85%, rgba(14, 165, 233, 0.15), transparent 45%),
+                        #090D16 !important;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .login-card {
+            background: rgba(30, 41, 59, 0.75) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            border-radius: 20px !important;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5) !important;
+            max-width: 440px;
+            width: 100%;
+            padding: 40px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-glow {
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 150px;
+            height: 150px;
+            background: rgba(79, 70, 229, 0.3);
+            filter: blur(50px);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .logo-box {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, #4F46E5, #6366F1);
+            border-radius: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group-addon {
+            background: rgba(17, 24, 39, 0.8) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            border-right: none !important;
+            color: #94A3B8 !important;
+            border-radius: 10px 0 0 10px !important;
+            padding: 10px 14px;
+        }
+
+        .form-control {
+            border-radius: 0 10px 10px 0 !important;
+            height: 46px !important;
+            background: rgba(17, 24, 39, 0.8) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            color: #FFF !important;
+        }
+
+        .form-control:focus {
+            border-color: #6366F1 !important;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25) !important;
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.18) !important;
+            border: 1px solid rgba(239, 68, 68, 0.4) !important;
+            color: #FCA5A5 !important;
+            border-radius: 10px !important;
+            padding: 12px 16px !important;
+            font-size: 0.88rem !important;
+            margin-bottom: 20px;
+        }
+
+        .btn-login {
+            width: 100%;
+            height: 48px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #4F46E5, #6366F1);
+            border: none;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.4);
+            transition: all 0.25s ease;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(79, 70, 229, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-glow"></div>
+        
+        <div class="text-center">
+            <div class="logo-box">
+                <img src="~/Content/Images/LOGOSDK1.png" style="max-height: 44px; max-width: 54px; filter: brightness(0) invert(1);" alt="SDK Logo">
+            </div>
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: #FFF; margin-bottom: 6px;">SDK Enterprise ERP</h2>
+            <p style="color: #94A3B8; font-size: 0.88rem; margin-bottom: 28px;">Enter your credentials to access your portal</p>
+        </div>
+
+        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            
+            <div class="form-group">
+                <label style="display: block; font-size: 0.85rem; color: #CBD5E1; margin-bottom: 6px;"><i class="fas fa-user" style="color: #6366F1; margin-right: 6px;"></i> Username / Email</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fas fa-user-circle"></i></span>
+                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @placeholder = "Enter username or email", required = "required" })
+                </div>
+                @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger", style = "font-size: 0.8rem; margin-top: 4px; display: block;" })
+            </div>
+
+            <div class="form-group">
+                <label style="display: block; font-size: 0.85rem; color: #CBD5E1; margin-bottom: 6px;"><i class="fas fa-lock" style="color: #6366F1; margin-right: 6px;"></i> Password</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fas fa-key"></i></span>
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Enter password", id = "Password", required = "required" })
+                </div>
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger", style = "font-size: 0.8rem; margin-top: 4px; display: block;" })
+            </div>
+
+            if (!string.IsNullOrEmpty(@ViewBag.ErrMsg))
+            {
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i> @ViewBag.ErrMsg
+                </div>
+            }
+
+            <div class="form-group" style="margin-top: 28px;">
+                <input type="submit" id="LogInBtn" class="hidden" style="display:none;" />
+                <button type="button" id="LogIn" class="btn-login"><i class="fas fa-sign-in-alt me-2"></i> Sign In to Account</button>
+            </div>
+        }
+
+        <div style="text-align: right; margin-top: 14px;">
+            @Html.ActionLink("Forgot your password?", "ForgotPassword", null, new { style = "color: #0EA5E9; font-size: 0.85rem; text-decoration: none;" })
+        </div>
+
+        <!-- Demo Login Credentials Helper Card -->
+        <div style="margin-top: 24px; padding: 14px; background: rgba(15, 23, 42, 0.6); border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: 12px; font-size: 0.82rem; color: #94A3B8; text-align: center;">
+            <div style="font-weight: 700; color: #F8FAFC; margin-bottom: 4px;">
+                <i class="fas fa-key" style="color: #F59E0B; margin-right: 6px;"></i> Active ERP Login Credentials:
+            </div>
+            <div>Username: <strong style="color: #6366F1;">admin</strong> | Password: <strong style="color: #10B981;">admin123</strong></div>
+            <div style="font-size: 0.78rem; color: #64748B; margin-top: 2px;">Other accounts: <span style="color: #CBD5E1;">manoj@sdksolution.co.in</span> | <span style="color: #CBD5E1;">kabita.tamang@netspeq.com</span></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 24px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; color: #64748B; font-size: 0.82rem;">
+            &copy; SDK @DateTime.Now.Year All Rights Reserved | Executive ERP Portal
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/aes.js"></script>
+    <script src="~/Scripts/core-min.js"></script>
+    <script src="~/Scripts/enc-utf16-min.js"></script>
+    <script type="text/javascript">
+        $('#LogIn').click(function () {
+            var txtpassword = $('#Password').val();
+            if (txtpassword != "") {
+                var key = CryptoJS.enc.Utf8.parse('8080808080808080');
+                var iv = CryptoJS.enc.Utf8.parse('8080808080808080');
+                var pass = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(txtpassword), key,
+                {
+                    keySize: 128 / 8,
+                    iv: iv,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+                $('#Password').val(pass);
+                $('#LogInBtn').click();
+            }
+            else {
+                $('#LogInBtn').click();
+            }
+        });
+
+        $(window).keydown(function (event) {
+            if (event.keyCode == 13) {
+                event.preventDefault();
+                $('#LogIn').click();
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>
+

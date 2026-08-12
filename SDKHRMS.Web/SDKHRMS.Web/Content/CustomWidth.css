@@ -1,0 +1,49 @@
+﻿.col-width-25 {
+    width: 25px !important;
+}
+.col-width-50 {
+    width: 50px !important;
+}
+
+.col-width-100 {
+    width: 100px !important;
+}
+
+.col-width-150 {
+    width: 150px !important;
+}
+
+.col-width-200 {
+    width: 200px !important;
+}
+
+.col-width-300 {
+    width: 300px !important;
+}
+
+.col-width-400 {
+    width: 400px !important;
+}
+
+.custome-table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    border: 1px solid #ddd;
+}
+.custome-table, th, td {
+  border: 1px solid #808080;
+}
+.custome-table, td {
+    text-align: left;
+    padding: 8px;
+}
+.custome-table th {
+    background: linear-gradient(#C1CDDF, #A3AEC0 60%, #8A95A7);
+    background-color: rgba(0, 0, 0, 0);
+    background-color: #DCDCDC;
+    color: #555555;
+    text-align: center;
+    font-weight: bold;
+    height: 40px;
+}

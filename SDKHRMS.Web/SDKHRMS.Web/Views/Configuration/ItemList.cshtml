@@ -1,0 +1,49 @@
+﻿@model SDKHRMS.Entities.ViewModels.MstConfigurationViewModel
+@{
+    ViewBag.Title = "Configuration : Item Master";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="page-title-wrapper">
+    <div class="page-title-heading text-primary">
+        <div class="page-title-icon">
+            <i class="fa fa-hand-o-right"></i>
+        </div>
+        <div>
+            <div class="page-title-main-text linebreak">
+                Items Master
+            </div>
+            <div class="page-title-sub-text">Configuration/Items/List</div>
+        </div>
+    </div>
+    <div class="page-title-actions">
+        @*<div class="btn btn-primary">
+                Menu
+            </div>*@
+    </div>
+</div>
+
+<div class="page-content">
+    <div class="well well-sm clearfix">
+        <div class="col-md-9 no-horizantal-padding pull-left">
+            <form method="get" action="@Url.Action("Itemlist")" data-search="true" data-otf-ajax="true" data-otf-target="#DataGrid">
+                <div class="input-group">
+                    <input type="text" name="searchTerm" autocomplete="off" class="form-control" placeholder="Search by name..." />
+                    <span class="input-group-btn">
+                        <button class="btn btn-success pull-left" id="search-btn" value="Search By Name"> <i class="glyphicon glyphicon-search"></i> </button>
+                    </span>
+                </div>
+
+            </form>
+        </div>
+        <div class="col-md-3 no-horizantal-padding pull-right">
+            &nbsp;&nbsp;<a href="@Url.Action("Itemlist")" class="btn btn-success hidden" id="clearSearchBtn">Clear !</a>
+            @Html.ActionLink("Add New", "addItem", null, new { @class = "btn btn-danger pull-right" })
+        </div>
+    </div>
+    <div class="">
+        @Html.Partial("_pvItemList", Model)
+    </div>
+</div>
+
+

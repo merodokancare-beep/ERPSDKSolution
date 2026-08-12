@@ -1,0 +1,162 @@
+﻿@model SDKHRMS.Entities.ViewModels.EmpAttendanceViewModel
+
+<div id="DataGrid" class="">
+    @if (Model.ViewEmpAttendanceList.Count() > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-condensed table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Employee ID
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Employee Name
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            In Time
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Out Time
+                        </th>
+                        <th class="text-center" style="vertical-align:middle">
+                            Hours of Work
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Remarks
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+        int i = 0;
+                    }
+                    @foreach (var item in Model.ViewEmpAttendanceList)
+                    {
+                        <tr>
+                            <td class="hidden" style="display:none;">
+                                <input type="text" class="hidden" value="@item.AttendanceID" id="AId_@i" style="display:none" />
+                                <input type="text" class="hidden" value="@item.EmployeeID" id="EId_@i" style="display:none" />
+                            </td>
+                            <td class="text-center" style="vertical-align:middle">
+                                <div class="col-md-12" id="labelEmpID_@i">
+                                    @item.EmployeeID
+                                </div>
+                            </td>
+                            <td class="text-center" style="vertical-align:middle">
+                                <div class="col-md-12" id="labelEmpName_@i">
+                                    @item.EmployeeName
+                                </div>
+                            </td>
+                            <td class="text-center" style="vertical-align:middle">
+                                <div class="col-md-12" id="labelInTime_@i" style=" display:inline-block">
+                                    @if (item.InTime != null)
+                                    {
+                                        @item.InTime
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </div>
+                                <div class="col-md-12 form-style-8 bootstrap-timepicker" style=" display:none" id="editInTime_@i">
+                                    @Html.TextBoxFor(model => item.InTime, new { Value = item.InTime, @class = "InTime", @id = "InTime_" + i })
+                                </div>
+                            </td>
+                            <td class="text-center" style="vertical-align:middle">
+                                <div class="col-md-12" id="labelOutTime_@i" style=" display:inline-block">
+                                    @if (item.OutTime != null)
+                                    {
+                                        @item.OutTime
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </div>
+                                <div class="col-md-12 form-style-8 bootstrap-timepicker" style=" display:none" id="editOutTime_@i">
+                                    @Html.TextBoxFor(model => item.OutTime, new { Value = item.OutTime, @class = "OutTime", @id = "OutTime_" + i })
+                                </div>
+                            </td>
+                            <td class="text-center" style="vertical-align:middle">
+                                @if ((!string.IsNullOrEmpty(@item.InTime)) && (!string.IsNullOrEmpty(@item.OutTime)))
+                                {
+                                    TimeSpan In = TimeSpan.Parse(@item.InTime);
+                                    TimeSpan Out = TimeSpan.Parse(@item.OutTime);
+                                    TimeSpan output = Out - In;
+                                    <span>@output</span>
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                            <td class="text-center" style="vertical-align:middle">
+                                <div class="col-md-12" id="labelRemarks_@i" style=" display:inline-block">
+                                    @if (item.Remarks != null)
+                                    {
+                                        @item.Remarks
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+
+                                </div>
+                                <div class="col-md-12 form-style-8" style=" display:none" id="editRemarks_@i">
+                                    @Html.TextBoxFor(model => item.Remarks, new { @class = "", @id = "Remarks_" + i })
+                                </div>
+                            </td>
+                            @*@if (!User.IsInRole("Employee"))
+                            {*@
+                                <td class="text-center" style="width:100px">
+                                    <div style="float:right">
+                                        <div class="pull-left" id="edtBtn_@i" style="float:left; padding-right:25px; display:inline-block">
+                                            <a class="editBtn" id="EditBtn_@i" title="Edit">
+                                                <i class="glyphicon glyphicon-edit text-dark"></i>
+                                            </a>
+                                        </div>
+
+                                        <div class="" id="SaveBtn_@i" style="float:left; padding-right:12px; display:none">
+                                            <a class="SaveEdit" id="SveBtn_@i" title="Save">
+                                                <i class="glyphicon glyphicon-check text-success"></i>
+                                            </a>
+                                            <a href="#" id="callController" class="hidden"></a>
+                                        </div>
+                                        <div class="" id="CancelEdit_@i" style="float:left; padding-right:19px; display:none">
+                                            <a class="cancelEdit" id="CancelBtn_@i" title="Cancel">
+                                                <i class="glyphicon glyphicon-remove text-danger"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            @*}*@
+                        </tr>
+                            i++;
+
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="ns-grid-pager" data-otf-target="#DataGrid">
+            <div class="hidden-xs col-md-3 col-sm-3">
+                Showing @Model.ViewEmpAttendanceList.Count() of @Model.TotalRecords Record(s)
+            </div>
+            <div class="visible-lg visible-md visible-sm visible-xs col-md-9 col-sm-9 ns-pagination" data-otf-target="#DataGrid" data-otf-actionlink="/Attendance/DateWiseAttendance">
+                @Html.PageLinks(Model.PagingInfo, x => Url.Action("DateWiseAttendance", new { PageNo = x }))
+            </div>
+        </div>
+    }
+    else
+    {
+        <h3>No record found...</h3>
+    }
+    @*error message*@
+    <div id="ErrMsg" style="display:none;">
+        <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+    </div>
+</div>
+

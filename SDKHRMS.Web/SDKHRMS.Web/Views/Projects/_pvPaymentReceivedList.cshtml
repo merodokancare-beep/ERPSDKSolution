@@ -1,0 +1,112 @@
+﻿@model  List<SDKHRMS.Entities.ViewModels.ProjPaymentReceivableView>
+<div id="DataGrid">
+    @if (Model.Count() > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-condensed table-bordered" id="saleinvtable">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="vertical-align: middle;width:33%">
+                            Particular
+                        </th>
+                        <th class="text-center" style="vertical-align: middle;width:15%">
+                            Payment Mode
+                        </th>
+                        <th class="text-center" style="vertical-align: middle; width: 8%">
+                            TDS Deduction (&#8377;)
+                        </th>
+                        <th class="text-center" style="vertical-align: middle; width: 8%">
+                            GST/IT Deduction (&#8377;)
+                        </th>
+                        <th class="text-center" style="vertical-align: middle; width: 8%">
+                            Security Deposit (&#8377;)
+                        </th>
+                        <th class="text-center" style="vertical-align: middle; width: 8%">
+                            Other Deduction (&#8377;)
+                        </th>
+                        <th class="text-center" style="vertical-align: middle; width: 10%">
+                            Net Amount (&#8377;)
+                        </th>
+                        <th class="text-center" style="vertical-align: middle; width: 10%">
+                            Total Amount (&#8377;)
+                        </th>
+                        @*<th class="text-center" style="vertical-align: middle;width:5%;">
+                                Action
+                            </th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class=""style="vertical-align:middle;">
+                                <div class="row">
+                                    <div class="col-7">Date: @item.ReceivedDate.ToString("dd MMM yyyy")</div>
+                                    <div class="col-5">
+                                        Is Advance: @if (!item.IsAdvance)
+                                        {
+                                            <span class="badge badge-soft-success text-dark rounded-pill">Yes</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-soft-danger text-dark rounded-pill">No</span>
+                                        }
+                                    </div>
+                                    <div class="col-12">Remarks: @(item.Remarks??"-")</div>
+                                </div>
+                            </td>
+                            <td class="text-center"style="vertical-align:middle;">
+                                <span>
+                                    Mode: @item.ReceivedMode
+                                    @if (!string.IsNullOrEmpty(item.UploadedFile))
+                                    {
+                                        <a href="~/UploadFile/Payments/@item.UploadedFile" class="dropdown-item" target="_blank"> <i class="fe fe-paperclip me-2"></i></a>
+                                    }
+                                </span><br />
+                                <span>Bank: @(item.BankName ?? "-")</span>
+                            </td>
+                            <td class="text-center"style="vertical-align:middle;">
+                                @item.TDSDeductionAmt.ToString("0.00")
+                            </td>
+                            <td class="text-center"style="vertical-align:middle;">
+                                @item.GstDeductionAmt.ToString("0.00")
+                            </td>
+                            <td class="text-center"style="vertical-align:middle;">
+                                @item.SecurityDepositAmt.ToString("0.00")
+                            </td>
+                            <td class="text-center"style="vertical-align:middle;">
+                                @item.OtherDeductionAmt.ToString("0.00")
+                            </td>
+                            <td class="text-center"style="vertical-align:middle;">
+                                @item.NetAmtReceived.ToString("0.00")
+                            </td>
+                            <td class="text-center"style="vertical-align:middle;">
+                                @item.TotalAmt.ToString("0.00")
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="2" class="text-center"><b>Total</b></td>
+                        <td class="text-center"><b>@Model.Sum(x => x.TDSDeductionAmt).ToString("0.00")</b></td>
+                        <td class="text-center"><b>@Model.Sum(x => x.GstDeductionAmt).ToString("0.00")</b></td>
+                        <td class="text-center"><b>@Model.Sum(x => x.SecurityDepositAmt).ToString("0.00")</b></td>
+                        <td class="text-center"><b>@Model.Sum(x => x.OtherDeductionAmt).ToString("0.00")</b></td>
+                        <td class="text-center"><b>@Model.Sum(x => x.NetAmtReceived).ToString("0.00")</b></td>
+                        <td class="text-center"><b>@Model.Sum(x => x.TotalAmt).ToString("0.00")</b></td>
+                        @*<td class="text-center"><b>-</b></td>*@
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <img src="~/Content/Images/no_record.png" /><br />
+            <span class="text-muted">No records available or your searched record in not available..</span>
+        </div>
+    }
+</div>
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>

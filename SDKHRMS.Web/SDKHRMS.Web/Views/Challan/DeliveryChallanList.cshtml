@@ -1,0 +1,85 @@
+﻿@model SDKHRMS.Entities.ViewModels.DeliveryChallanVM
+@{
+    ViewBag.Title = "Challan List";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<link href="~/Content/Plugins/Select2/newselect2.css" rel="stylesheet" />
+<div class="page-header">
+    <div class="content-page-header">
+        <h5>Delivery Challan List </h5>
+        <div class="list-btn">
+            <ul class="filter-list">
+                <li>
+                    <a class="btn btn-primary" href="/Challan/DeliveryChallan">
+                        <i class="fa fa-plus-circle me-2" aria-hidden="true"></i>Add Challan
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header card-buttons">
+                <form method="get" action="@Url.Action("DeliveryChallanList")" data-search="true" data-otf-ajax="true" data-otf-target="#DataGrid" id="sForm">
+                    <div class="form-group mb-0 row">
+                        <div class="col-md-3">
+                            @Html.DropDownList("FiscalYear", new SelectList(Model.FiscalYear, @ViewBag.FiscalYear), "----Select Fiscal Year----", new { @class = "form-control ddSelect2", id = "yr" })
+                        </div>
+                        <div class="col-md-3">
+                            @Html.DropDownList("Client", new SelectList(Model.ClientDDList, "VenderID", "VenderName", @ViewBag.Client), "----Select Client----", new { @class = "form-control ddSelect2", id = "vendor" })
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1"><i class="fe fe-search"></i></span>
+                                <input type="text"
+                                       id="inputsearch"
+                                       class="form-control"
+                                       placeholder="Search by Project Name/Ref No."
+                                       aria-label="Search"
+                                       name="searchTerm"
+                                       aria-describedby="basic-addon1" />
+                                <button class="btn btn-primary" id="search-btn" type="submit">
+                                    Search
+                                </button>
+                                <button onclick="location.href='@Url.Action("DeliveryChallanList")'" type="button" class="btn btn-primary d-none" id="clearSearchBtn">Clear Results</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="card-body">
+                @Html.Partial("_pvDeliveryChallanList", Model)
+                <span class="badge badge-soft-danger"><i class="fe fe-x-square"></i> Cancelled</span> &nbsp;
+                <span class="badge badge-soft-success"><i class="fe fe-check-square"></i> Active</span>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@*error message*@
+<div id="ErrMsg" style="display:none;">
+    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+</div>
+@section Scripts{
+    <script src="~/Content/Plugins/Select2/select2.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.ddSelect2').select2({ width: '100%' });
+            $(document).on('change', '#yr', function () {
+                $('#sForm').submit();
+                //clearbtn();
+            })
+            $(document).on('change', '#vendor', function () {
+                $('#sForm').submit();
+                //clearbtn();
+            })
+        });
+    </script>
+}
+
