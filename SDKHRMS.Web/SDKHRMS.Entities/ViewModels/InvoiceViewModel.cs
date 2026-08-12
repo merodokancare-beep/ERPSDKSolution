@@ -1,4 +1,4 @@
-﻿using SDKHRMS.Entities.Models;
+using SDKHRMS.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -135,6 +135,9 @@ namespace SDKHRMS.Entities.ViewModels
     {
         public long ProjectID { get; set; }
         public string ProjectName { get; set; }
+
+        public string Projectname { get => ProjectName; set => ProjectName = value; }
+        public string projectname { get => ProjectName; set => ProjectName = value; }
     }
     public class SalInvDD
     {

@@ -121,6 +121,13 @@ namespace SDKHRMS.Entities.ViewModels
     {
         public long VenderID { get; set; }
         public string VenderName { get; set; }
+
+        public long VendorID { get => VenderID; set => VenderID = value; }
+        public string VendorName { get => VenderName; set => VenderName = value; }
+        public string Vendername { get => VenderName; set => VenderName = value; }
+        public string Vendorname { get => VenderName; set => VenderName = value; }
+        public string vendername { get => VenderName; set => VenderName = value; }
+        public string vendorname { get => VenderName; set => VenderName = value; }
     }
     public class MstDepartmentView
     {
@@ -131,6 +138,10 @@ namespace SDKHRMS.Entities.ViewModels
     {
         public long ClientID { get; set; }
         public string ClientName { get; set; }
+
+        public string Clientname { get => ClientName; set => ClientName = value; }
+        public string clientName { get => ClientName; set => ClientName = value; }
+        public string clientname { get => ClientName; set => ClientName = value; }
     }
     public class MstHolidayView
     {
@@ -145,6 +156,9 @@ namespace SDKHRMS.Entities.ViewModels
     {
         public string EmployeeID { get; set; }
         public string EmployeeName { get; set; }
+
+        public string Employeename { get => EmployeeName; set => EmployeeName = value; }
+        public string employeename { get => EmployeeName; set => EmployeeName = value; }
     }
     public class EmpDeviceView
     {
@@ -157,6 +171,9 @@ namespace SDKHRMS.Entities.ViewModels
     {
         public long ExpenseTypeID { get; set; }
         public string ExpenseType { get; set; }
+
+        public string Expensetype { get => ExpenseType; set => ExpenseType = value; }
+        public string expensetype { get => ExpenseType; set => ExpenseType = value; }
     }
 
     #region Unit Master
