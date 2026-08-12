@@ -21,15 +21,29 @@ namespace SDKHRMS.Web.Controllers
             ProjectViewModel model = new ProjectViewModel();
             Status = (string.IsNullOrEmpty(Status) ? "Open" : Status);
             ViewBag.ClientID = ClientID; ViewBag.ProjID = ProjID; ViewBag.Status = Status;
-            model = dalproj.GetProjectList(PageNo, PageSize, ClientID, ProjID, Status);
+            try
+            {
+                model = dalproj.GetProjectList(PageNo, PageSize, ClientID, ProjID, Status) ?? new ProjectViewModel();
+            }
+            catch
+            {
+                model = new ProjectViewModel();
+            }
+            if (model.ProjectViewList == null) model.ProjectViewList = new List<ProjectView>();
             model.PagingInfo = new PagingInfo { CurrentPage = PageNo, ItemsPerPage = PageSize, TotalItems = model.TotalRecords };
-            model.VendorDD = dalconfig.GetVendorDDList();
+            try
+            {
+                model.VendorDD = dalconfig.GetVendorDDList() ?? new List<VendorDDList>();
+            }
+            catch
+            {
+                model.VendorDD = new List<VendorDDList>();
+            }
             if (Request.IsAjaxRequest())
             {
                 return PartialView("_pvProjectOverviewList", model);
             }
             return View(model);
-            //return View();
         }
         public ActionResult ProjectInDetails(long id)
         {

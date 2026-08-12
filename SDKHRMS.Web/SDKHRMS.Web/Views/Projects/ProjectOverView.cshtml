@@ -1,4 +1,4 @@
-﻿@model  SDKHRMS.Entities.ViewModels.ProjectViewModel
+@model  SDKHRMS.Entities.ViewModels.ProjectViewModel
 @{
     ViewBag.Title = "Projects";
     Layout = "~/Views/Shared/AdminLayout.cshtml";
@@ -28,7 +28,7 @@
                 <form method="get" action="/Projects/ProjectOverView" class="row" data-search="true" data-otf-ajax="true" data-otf-target="#DataGrid" id="sForm">
                     <div class="form-group mb-0 row">
                         <div class="col-md-6 mb-3">
-                            @Html.DropDownList("ClientID", new SelectList(Model.VendorDD, "VenderID", "Vendername", @ViewBag.Vendor), "- Select Client --", new { @class = "form-control ddSelect2", id = "client" })
+                            @Html.DropDownList("ClientID", new SelectList(Model?.VendorDD ?? new List<SDKHRMS.Entities.ViewModels.VendorDDList>(), "VenderID", "Vendername", @ViewBag.Vendor), "- Select Client --", new { @class = "form-control ddSelect2", id = "client" })
                         </div>
                         <div class="col-md-4 mb-3">
                             @Html.DropDownList("Status", new SelectList(Status, @ViewBag.Status), "- Select Status --", new { @class = "form-control ddSelect2", id = "status" })
@@ -37,7 +37,7 @@
                             <button onclick="location.href='@Url.Action("ProjectOverView")'" type="button" class="btn btn-primary" id="clearSearchBtn">Clear Results</button>
                         </div>
                         <div class="col-md-12 mb-3">
-                            @Html.DropDownList("ProjID", new SelectList(string.Empty, "ProjectID", "ProjectID"), "----Select Project----", new { @class = "form-control ddSelect2", id = "proj" })
+                            @Html.DropDownList("ProjID", new SelectList(new List<SelectListItem>(), "Value", "Text"), "----Select Project----", new { @class = "form-control ddSelect2", id = "proj" })
                         </div>
                     </div>
 
