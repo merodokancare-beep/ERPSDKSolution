@@ -1002,7 +1002,7 @@ body.light-mode .bar-icon span {
 .sidebar .sidebar-menu > ul > li:first-child.menu-title,
 .sidebar .sidebar-menu .menu-title:first-child,
 .sidebar #sidebar-menu > ul > li:first-child.menu-title {
-  padding-top: 22px !important;
+  padding-top: 6px !important;
   margin-top: 0 !important;
 }
 
