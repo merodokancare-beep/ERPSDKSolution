@@ -2,8 +2,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -80,15 +83,9 @@ namespace SDKHRMS.Web.Models
                 entity.ToTable("AspNetUserLogins");
             });
 
-            builder.Entity<IdentityRoleClaim<string>>(entity =>
-            {
-                entity.ToTable("AspNetRoleClaims");
-            });
-
-            builder.Entity<IdentityUserToken<string>>(entity =>
-            {
-                entity.ToTable("AspNetUserTokens");
-            });
+            // Ignore AspNetRoleClaims and AspNetUserTokens for legacy database schema compatibility
+            builder.Ignore<IdentityRoleClaim<string>>();
+            builder.Ignore<IdentityUserToken<string>>();
         }
     }
 
@@ -126,6 +123,11 @@ namespace SDKHRMS.Web.Models
         {
             return Task.CompletedTask;
         }
+
+        protected override Task<IdentityUserToken<string>> FindTokenAsync(ApplicationUser user, string loginProvider, string name, CancellationToken cancellationToken)
+        {
+            return Task.FromResult<IdentityUserToken<string>>(null);
+        }
     }
 
     public class ApplicationRoleStore : RoleStore<IdentityRole, ApplicationDbContext>
@@ -147,6 +149,43 @@ namespace SDKHRMS.Web.Models
         public override Task SetNormalizedRoleNameAsync(IdentityRole role, string normalizedName, CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
+        }
+
+        public override Task<IList<Claim>> GetClaimsAsync(IdentityRole role, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (role == null) throw new ArgumentNullException(nameof(role));
+
+            IList<Claim> emptyClaims = new List<Claim>();
+            return Task.FromResult(emptyClaims);
+        }
+    }
+
+    public class ApplicationUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<ApplicationUser, IdentityRole>
+    {
+        public ApplicationUserClaimsPrincipalFactory(
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            IOptions<IdentityOptions> optionsAccessor)
+            : base(userManager, roleManager, optionsAccessor)
+        {
+        }
+
+        protected override async Task<ClaimsIdentity> GenerateClaimsAsync(ApplicationUser user)
+        {
+            var identity = await base.GenerateClaimsAsync(user);
+
+            if (!string.IsNullOrEmpty(user.Role))
+            {
+                identity.AddClaim(new Claim(ClaimTypes.Role, user.Role));
+            }
+            if (!string.IsNullOrEmpty(user.EmployeeID))
+            {
+                identity.AddClaim(new Claim("EmployeeID", user.EmployeeID));
+            }
+
+            return identity;
         }
     }
 }

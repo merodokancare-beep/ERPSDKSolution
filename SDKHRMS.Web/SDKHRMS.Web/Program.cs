@@ -28,6 +28,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddRoleStore<ApplicationRoleStore>()
 .AddDefaultTokenProviders();
 
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
