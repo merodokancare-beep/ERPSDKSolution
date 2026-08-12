@@ -989,13 +989,6 @@ body.light-mode .bar-icon span {
   margin-bottom: 0 !important;
 }
 
-.sidebar .sidebar-menu > ul > li:first-child.menu-title,
-.sidebar .sidebar-menu .menu-title:first-child,
-.sidebar #sidebar-menu > ul > li:first-child.menu-title {
-  padding-top: 4px !important;
-  margin-top: 0 !important;
-}
-
 .sidebar .sidebar-menu .menu-title {
   color: #64748B !important;
   font-size: 0.72rem !important;
@@ -1003,6 +996,13 @@ body.light-mode .bar-icon span {
   text-transform: uppercase !important;
   letter-spacing: 0.08em !important;
   padding: 10px 20px 4px !important;
+}
+
+.sidebar .sidebar-menu > ul > li:first-child.menu-title,
+.sidebar .sidebar-menu .menu-title:first-child,
+.sidebar #sidebar-menu > ul > li:first-child.menu-title {
+  padding-top: 2px !important;
+  margin-top: 0 !important;
 }
 
 .sidebar-menu > ul > li > a,
