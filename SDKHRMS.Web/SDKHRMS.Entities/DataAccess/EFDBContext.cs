@@ -1,12 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SDKHRMS.Entities.Models;
+using System;
 using System.IO;
 
 namespace SDKHRMS.Entities.DataAccess
 {
     public class EFDBContext : DbContext
     {
+        public static string ConnectionString { get; set; }
+
         public EFDBContext()
         {
         }
@@ -20,16 +23,44 @@ namespace SDKHRMS.Entities.DataAccess
         {
             if (!optionsBuilder.IsConfigured)
             {
-                IConfigurationRoot configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", optional: true)
-                    .Build();
+                string connStr = ConnectionString;
 
-                string connectionString = configuration.GetConnectionString("EFDBContext")
-                    ?? configuration.GetConnectionString("DefaultConnection")
-                    ?? "Data Source=.;Initial Catalog=WBSDKERPDB;Integrated Security=True;TrustServerCertificate=True;";
+                if (string.IsNullOrEmpty(connStr))
+                {
+                    try
+                    {
+                        var config = new ConfigurationBuilder()
+                            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                            .AddJsonFile("appsettings.json", optional: true)
+                            .Build();
 
-                optionsBuilder.UseSqlServer(connectionString);
+                        connStr = config.GetConnectionString("EFDBContext") 
+                            ?? config.GetConnectionString("DefaultConnection");
+                    }
+                    catch { }
+                }
+
+                if (string.IsNullOrEmpty(connStr))
+                {
+                    try
+                    {
+                        var config = new ConfigurationBuilder()
+                            .SetBasePath(Directory.GetCurrentDirectory())
+                            .AddJsonFile("appsettings.json", optional: true)
+                            .Build();
+
+                        connStr = config.GetConnectionString("EFDBContext") 
+                            ?? config.GetConnectionString("DefaultConnection");
+                    }
+                    catch { }
+                }
+
+                if (string.IsNullOrEmpty(connStr))
+                {
+                    connStr = "Data Source=.;Initial Catalog=WBSDKERPDB;Integrated Security=True;TrustServerCertificate=True;";
+                }
+
+                optionsBuilder.UseSqlServer(connStr);
             }
         }
 

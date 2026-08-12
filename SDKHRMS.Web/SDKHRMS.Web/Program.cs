@@ -10,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("EFDBContext")
     ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
+EFDBContext.ConnectionString = connectionString;
+
 builder.Services.AddDbContext<EFDBContext>(options =>
     options.UseSqlServer(connectionString));
 
