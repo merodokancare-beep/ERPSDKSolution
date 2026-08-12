@@ -196,12 +196,14 @@ namespace SDKHRMS.Web.Controllers
             return View();
         }
 
-        public ActionResult Error(int id)
+        [AllowAnonymous]
+        public ActionResult Error(int? id)
         {
-            ViewBag.StatusCode = id;
+            ViewBag.StatusCode = id ?? 500;
             return View();
         }
 
+        [AllowAnonymous]
         public ActionResult Unauthorized()
         {
             return View();

@@ -57,6 +57,11 @@ namespace SDKHRMS.Web.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByNameAsync(model.UserName);
+                if (user == null && !string.IsNullOrEmpty(model.UserName) && model.UserName.Contains("@"))
+                {
+                    user = await _userManager.FindByEmailAsync(model.UserName);
+                }
+
                 if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
                 {
                     if (user.IsActive == false && user.Role != "Super Admin")
@@ -69,13 +74,13 @@ namespace SDKHRMS.Web.Controllers
                     {
                         Session["username"] = user.UserName;
                         await _signInManager.SignInAsync(user, isPersistent: true);
-                        if (!string.IsNullOrEmpty(returnUrl))
+                        if (!string.IsNullOrEmpty(returnUrl) && !returnUrl.Contains("Error", StringComparison.OrdinalIgnoreCase) && !returnUrl.Contains("Login", StringComparison.OrdinalIgnoreCase))
                         {
                             return RedirectToLocal(returnUrl);
                         }
                         else
                         {
-                            return RedirectToAction("Index", "Home");
+                            return RedirectToAction("NewDashboard", "Home");
                         }
                     }
                 }
@@ -150,13 +155,16 @@ namespace SDKHRMS.Web.Controllers
 
         private ActionResult RedirectToLocal(string returnUrl)
         {
-            if (Url.IsLocalUrl(returnUrl))
+            if (!string.IsNullOrEmpty(returnUrl) && 
+                !returnUrl.Contains("Error", StringComparison.OrdinalIgnoreCase) && 
+                !returnUrl.Contains("Login", StringComparison.OrdinalIgnoreCase) && 
+                Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("NewDashboard", "Home");
             }
         }
     }
