@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using SDKHRMS.Entities.Models;
+using System.IO;
 
 namespace SDKHRMS.Entities.DataAccess
 {
@@ -12,6 +14,23 @@ namespace SDKHRMS.Entities.DataAccess
         public EFDBContext(DbContextOptions<EFDBContext> options)
             : base(options)
         {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                IConfigurationRoot configuration = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", optional: true)
+                    .Build();
+
+                string connectionString = configuration.GetConnectionString("EFDBContext")
+                    ?? configuration.GetConnectionString("DefaultConnection")
+                    ?? "Data Source=.;Initial Catalog=WBSDKERPDB;Integrated Security=True;TrustServerCertificate=True;";
+
+                optionsBuilder.UseSqlServer(connectionString);
+            }
         }
 
         public DbSet<utblMstVendorDetail> utblMstVendorDetails { get; set; }
