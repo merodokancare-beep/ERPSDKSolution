@@ -2,7 +2,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SDKHRMS.Web.Models
 {
@@ -47,11 +50,9 @@ namespace SDKHRMS.Web.Models
             {
                 entity.ToTable("AspNetUsers");
 
-                // Map ASP.NET Core Identity 8 properties to legacy column names
-                entity.Property(u => u.NormalizedUserName).HasColumnName("UserName");
-                entity.Property(u => u.NormalizedEmail).HasColumnName("Email");
-                
                 // Ignore columns not present in legacy ASP.NET Identity 2.x database schema
+                entity.Ignore(u => u.NormalizedUserName);
+                entity.Ignore(u => u.NormalizedEmail);
                 entity.Ignore(u => u.ConcurrencyStamp);
                 entity.Ignore(u => u.LockoutEnd);
             });
@@ -60,7 +61,7 @@ namespace SDKHRMS.Web.Models
             {
                 entity.ToTable("AspNetRoles");
 
-                entity.Property(r => r.NormalizedName).HasColumnName("Name");
+                entity.Ignore(r => r.NormalizedName);
                 entity.Ignore(r => r.ConcurrencyStamp);
             });
 
@@ -88,6 +89,64 @@ namespace SDKHRMS.Web.Models
             {
                 entity.ToTable("AspNetUserTokens");
             });
+        }
+    }
+
+    public class ApplicationUserStore : UserStore<ApplicationUser, IdentityRole, ApplicationDbContext>
+    {
+        public ApplicationUserStore(ApplicationDbContext context, IdentityErrorDescriber describer = null)
+            : base(context, describer)
+        {
+        }
+
+        public override Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (string.IsNullOrEmpty(normalizedUserName)) return Task.FromResult<ApplicationUser>(null);
+
+            return Users.FirstOrDefaultAsync(u => u.UserName == normalizedUserName || u.UserName.ToLower() == normalizedUserName.ToLower(), cancellationToken);
+        }
+
+        public override Task<ApplicationUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (string.IsNullOrEmpty(normalizedEmail)) return Task.FromResult<ApplicationUser>(null);
+
+            return Users.FirstOrDefaultAsync(u => u.Email == normalizedEmail || u.Email.ToLower() == normalizedEmail.ToLower(), cancellationToken);
+        }
+
+        public override Task SetNormalizedUserNameAsync(ApplicationUser user, string normalizedName, CancellationToken cancellationToken = default)
+        {
+            return Task.CompletedTask;
+        }
+
+        public override Task SetNormalizedEmailAsync(ApplicationUser user, string normalizedEmail, CancellationToken cancellationToken = default)
+        {
+            return Task.CompletedTask;
+        }
+    }
+
+    public class ApplicationRoleStore : RoleStore<IdentityRole, ApplicationDbContext>
+    {
+        public ApplicationRoleStore(ApplicationDbContext context, IdentityErrorDescriber describer = null)
+            : base(context, describer)
+        {
+        }
+
+        public override Task<IdentityRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (string.IsNullOrEmpty(normalizedRoleName)) return Task.FromResult<IdentityRole>(null);
+
+            return Roles.FirstOrDefaultAsync(r => r.Name == normalizedRoleName || r.Name.ToLower() == normalizedRoleName.ToLower(), cancellationToken);
+        }
+
+        public override Task SetNormalizedRoleNameAsync(IdentityRole role, string normalizedName, CancellationToken cancellationToken = default)
+        {
+            return Task.CompletedTask;
         }
     }
 }
