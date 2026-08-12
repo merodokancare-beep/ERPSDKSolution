@@ -11,76 +11,75 @@ namespace SDKHRMS.Entities.DataAccess
     public class dalDashboard
     {
         private EFDBContext objDB = new EFDBContext();
+
         public FiscalWiseCount getFiscalWiseCount(DateTime SDate, DateTime EDate)
         {
             try
             {
                 var parSDate = new SqlParameter("@SDate", SDate);
                 var parEDate = new SqlParameter("@EDate", EDate);
-                return objDB.Database.SqlQuery<FiscalWiseCount>("select * from [dbo].[udfGetFiscalWiseCount](@SDate,@EDate)", parSDate, parEDate).FirstOrDefault();
+                return objDB.Database.SqlQuery<FiscalWiseCount>("select * from [dbo].[udfGetFiscalWiseCount](@SDate,@EDate)", parSDate, parEDate).FirstOrDefault() ?? new FiscalWiseCount();
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                return new FiscalWiseCount();
             }
-
         }
+
         public GSTInput getGstInput(DateTime SDate, DateTime EDate)
         {
             try
             {
                 var parSDate = new SqlParameter("@SDate", SDate);
                 var parEDate = new SqlParameter("@EDate", EDate);
-                return objDB.Database.SqlQuery<GSTInput>("select * from [dbo].[udfGetGSTInputByDaterange](@SDate,@EDate)", parSDate, parEDate).FirstOrDefault();
+                return objDB.Database.SqlQuery<GSTInput>("select * from [dbo].[udfGetGSTInputByDaterange](@SDate,@EDate)", parSDate, parEDate).FirstOrDefault() ?? new GSTInput();
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                return new GSTInput();
             }
-
         }
+
         public List<DirectPaymentWithExpHead> getGstDirectPayment(DateTime SDate, DateTime EDate)
         {
             try
             {
                 var parSDate = new SqlParameter("@SDate", SDate);
                 var parEDate = new SqlParameter("@EDate", EDate);
-                return objDB.Database.SqlQuery<DirectPaymentWithExpHead>("select * from [dbo].[udfGetDirectPaymentExpByDaterange](@SDate,@EDate)", parSDate, parEDate).ToList();
+                return objDB.Database.SqlQuery<DirectPaymentWithExpHead>("select * from [dbo].[udfGetDirectPaymentExpByDaterange](@SDate,@EDate)", parSDate, parEDate).ToList() ?? new List<DirectPaymentWithExpHead>();
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                return new List<DirectPaymentWithExpHead>();
             }
-
         }
+
         public List<ProjectDetailsChart> getGstProjwisePaymentDetails(DateTime SDate, DateTime EDate)
         {
             try
             {
                 var parSDate = new SqlParameter("@SDate", SDate);
                 var parEDate = new SqlParameter("@EDate", EDate);
-                return objDB.Database.SqlQuery<ProjectDetailsChart>("select * from [dbo].[udfGstProjwisePaymentDetailsByDaterange](@SDate,@EDate)", parSDate, parEDate).ToList();
+                return objDB.Database.SqlQuery<ProjectDetailsChart>("select * from [dbo].[udfGstProjwisePaymentDetailsByDaterange](@SDate,@EDate)", parSDate, parEDate).ToList() ?? new List<ProjectDetailsChart>();
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                return new List<ProjectDetailsChart>();
             }
-
         }
+
         public GSTPayable getGSTPayable(DateTime SDate, DateTime EDate)
         {
             try
             {
                 var parSDate = new SqlParameter("@SDate", SDate);
                 var parEDate = new SqlParameter("@EDate", EDate);
-                return objDB.Database.SqlQuery<GSTPayable>("select * from [dbo].[udfGetGSTPayableByDaterange](@SDate,@EDate)", parSDate, parEDate).FirstOrDefault();
+                return objDB.Database.SqlQuery<GSTPayable>("select * from [dbo].[udfGetGSTPayableByDaterange](@SDate,@EDate)", parSDate, parEDate).FirstOrDefault() ?? new GSTPayable();
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                return new GSTPayable();
             }
-
         }
-
     }
 }
