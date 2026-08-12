@@ -975,13 +975,23 @@ body.light-mode .bar-icon span {
   padding: 14px 20px;
 }
 
+.sidebar-inner, .sidebar-menu {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+.sidebar-menu > ul {
+  padding: 4px 0 8px 0 !important;
+  margin: 0 !important;
+}
+
 .sidebar-menu .menu-title {
   color: #64748B !important;
   font-size: 0.72rem !important;
   font-weight: 800 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.08em !important;
-  padding: 16px 20px 6px !important;
+  padding: 12px 20px 6px !important;
 }
 
 .sidebar-menu > ul > li > a,
