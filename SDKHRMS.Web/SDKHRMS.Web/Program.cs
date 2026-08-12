@@ -43,6 +43,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+    })
     .AddRazorRuntimeCompilation();
 
 builder.Services.AddSession(options =>

@@ -1,8 +1,8 @@
-
 var GSTPayableAmt, GSTInputAmt, DirectPaymentDetailsAmt, ProjwiseDetailsAmt;
-//var DirectPaymentWithExpData = [];
+
 function GstPayableChart(DFrom, DateTo) {
     const GSTPayable = document.getElementById('gstpayablegraph');
+    if (!GSTPayable) return;
     var baroptions = {
         url: '/Home/GSTPayableChart',
         data: { SDate: DFrom, EDate: DateTo },
@@ -10,8 +10,10 @@ function GstPayableChart(DFrom, DateTo) {
         datatype: 'json',
     }
     $.ajax(baroptions).done(function (data) {
-        //alert(data);
-        var TIGST = data.TotalIGST, TCGST = data.TotalCGST, TSGST = data.TotalSGST;
+        if (!data) return;
+        var TIGST = data.TotalIGST ?? data.totalIGST ?? data.totalIgst ?? 0;
+        var TCGST = data.TotalCGST ?? data.totalCGST ?? data.totalCgst ?? 0;
+        var TSGST = data.TotalSGST ?? data.totalSGST ?? data.totalSgst ?? 0;
         var options = {
             chart: {
                 type: 'pie'
@@ -21,7 +23,7 @@ function GstPayableChart(DFrom, DateTo) {
             dataLabels: {
                 enabled: true,
                 formatter: function (val) {
-                    return val.toFixed(1) + "%"
+                    return val ? val.toFixed(1) + "%" : "0%";
                 },
             },
             plotOptions: {
@@ -29,13 +31,6 @@ function GstPayableChart(DFrom, DateTo) {
                     expandOnClick: false
                 }
             },
-            //title: {
-            //    text: "Total GST Payable For " + ,
-            //    align: "center",
-            //    style: {
-            //        fontSize: "13px"
-            //    }
-            //},
             legend: {
                 position: 'bottom'
             },
@@ -43,18 +38,20 @@ function GstPayableChart(DFrom, DateTo) {
                 opacity: 1,
             },
             theme: {
-                palette: 'palette1' // upto palette10
+                palette: 'palette1'
             },
         }
         GSTPayable.innerHTML = "";
         GSTPayableAmt = new ApexCharts(GSTPayable, options);
         GSTPayableAmt.render();
     }).fail(function (xhr, textStatus, errorThrown) {
-        toastr.error(errorThrown, 'Error');
+        if (errorThrown) toastr.error(errorThrown, 'Error');
     });
 }
+
 function GstInputChart(DFrom, DateTo) {
     const GSTInput = document.getElementById('gstinputgraph');
+    if (!GSTInput) return;
     var baroptions = {
         url: '/Home/GSTInputChart',
         data: { SDate: DFrom, EDate: DateTo },
@@ -62,8 +59,10 @@ function GstInputChart(DFrom, DateTo) {
         datatype: 'json',
     }
     $.ajax(baroptions).done(function (data) {
-        //alert(data);
-        var TIGST = data.TotalIGST, TCGST = data.TotalCGST, TSGST = data.TotalSGST;
+        if (!data) return;
+        var TIGST = data.TotalIGST ?? data.totalIGST ?? data.totalIgst ?? 0;
+        var TCGST = data.TotalCGST ?? data.totalCGST ?? data.totalCgst ?? 0;
+        var TSGST = data.TotalSGST ?? data.totalSGST ?? data.totalSgst ?? 0;
         var options = {
             chart: {
                 type: 'pie'
@@ -73,7 +72,7 @@ function GstInputChart(DFrom, DateTo) {
             dataLabels: {
                 enabled: true,
                 formatter: function (val) {
-                    return val.toFixed(1) + "%"
+                    return val ? val.toFixed(1) + "%" : "0%";
                 },
             },
             plotOptions: {
@@ -81,7 +80,6 @@ function GstInputChart(DFrom, DateTo) {
                     expandOnClick: false
                 }
             },
-
             legend: {
                 position: 'bottom'
             },
@@ -89,18 +87,20 @@ function GstInputChart(DFrom, DateTo) {
                 opacity: 1,
             },
             theme: {
-                palette: 'palette1' // upto palette10
+                palette: 'palette1'
             },
         }
         GSTInput.innerHTML = "";
         GSTInputAmt = new ApexCharts(GSTInput, options);
         GSTInputAmt.render();
     }).fail(function (xhr, textStatus, errorThrown) {
-        toastr.error(errorThrown, 'Error');
+        if (errorThrown) toastr.error(errorThrown, 'Error');
     });
 }
+
 function DirectPaymentChart(DFrom, DateTo) {
     const DirectPayment = document.getElementById('directpaymentgraph');
+    if (!DirectPayment) return;
     var baroptions = {
         url: '/Home/DirectPaymentExp',
         data: { SDate: DFrom, EDate: DateTo },
@@ -109,11 +109,13 @@ function DirectPaymentChart(DFrom, DateTo) {
     }
     $.ajax(baroptions).done(function (data) {
         var ExpHead = [], Received = [], Released = [];
-        $.each(data, function (i, item) {
-            ExpHead.push(item.ExpenseHead);
-            Received.push(item.AmountReceived);
-            Released.push(item.AmountReleased);
-        });
+        if (data && data.length > 0) {
+            $.each(data, function (i, item) {
+                ExpHead.push(item.ExpenseHead ?? item.expenseHead ?? '');
+                Received.push(item.AmountReceived ?? item.amountReceived ?? 0);
+                Released.push(item.AmountReleased ?? item.amountReleased ?? 0);
+            });
+        }
         var options = {
             series: [{
                 name: 'Amount Received',
@@ -140,7 +142,6 @@ function DirectPaymentChart(DFrom, DateTo) {
             },
             dataLabels: { enabled: false },
             stroke: { show: true, width: 2, colors: ['transparent'] },
-            /* ── legend at TOP — away from rotated X-axis labels ── */
             legend: {
                 position: 'top',
                 horizontalAlign: 'right',
@@ -167,7 +168,7 @@ function DirectPaymentChart(DFrom, DateTo) {
             tooltip: {
                 theme: 'dark',
                 followCursor: false,
-                y: { formatter: function (val) { return "Rs. " + val.toLocaleString('en-IN'); } }
+                y: { formatter: function (val) { return "Rs. " + (val ? val.toLocaleString('en-IN') : "0"); } }
             },
             responsive: [{
                 breakpoint: 576,
@@ -182,12 +183,13 @@ function DirectPaymentChart(DFrom, DateTo) {
         DirectPaymentDetailsAmt = new ApexCharts(DirectPayment, options);
         DirectPaymentDetailsAmt.render();
     }).fail(function (xhr, textStatus, errorThrown) {
-        toastr.error(errorThrown, 'Error');
+        if (errorThrown) toastr.error(errorThrown, 'Error');
     });
 }
 
 function ProjwiseDetails(DFrom, DateTo) {
     const ProjectwiseChart = document.getElementById('projectwisegraph');
+    if (!ProjectwiseChart) return;
     var baroptions = {
         url: '/Home/ProjwiseDetails',
         data: { SDate: DFrom, EDate: DateTo },
@@ -196,12 +198,14 @@ function ProjwiseDetails(DFrom, DateTo) {
     }
     $.ajax(baroptions).done(function (data) {
         var ProjName = [], ProjVal = [], PaymentReceived = [], Due = [];
-        $.each(data, function (i, item) {
-            ProjName.push(item.ProjectName);
-            ProjVal.push(item.ProjCost);
-            PaymentReceived.push(item.PaymentReceived);
-            Due.push(item.DueAmt);
-        });
+        if (data && data.length > 0) {
+            $.each(data, function (i, item) {
+                ProjName.push(item.ProjectName ?? item.projectName ?? '');
+                ProjVal.push(item.ProjCost ?? item.projCost ?? 0);
+                PaymentReceived.push(item.PaymentReceived ?? item.paymentReceived ?? 0);
+                Due.push(item.DueAmt ?? item.dueAmt ?? 0);
+            });
+        }
         var options = {
             series: [{
                 name: 'Project Value',
@@ -231,14 +235,12 @@ function ProjwiseDetails(DFrom, DateTo) {
             },
             dataLabels: { enabled: false },
             stroke: { show: true, width: 2, colors: ['transparent'] },
-            /* ── legend at TOP — no collision with X-axis labels ── */
             legend: {
                 position: 'top',
                 horizontalAlign: 'center',
                 labels: { colors: '#CBD5E1' },
                 markers: { radius: 4 },
                 fontSize: '12px',
-                /* extra top offset so legend doesn't crowd the chart title */
                 offsetY: 4,
             },
             xaxis: {
@@ -246,7 +248,6 @@ function ProjwiseDetails(DFrom, DateTo) {
                 labels: {
                     rotate: -40,
                     rotateAlways: true,
-                    /* trim long project names */
                     trim: true,
                     maxHeight: 120,
                     style: {
@@ -270,11 +271,10 @@ function ProjwiseDetails(DFrom, DateTo) {
                 theme: 'dark',
                 y: {
                     formatter: function (val) {
-                        return "Rs. " + val.toLocaleString('en-IN');
+                        return "Rs. " + (val ? val.toLocaleString('en-IN') : "0");
                     }
                 }
             },
-            /* ── Responsive: on mobile, use horizontal bars ── */
             responsive: [{
                 breakpoint: 768,
                 options: {
@@ -296,8 +296,7 @@ function ProjwiseDetails(DFrom, DateTo) {
         ProjectwiseChart.innerHTML = "";
         ProjwiseDetailsAmt = new ApexCharts(ProjectwiseChart, options);
         ProjwiseDetailsAmt.render();
-
     }).fail(function (xhr, textStatus, errorThrown) {
-        toastr.error(errorThrown, 'Error');
+        if (errorThrown) toastr.error(errorThrown, 'Error');
     });
-}
+}
