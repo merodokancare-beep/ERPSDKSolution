@@ -59,7 +59,7 @@ namespace SDKHRMS.Entities.DataAccess
 
                 if (string.IsNullOrEmpty(connStr))
                 {
-                    connStr = "Server=db63574.databaseasp.net;Database=db63574;User Id=db63574;Password=B#e3fG5!4r%A;Encrypt=False;MultipleActiveResultSets=True;TrustServerCertificate=True;";
+                    connStr = "Server=db63574.public.databaseasp.net;Database=db63574;User Id=db63574;Password=B#e3fG5!4r%A;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True;";
                 }
 
                 optionsBuilder.UseSqlServer(connStr);

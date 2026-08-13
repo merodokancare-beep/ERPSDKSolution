@@ -41,7 +41,7 @@ namespace SDKHRMS.Web.Models
                     .Build();
                 string connectionString = configuration.GetConnectionString("EFDBContext") 
                     ?? configuration.GetConnectionString("DefaultConnection") 
-                    ?? "Server=db63574.databaseasp.net;Database=db63574;User Id=db63574;Password=B#e3fG5!4r%A;Encrypt=False;MultipleActiveResultSets=True;TrustServerCertificate=True;";
+                    ?? "Server=db63574.public.databaseasp.net;Database=db63574;User Id=db63574;Password=B#e3fG5!4r%A;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True;";
                 optionsBuilder.UseSqlServer(connectionString);
             }
         }
