@@ -32,6 +32,7 @@ namespace SDKHRMS.Entities.DataAccess
                         var config = new ConfigurationBuilder()
                             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                             .AddJsonFile("appsettings.json", optional: true)
+                            .AddEnvironmentVariables()
                             .Build();
 
                         connStr = config.GetConnectionString("EFDBContext") 
@@ -47,6 +48,7 @@ namespace SDKHRMS.Entities.DataAccess
                         var config = new ConfigurationBuilder()
                             .SetBasePath(Directory.GetCurrentDirectory())
                             .AddJsonFile("appsettings.json", optional: true)
+                            .AddEnvironmentVariables()
                             .Build();
 
                         connStr = config.GetConnectionString("EFDBContext") 
@@ -57,7 +59,7 @@ namespace SDKHRMS.Entities.DataAccess
 
                 if (string.IsNullOrEmpty(connStr))
                 {
-                    connStr = "Data Source=.;Initial Catalog=WBSDKERPDB;Integrated Security=True;TrustServerCertificate=True;";
+                    connStr = "Server=db63574.databaseasp.net;Database=db63574;User Id=db63574;Password=B#e3fG5!4r%A;Encrypt=False;MultipleActiveResultSets=True;TrustServerCertificate=True;";
                 }
 
                 optionsBuilder.UseSqlServer(connStr);

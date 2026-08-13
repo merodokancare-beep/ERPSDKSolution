@@ -37,10 +37,11 @@ namespace SDKHRMS.Web.Models
                 IConfigurationRoot configuration = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json", optional: true)
+                    .AddEnvironmentVariables()
                     .Build();
                 string connectionString = configuration.GetConnectionString("EFDBContext") 
                     ?? configuration.GetConnectionString("DefaultConnection") 
-                    ?? "Data Source=.;Initial Catalog=WBSDKERPDB;Integrated Security=True;TrustServerCertificate=True;";
+                    ?? "Server=db63574.databaseasp.net;Database=db63574;User Id=db63574;Password=B#e3fG5!4r%A;Encrypt=False;MultipleActiveResultSets=True;TrustServerCertificate=True;";
                 optionsBuilder.UseSqlServer(connectionString);
             }
         }
