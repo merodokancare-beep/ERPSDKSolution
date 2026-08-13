@@ -2,54 +2,113 @@
 
 @{
     Layout = null;
-    Context.Response.StatusCode = (int)ViewBag.StatusCode;
+    int statusCode = ViewBag.StatusCode != null ? (int)ViewBag.StatusCode : 500;
+    Context.Response.StatusCode = statusCode;
+    string errorMessage = ViewBag.ErrorMessage as string;
+    string innerErrorMessage = ViewBag.InnerErrorMessage as string;
+    string stackTrace = ViewBag.StackTrace as string;
+    string errorPath = ViewBag.ErrorPath as string;
 }
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Error</title>
-    @*@Styles.Render("~/Content/admin-css")*@
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Error - SDK ERP</title>
+    <link rel="shortcut icon" type="image/x-icon" href="~/Content/Images/smalllogo.png" />
+    <link rel="stylesheet" href="~/Content/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/assets/plugins/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="~/Content/assets/css/style.css" />
+    <link rel="stylesheet" href="~/Content/custom-erp.css" />
 </head>
-<body>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="">
-                <img src="~/Content/Images/LOGOSDK.png" style="height:50px;" />
-            </a>
-        </div>
-    </nav>
+<body class="bg-light d-flex flex-column min-vh-100 justify-content-center align-items-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-9 col-md-11">
+                <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                    <div class="card-header bg-white border-bottom p-4 d-flex justify-content-between align-items-center">
+                        <img src="~/Content/Images/LOGOSDK1.png" style="max-height: 45px;" alt="SDK Solutions Logo" />
+                        <a href="@Url.Action("Login","Account")" class="btn btn-primary btn-sm px-4 rounded-pill">
+                            <i class="fa-solid fa-right-to-bracket me-2"></i>Go To Login
+                        </a>
+                    </div>
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <div class="d-inline-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-circle p-4 mb-3" style="width: 80px; height: 80px;">
+                                <i class="fa-solid fa-triangle-exclamation fa-3x"></i>
+                            </div>
+                            <h2 class="fw-bold text-danger mb-1">An Error Occurred</h2>
+                            <p class="text-muted fs-6">An issue occurred while processing your request (Status Code: @statusCode).</p>
+                        </div>
 
-    <div class="col-md-12 clearfix" style=" padding-bottom:20px; margin-top:50px;">
-        <div class="col-md-12 margin-top20">
-            <a class="btn btn-default cpl-md-1 pull-right" href="@Url.Action("Login","Account")">Go To LogIn</a>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="row text-center" style="margin-top:50px;">
-                    <img src="~/Content/Images/img-warning.png" style="height:100px;" />
-                    <div>
-                        <h2 class="text-danger">
-                            Error !!
-                        </h2>
-                        <h4>
-                            An error occurred in this page. The error has been recorded and the site administrator informed.
-                        </h4>
-                        @*<p class="text-center">Go back to <a href="@Url.Action("Dashboard", "Home", new { Area="Admin"})" class="text-primary">Dashboard</a></p>*@
+                        @if (!string.IsNullOrEmpty(errorMessage))
+                        {
+                            <div class="alert alert-danger text-start mb-4 rounded-3 shadow-sm border-start border-4 border-danger">
+                                <h5 class="alert-heading fw-bold mb-2">
+                                    <i class="fa-solid fa-circle-exclamation me-2"></i>Exception Details:
+                                </h5>
+                                <p class="mb-1 font-monospace text-wrap fw-semibold text-dark">@errorMessage</p>
+                                @if (!string.IsNullOrEmpty(innerErrorMessage))
+                                {
+                                    <p class="mb-0 text-secondary small mt-2"><strong>Inner Exception:</strong> @innerErrorMessage</p>
+                                }
+                                @if (!string.IsNullOrEmpty(errorPath))
+                                {
+                                    <p class="mb-0 text-secondary small mt-1"><strong>Requested Path:</strong> <code>@errorPath</code></p>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning text-start mb-4 rounded-3 border-start border-4 border-warning">
+                                <h6 class="fw-bold text-dark mb-2">
+                                    <i class="fa-solid fa-database me-2 text-warning"></i>Possible Database Issue
+                                </h6>
+                                <p class="mb-0 text-dark small">
+                                    If this is a Database error, please check:
+                                </p>
+                                <ul class="mb-0 mt-2 small text-dark ps-3">
+                                    <li>SQL Server service is running on your machine.</li>
+                                    <li>The database <strong>WBSDKERPDB</strong> has been created using <code>WBSDKERPDB_Full_Script.sql</code>.</li>
+                                    <li>The connection string in <code>appsettings.json</code> matches your SQL Server instance name.</li>
+                                </ul>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(stackTrace))
+                        {
+                            <div class="accordion text-start mb-4" id="debugAccordion">
+                                <div class="accordion-item border rounded-3">
+                                    <h2 class="accordion-header" id="headingStackTrace">
+                                        <button class="accordion-button collapsed fw-semibold text-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStackTrace" aria-expanded="false" aria-controls="collapseStackTrace">
+                                            <i class="fa-solid fa-code me-2"></i>View Diagnostic Stack Trace
+                                        </button>
+                                    </h2>
+                                    <div id="collapseStackTrace" class="accordion-collapse collapse" aria-labelledby="headingStackTrace" data-bs-parent="#debugAccordion">
+                                        <div class="accordion-body bg-dark text-light p-3 rounded-bottom">
+                                            <pre class="m-0 text-light small" style="white-space: pre-wrap; word-break: break-all;">@stackTrace</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="d-flex justify-content-center gap-3 mt-4">
+                            <button onclick="window.location.reload();" class="btn btn-outline-secondary rounded-pill px-4">
+                                <i class="fa-solid fa-rotate-right me-2"></i>Retry
+                            </button>
+                            <a href="@Url.Action("NewDashboard", "Home")" class="btn btn-primary rounded-pill px-4">
+                                <i class="fa-solid fa-house me-2"></i>Go to Dashboard
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
+    <script src="~/Content/assets/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 

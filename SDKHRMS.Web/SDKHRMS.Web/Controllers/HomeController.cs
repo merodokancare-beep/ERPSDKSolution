@@ -200,6 +200,14 @@ namespace SDKHRMS.Web.Controllers
         public ActionResult Error(int? id)
         {
             ViewBag.StatusCode = id ?? 500;
+            var exceptionHandlerFeature = HttpContext.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>();
+            if (exceptionHandlerFeature?.Error != null)
+            {
+                ViewBag.ErrorMessage = exceptionHandlerFeature.Error.Message;
+                ViewBag.InnerErrorMessage = exceptionHandlerFeature.Error.InnerException?.Message;
+                ViewBag.StackTrace = exceptionHandlerFeature.Error.StackTrace;
+                ViewBag.ErrorPath = exceptionHandlerFeature.Path;
+            }
             return View();
         }
 
