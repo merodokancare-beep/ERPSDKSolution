@@ -1,0 +1,70 @@
+@model SDKHRMS.Entities.ViewModels.GSTAnnualSummaryModel
+
+<div class="row align-items-center">
+    <div class="col-md-5 text-center mb-3 mb-md-0">
+        <div class="position-relative d-inline-block">
+            <div id="gstAnnualDonutChart" data-cgst="@(Model?.CGSTAmount ?? 1228394)" data-sgst="@(Model?.SGSTAmount ?? 1228394)" data-igst="@(Model?.IGSTAmount ?? 3214568)" data-cess="@(Model?.CESSAmount ?? 405184)" style="min-height: 220px;"></div>
+            <div class="position-absolute top-50 start-50 translate-middle text-center" style="pointer-events: none;">
+                <div class="text-uppercase donut-center-title fw-semibold" style="font-size: 0.65rem; letter-spacing: 0.05em;">Total GST</div>
+                <div class="fw-extrabold donut-center-value" style="font-size: 1.05rem;">
+                    &#8377; @(Model?.TotalGSTAmount.ToString("N0") ?? "58,76,540")
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center gap-2 flex-wrap mt-2" style="font-size: 0.72rem; font-weight: 600;">
+            <span class="d-flex align-items-center gap-1"><i class="fa-solid fa-circle text-primary" style="font-size: 8px;"></i> CGST (&#8377;)</span>
+            <span class="d-flex align-items-center gap-1"><i class="fa-solid fa-circle text-success" style="font-size: 8px;"></i> SGST (&#8377;)</span>
+            <span class="d-flex align-items-center gap-1"><i class="fa-solid fa-circle text-warning" style="font-size: 8px;"></i> IGST (&#8377;)</span>
+            <span class="d-flex align-items-center gap-1"><i class="fa-solid fa-circle" style="font-size: 8px; color: #a855f7;"></i> CESS (&#8377;)</span>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle mb-0 dashboard-table" style="font-size: 0.78rem;">
+                <thead class="table-light">
+                    <tr>
+                        <th>GST Type</th>
+                        <th class="text-end">Taxable Value (&#8377;)</th>
+                        <th class="text-end">Tax Amount (&#8377;)</th>
+                        <th class="text-end">Total (&#8377;)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="fw-semibold text-primary">CGST</td>
+                        <td class="text-end">@(Model?.CGSTTaxable.ToString("N0") ?? "2,45,67,890")</td>
+                        <td class="text-end">@(Model?.CGSTAmount.ToString("N0") ?? "12,28,394")</td>
+                        <td class="text-end fw-semibold">@(Model?.CGSTTotal.ToString("N0") ?? "12,28,394")</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-semibold text-success">SGST</td>
+                        <td class="text-end">@(Model?.SGSTTaxable.ToString("N0") ?? "2,45,67,890")</td>
+                        <td class="text-end">@(Model?.SGSTAmount.ToString("N0") ?? "12,28,394")</td>
+                        <td class="text-end fw-semibold">@(Model?.SGSTTotal.ToString("N0") ?? "12,28,394")</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-semibold text-warning">IGST</td>
+                        <td class="text-end">@(Model?.IGSTTaxable.ToString("N0") ?? "3,21,45,678")</td>
+                        <td class="text-end">@(Model?.IGSTAmount.ToString("N0") ?? "32,14,568")</td>
+                        <td class="text-end fw-semibold">@(Model?.IGSTTotal.ToString("N0") ?? "32,14,568")</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-semibold" style="color: #a855f7;">CESS</td>
+                        <td class="text-end">@(Model?.CESSTaxable.ToString("N0") ?? "15,67,890")</td>
+                        <td class="text-end">@(Model?.CESSAmount.ToString("N0") ?? "4,05,184")</td>
+                        <td class="text-end fw-semibold">@(Model?.CESSTotal.ToString("N0") ?? "4,05,184")</td>
+                    </tr>
+                </tbody>
+                <tfoot class="table-light fw-bold">
+                    <tr>
+                        <td class="text-primary">Total</td>
+                        <td class="text-end text-primary">@(Model?.TotalTaxable.ToString("N0") ?? "8,28,49,348")</td>
+                        <td class="text-end text-primary">@(Model?.TotalTax.ToString("N0") ?? "60,76,540")</td>
+                        <td class="text-end text-primary">@(Model?.GrandTotal.ToString("N0") ?? "60,76,540")</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

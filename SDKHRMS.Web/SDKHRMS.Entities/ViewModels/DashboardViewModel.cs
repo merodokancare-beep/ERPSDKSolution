@@ -1,4 +1,4 @@
-﻿using SDKHRMS.Entities.Models;
+using SDKHRMS.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -96,7 +96,13 @@ namespace SDKHRMS.Entities.ViewModels
         public int ClosedProjPer { get; set; }
         public int SaleInvPer { get; set; }
         public int POCountPer { get; set; }
+
+        public decimal TotalSalesInvoiceAmount { get; set; }
+        public decimal TotalPOAmount { get; set; }
+        public decimal TotalPayableAmount { get; set; }
+        public decimal TotalReceivableAmount { get; set; }
     }
+
     public class GSTInput
     {
         public decimal TotalIGST { get; set; }
@@ -157,4 +163,90 @@ namespace SDKHRMS.Entities.ViewModels
         [DataMember(Name = "y")]
         public Nullable<double> Y = null;
     }
+
+    public class ExecutiveKPIModel
+    {
+        public decimal TotalInvoicesVal { get; set; }
+        public decimal TotalPOVal { get; set; }
+        public decimal TotalPayableVal { get; set; }
+        public decimal TotalReceivableVal { get; set; }
+        public string FiscalYearStr { get; set; }
+    }
+
+    public class GSTAnnualSummaryModel
+    {
+        public decimal TotalGSTAmount { get; set; }
+        public decimal CGSTTaxable { get; set; }
+        public decimal CGSTAmount { get; set; }
+        public decimal CGSTTotal { get; set; }
+        public decimal SGSTTaxable { get; set; }
+        public decimal SGSTAmount { get; set; }
+        public decimal SGSTTotal { get; set; }
+        public decimal IGSTTaxable { get; set; }
+        public decimal IGSTAmount { get; set; }
+        public decimal IGSTTotal { get; set; }
+        public decimal CESSTaxable { get; set; }
+        public decimal CESSAmount { get; set; }
+        public decimal CESSTotal { get; set; }
+        public decimal TotalTaxable { get; set; }
+        public decimal TotalTax { get; set; }
+        public decimal GrandTotal { get; set; }
+    }
+
+    public class GSTMonthlySummaryRow
+    {
+        public string MonthName { get; set; }
+        public decimal OutputTax { get; set; }
+        public decimal InputTax { get; set; }
+        public decimal NetGSTPayable { get; set; }
+        public decimal GSTPaid { get; set; }
+        public decimal BalancePayable { get; set; }
+        public string Status { get; set; } // Filed, Partial, Pending, ITC Excess
+        public string StatusClass { get; set; }
+    }
+
+    public class TopProjectSummaryRow
+    {
+        public string ProjectName { get; set; }
+        public string ClientName { get; set; }
+        public decimal ContractValue { get; set; }
+        public decimal Income { get; set; }
+        public decimal Expense { get; set; }
+        public decimal Margin { get; set; }
+        public int MarginPercentage { get; set; }
+        public string Status { get; set; } // In Progress, On Hold, Completed
+        public string StatusBadgeClass { get; set; }
+    }
+
+    public class CashFlowOverviewModel
+    {
+        public decimal CashInflow { get; set; }
+        public decimal CashOutflow { get; set; }
+        public decimal NetCashFlow { get; set; }
+        public decimal ClosingBalance { get; set; }
+    }
+
+    public class AgingSummaryVM
+    {
+        public decimal TotalReceivables { get; set; }
+        public decimal Rec_0_30 { get; set; }
+        public int Rec_0_30_Per { get; set; }
+        public decimal Rec_31_60 { get; set; }
+        public int Rec_31_60_Per { get; set; }
+        public decimal Rec_61_90 { get; set; }
+        public int Rec_61_90_Per { get; set; }
+        public decimal Rec_90_Plus { get; set; }
+        public int Rec_90_Plus_Per { get; set; }
+
+        public decimal TotalPayables { get; set; }
+        public decimal Pay_0_30 { get; set; }
+        public int Pay_0_30_Per { get; set; }
+        public decimal Pay_31_60 { get; set; }
+        public int Pay_31_60_Per { get; set; }
+        public decimal Pay_61_90 { get; set; }
+        public int Pay_61_90_Per { get; set; }
+        public decimal Pay_90_Plus { get; set; }
+        public int Pay_90_Plus_Per { get; set; }
+    }
 }
+

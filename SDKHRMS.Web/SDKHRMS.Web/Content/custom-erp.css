@@ -171,9 +171,19 @@ a:hover {
 
 .page-wrapper {
   margin-left: 240px !important;
-  padding-top: 64px !important;
+  padding-top: 60px !important;
   transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
+
+.page-wrapper > .content {
+  padding: 14px 20px 20px 20px !important;
+}
+
+.stat-value-text {
+  color: var(--erp-text-main, #F8FAFC) !important;
+  font-weight: 800 !important;
+}
+
 
 /* =====================================================================
    MINI-SIDEBAR TOGGLE — Full Collapse Support
@@ -760,28 +770,40 @@ body.light-mode .sidebar .sidebar-menu > ul > li > a i {
   color: #64748B !important;
 }
 
-body.light-mode .sidebar .sidebar-menu > ul > li:hover > a,
-body.light-mode .sidebar .sidebar-menu > ul > li:hover > a span,
-body.light-mode .sidebar .sidebar-menu > ul > li > a:hover,
-body.light-mode .sidebar .sidebar-menu > ul > li > a:hover span {
+body.light-mode .sidebar .sidebar-menu > ul > li:not(.active):hover > a,
+body.light-mode .sidebar .sidebar-menu > ul > li:not(.active) > a:hover {
+  background: #F1F5F9 !important;
+  color: #0284c7 !important;
+}
+
+body.light-mode .sidebar .sidebar-menu > ul > li:not(.active):hover > a span,
+body.light-mode .sidebar .sidebar-menu > ul > li:not(.active) > a:hover span,
+body.light-mode .sidebar .sidebar-menu > ul > li:not(.active):hover > a i,
+body.light-mode .sidebar .sidebar-menu > ul > li:not(.active) > a:hover i {
   background: transparent !important;
-  color: #7539FF !important;
-  opacity: 1 !important;
-  visibility: visible !important;
+  color: #0284c7 !important;
 }
 
 body.light-mode .sidebar .sidebar-menu > ul > li.active > a,
-body.light-mode .sidebar .sidebar-menu > ul > li.active > a span {
-  background: rgba(117, 57, 255, 0.1) !important;
-  color: #7539FF !important;
-  opacity: 1 !important;
-  visibility: visible !important;
+body.light-mode .sidebar .sidebar-menu > ul > li.active > a:hover,
+body.light-mode .sidebar .sidebar-menu > ul > li a.active,
+body.light-mode .sidebar .sidebar-menu > ul > li a.active:hover {
+  background: #0284c7 !important;
+  color: #FFFFFF !important;
+  border-left: none !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25) !important;
 }
 
-body.light-mode .sidebar .sidebar-menu > ul > li:hover > a i,
-body.light-mode .sidebar .sidebar-menu > ul > li > a:hover i,
-body.light-mode .sidebar .sidebar-menu > ul > li.active > a i {
-  color: #7539FF !important;
+body.light-mode .sidebar .sidebar-menu > ul > li.active > a span,
+body.light-mode .sidebar .sidebar-menu > ul > li.active > a i,
+body.light-mode .sidebar .sidebar-menu > ul > li.active > a:hover span,
+body.light-mode .sidebar .sidebar-menu > ul > li.active > a:hover i,
+body.light-mode .sidebar .sidebar-menu > ul > li a.active:hover span,
+body.light-mode .sidebar .sidebar-menu > ul > li a.active:hover i {
+  background: transparent !important;
+  color: #FFFFFF !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 body.light-mode .sidebar .sidebar-menu .menu-title span {
@@ -1046,13 +1068,29 @@ body.light-mode .bar-icon span {
   color: #A855F7 !important;
 }
 
-.sidebar-menu > ul > li.active > a,
-.sidebar-menu > ul > li.active > a span {
-  background: var(--erp-primary-gradient) !important;
+.sidebar-menu > ul > li.active > a {
+  background: #0284c7 !important;
   color: #FFFFFF !important;
-  box-shadow: 0 4px 14px rgba(117, 57, 255, 0.4);
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35) !important;
   opacity: 1 !important;
   visibility: visible !important;
+  border: none !important;
+}
+
+.sidebar-menu > ul > li.active > a span {
+  background: transparent !important;
+  color: #FFFFFF !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.sidebar-menu > ul > li.active > a::before,
+.sidebar-menu > ul > li.active > a::after,
+.sidebar-menu > ul > li.active::before,
+.sidebar-menu > ul > li.active::after {
+  display: none !important;
+  content: none !important;
 }
 
 .sidebar-menu > ul > li.active > a i {
@@ -1817,13 +1855,533 @@ html[data-bs-theme="dark"] .btn-menubar:hover {
 .bg-progress-emerald { background: linear-gradient(90deg, #10B981 0%, #34D399 100%) !important; }
 .bg-progress-amber { background: linear-gradient(90deg, #F59E0B 0%, #FBBF24 100%) !important; }
 
-/* Active Sidebar Navigation Pill Highlight */
+/* Active Sidebar Navigation Pill Highlight & Hover Guard */
 .sidebar-menu ul li.active > a,
-.sidebar-menu ul li a.active {
-  background: rgba(117, 57, 255, 0.15) !important;
-  color: #7539FF !important;
-  border-left: 3px solid #7539FF !important;
-  border-radius: 0 10px 10px 0 !important;
+.sidebar-menu ul li a.active,
+.sidebar-menu ul li.active > a:hover,
+.sidebar-menu ul li a.active:hover,
+.sidebar-menu ul li.active > a:focus,
+.sidebar-menu ul li a.active:focus {
+  background: #0284c7 !important;
+  color: #FFFFFF !important;
+  border-left: none !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3) !important;
+}
+
+.sidebar-menu ul li.active > a span,
+.sidebar-menu ul li a.active span,
+.sidebar-menu ul li.active > a i,
+.sidebar-menu ul li a.active i,
+.sidebar-menu ul li.active > a:hover span,
+.sidebar-menu ul li a.active:hover span,
+.sidebar-menu ul li.active > a:hover i,
+.sidebar-menu ul li a.active:hover i {
+  color: #FFFFFF !important;
+  background: transparent !important;
+}
+
+/* Remove left edge line pseudoelement artifacts */
+.sidebar-menu ul li > a::before,
+.sidebar-menu ul li > a::after,
+.sidebar-menu ul li.active > a::before,
+.sidebar-menu ul li.active > a::after {
+  display: none !important;
+  content: none !important;
+  border: none !important;
+}
+
+
+/* Dashboard & Table Badge Soft Classes with High Contrast */
+.badge-soft-primary,
+.badge-primary-subtle,
+.badge.badge-soft-primary {
+  background: rgba(2, 132, 199, 0.15) !important;
+  color: #0284c7 !important;
+  border: 1px solid rgba(2, 132, 199, 0.3) !important;
   font-weight: 700 !important;
 }
+
+.badge-soft-success,
+.badge-success-subtle,
+.badge.badge-soft-success {
+  background: rgba(16, 185, 129, 0.15) !important;
+  color: #059669 !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  font-weight: 700 !important;
+}
+
+.badge-soft-warning,
+.badge-warning-subtle,
+.badge.badge-soft-warning {
+  background: rgba(245, 158, 11, 0.15) !important;
+  color: #d97706 !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+  font-weight: 700 !important;
+}
+
+.badge-soft-danger,
+.badge-danger-subtle,
+.badge.badge-soft-danger {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #dc2626 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+  font-weight: 700 !important;
+}
+
+.badge-soft-info,
+.badge-info-subtle,
+.badge.badge-soft-info {
+  background: rgba(56, 189, 248, 0.15) !important;
+  color: #0284c7 !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  font-weight: 700 !important;
+}
+
+/* Dark Mode Glowing Badges */
+body:not(.light-mode) .badge-soft-success,
+body:not(.light-mode) .badge.badge-soft-success {
+  color: #34d399 !important;
+  background: rgba(16, 185, 129, 0.2) !important;
+}
+
+body:not(.light-mode) .badge-soft-danger,
+body:not(.light-mode) .badge.badge-soft-danger {
+  color: #f87171 !important;
+  background: rgba(239, 68, 68, 0.2) !important;
+}
+
+body:not(.light-mode) .badge-soft-warning,
+body:not(.light-mode) .badge.badge-soft-warning {
+  color: #fbbf24 !important;
+  background: rgba(245, 158, 11, 0.2) !important;
+}
+
+body:not(.light-mode) .badge-soft-primary,
+body:not(.light-mode) .badge.badge-soft-primary {
+  color: #38bdf8 !important;
+  background: rgba(2, 132, 199, 0.2) !important;
+}
+
+/* Form Select Dropdowns in Light Mode */
+body.light-mode select.form-select,
+body.light-mode select.form-control,
+body.light-mode select,
+body.light-mode .card-header select {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border: 1px solid #CBD5E1 !important;
+}
+
+
+/* Dashboard Tables */
+.dashboard-table th {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #64748b;
+  padding: 8px 10px;
+}
+
+.dashboard-table td {
+  padding: 8px 10px;
+  vertical-align: middle;
+}
+
+/* Seamless Date Picker Input Group Pill */
+.input-group .dashboarddate {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.input-group.rounded-pill .input-group-text {
+  border-top-left-radius: 9999px !important;
+  border-bottom-left-radius: 9999px !important;
+}
+
+.input-group.rounded-pill .form-control {
+  border-top-right-radius: 9999px !important;
+  border-bottom-right-radius: 9999px !important;
+}
+
+/* High Contrast Section Headers & Donut Chart Labels */
+.dark-white-text,
+.card-header h6,
+.card-header h5,
+.card-header h4 {
+  color: var(--erp-text-main, #F8FAFC) !important;
+}
+
+body.light-mode .dark-white-text,
+body.light-mode .card-header h6,
+body.light-mode .card-header h5,
+body.light-mode .card-header h4 {
+  color: #0F172A !important;
+}
+
+.donut-center-title {
+  color: var(--erp-text-muted, #94A3B8) !important;
+}
+
+.donut-center-value {
+  color: var(--erp-text-main, #F8FAFC) !important;
+}
+
+body.light-mode .donut-center-title {
+  color: #64748B !important;
+}
+
+body.light-mode .donut-center-value {
+  color: #0F172A !important;
+}
+
+/* Notification Header Icon Button */
+.header-icon-btn {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #F8FAFC !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.header-icon-btn i {
+  color: #F8FAFC !important;
+}
+
+body.light-mode .header-icon-btn {
+  background: #F1F5F9 !important;
+  color: #475569 !important;
+  border: 1px solid #CBD5E1 !important;
+}
+
+body.light-mode .header-icon-btn i {
+  color: #475569 !important;
+}
+
+/* Custom Dropdown Styling for Light & Dark Modes */
+.dropdown-menu {
+  background-color: var(--erp-bg-card, #131825) !important;
+  border: 1px solid var(--erp-border, rgba(255, 255, 255, 0.1)) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
+  border-radius: 10px !important;
+}
+
+.dropdown-item {
+  color: var(--erp-text-main, #F8FAFC) !important;
+  transition: var(--erp-transition, all 0.2s ease);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: rgba(2, 132, 199, 0.15) !important;
+  color: #38bdf8 !important;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+  background-color: #0284c7 !important;
+  color: #FFFFFF !important;
+}
+
+body.light-mode .dropdown-menu {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.light-mode .dropdown-item {
+  color: #334155 !important;
+}
+
+body.light-mode .dropdown-item:hover,
+body.light-mode .dropdown-item:focus {
+  background-color: #F1F5F9 !important;
+  color: #0284c7 !important;
+}
+
+body.light-mode .dropdown-item.active,
+body.light-mode .dropdown-item:active {
+  background-color: #0284c7 !important;
+  color: #FFFFFF !important;
+}
+
+/* Card Header & Dropdown Stacking Context Over Table Headers */
+.card-header {
+  position: relative !important;
+  z-index: 25 !important;
+}
+
+.card-body {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.dashboard-table thead.sticky-top,
+.table-responsive thead.sticky-top {
+  z-index: 5 !important;
+}
+
+.dropdown-menu {
+  z-index: 1050 !important;
+}
+
+/* Action Icon Buttons Visibility & High-Contrast Icons */
+.btn-action-icon,
+a.btn-action-icon,
+.table tbody td a.btn-action-icon {
+  width: 32px !important;
+  height: 32px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  background: rgba(2, 132, 199, 0.12) !important;
+  color: #0284c7 !important;
+  border: 1px solid rgba(2, 132, 199, 0.25) !important;
+  transition: var(--erp-transition, all 0.2s ease) !important;
+}
+
+.btn-action-icon i,
+a.btn-action-icon i,
+.table tbody td a.btn-action-icon i {
+  color: #0284c7 !important;
+  font-size: 0.85rem !important;
+}
+
+/* ==========================================================================
+   EXECUTIVE ACTION BUTTONS (Edit, Delete, View, Options)
+   ========================================================================== */
+.btn-action-icon,
+a.btn-action-icon,
+.table tbody td a.btn-action-icon {
+  width: 32px !important;
+  height: 32px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+}
+
+/* Edit / General Light Action Button */
+.btn-action-icon.bg-light-gray,
+a.btn-action-icon.bg-light-gray {
+  background: rgba(2, 132, 199, 0.12) !important;
+  border: 1px solid rgba(2, 132, 199, 0.25) !important;
+}
+
+.btn-action-icon.bg-light-gray i,
+a.btn-action-icon.bg-light-gray i {
+  color: #0284c7 !important;
+}
+
+.btn-action-icon.bg-light-gray:hover,
+a.btn-action-icon.bg-light-gray:hover {
+  background: #0284c7 !important;
+  border-color: #0284c7 !important;
+  transform: translateY(-2px) scale(1.08) !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35) !important;
+}
+
+.btn-action-icon.bg-light-gray:hover i,
+a.btn-action-icon.bg-light-gray:hover i {
+  color: #FFFFFF !important;
+}
+
+/* Delete / Danger Action Button */
+.btn-action-icon.bg-danger-light,
+a.btn-action-icon.bg-danger-light {
+  background: rgba(239, 68, 68, 0.12) !important;
+  border: 1px solid rgba(239, 68, 68, 0.25) !important;
+}
+
+.btn-action-icon.bg-danger-light i,
+a.btn-action-icon.bg-danger-light i {
+  color: #ef4444 !important;
+}
+
+.btn-action-icon.bg-danger-light:hover,
+a.btn-action-icon.bg-danger-light:hover {
+  background: #ef4444 !important;
+  border-color: #ef4444 !important;
+  transform: translateY(-2px) scale(1.08) !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35) !important;
+}
+
+.btn-action-icon.bg-danger-light:hover i,
+a.btn-action-icon.bg-danger-light:hover i {
+  color: #FFFFFF !important;
+}
+
+/* Options / Primary Action Button */
+.btn-action-icon.bg-primary-light,
+a.btn-action-icon.bg-primary-light {
+  background: rgba(139, 92, 246, 0.12) !important;
+  border: 1px solid rgba(139, 92, 246, 0.25) !important;
+}
+
+.btn-action-icon.bg-primary-light i,
+a.btn-action-icon.bg-primary-light i {
+  color: #8b5cf6 !important;
+}
+
+.btn-action-icon.bg-primary-light:hover,
+a.btn-action-icon.bg-primary-light:hover {
+  background: #8b5cf6 !important;
+  border-color: #8b5cf6 !important;
+  transform: translateY(-2px) scale(1.08) !important;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.35) !important;
+}
+
+.btn-action-icon.bg-primary-light:hover i,
+a.btn-action-icon.bg-primary-light:hover i {
+  color: #FFFFFF !important;
+}
+
+
+/* ==========================================================================
+   DYNAMIC TABLE & HOVER SYSTEM (DARK & LIGHT THEMES)
+   ========================================================================== */
+
+/* Dark Mode Table Styling */
+/* ==========================================================================
+   SOLID BLOCK HOVER SYSTEM FOR GRID TABLES
+   ========================================================================== */
+
+/* Dark Mode Block Hover */
+body:not(.light-mode) .table {
+  --bs-table-bg: transparent;
+  --bs-table-accent-bg: transparent;
+  --bs-table-striped-bg: rgba(255, 255, 255, 0.02);
+  --bs-table-hover-bg: #1E2638;
+  --bs-table-color: #F8FAFC;
+  --bs-table-striped-color: #F8FAFC;
+  --bs-table-hover-color: #FFFFFF;
+}
+
+body:not(.light-mode) .table thead th {
+  background-color: #1A2030 !important;
+  color: #94A3B8 !important;
+  font-size: 0.74rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+body:not(.light-mode) .table tbody tr td {
+  color: #F8FAFC !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  transition: all 0.15s ease-in-out !important;
+}
+
+body:not(.light-mode) .table tbody tr:hover td {
+  background-color: #1E2638 !important;
+  color: #FFFFFF !important;
+}
+
+body:not(.light-mode) .table tbody tr:hover td:first-child {
+  box-shadow: inset 4px 0 0 #0284c7 !important;
+}
+
+
+/* Light Mode Block Hover */
+body.light-mode .table {
+  --bs-table-bg: #FFFFFF;
+  --bs-table-accent-bg: transparent;
+  --bs-table-striped-bg: #F8FAFC;
+  --bs-table-hover-bg: #E2E8F0;
+  --bs-table-color: #0F172A;
+  --bs-table-striped-color: #0F172A;
+  --bs-table-hover-color: #0F172A;
+}
+
+body.light-mode .table thead th {
+  background-color: #F8FAFC !important;
+  color: #475569 !important;
+  font-size: 0.74rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+  border-bottom: 2px solid #E2E8F0 !important;
+}
+
+body.light-mode .table tbody tr td {
+  color: #0F172A !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+  transition: all 0.15s ease-in-out !important;
+}
+
+body.light-mode .table-striped > tbody > tr:nth-of-type(odd) > td {
+  background-color: #F8FAFC !important;
+}
+
+body.light-mode .table-striped > tbody > tr:nth-of-type(even) > td {
+  background-color: #FFFFFF !important;
+}
+
+/* Solid Block Hover Fill & Left Accent Pill Bar */
+body.light-mode .table tbody tr:hover td {
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+body.light-mode .table tbody tr:hover td:first-child {
+  box-shadow: inset 4px 0 0 #0284c7 !important;
+}
+
+body.light-mode .card-header.card-buttons,
+body.light-mode .card-header {
+  background-color: #F8FAFC !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+}
+
+/* Subtle Badge Overrides for GST Summary Tables */
+.bg-success-subtle,
+.badge-success-subtle {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  color: #059669 !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  font-weight: 700 !important;
+}
+
+.bg-warning-subtle,
+.badge-warning-subtle {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+  color: #d97706 !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+  font-weight: 700 !important;
+}
+
+.bg-danger-subtle,
+.badge-danger-subtle {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  color: #dc2626 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+  font-weight: 700 !important;
+}
+
+.bg-info-subtle,
+.badge-info-subtle {
+  background-color: rgba(56, 189, 248, 0.15) !important;
+  color: #0284c7 !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  font-weight: 700 !important;
+}
+
+body:not(.light-mode) .bg-success-subtle { color: #34d399 !important; }
+body:not(.light-mode) .bg-warning-subtle { color: #fbbf24 !important; }
+body:not(.light-mode) .bg-danger-subtle { color: #f87171 !important; }
+body:not(.light-mode) .bg-info-subtle { color: #38bdf8 !important; }
+
+
+
+
+
+
+
+
 

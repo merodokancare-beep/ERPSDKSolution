@@ -1,0 +1,66 @@
+@model IEnumerable<SDKHRMS.Entities.ViewModels.TopProjectSummaryRow>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle mb-0 dashboard-table" style="font-size: 0.78rem;">
+        <thead class="table-light">
+            <tr>
+                <th>Project Name</th>
+                <th>Client</th>
+                <th class="text-end">Contract Value (&#8377;)</th>
+                <th class="text-end">Income (&#8377;)</th>
+                <th class="text-end">Expense (&#8377;)</th>
+                <th class="text-end">Margin (&#8377;)</th>
+                <th class="text-center">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-bold text-dark dark-white-text">@item.ProjectName</td>
+                        <td class="text-muted">@item.ClientName</td>
+                        <td class="text-end fw-semibold">@item.ContractValue.ToString("N0")</td>
+                        <td class="text-end text-success">@item.Income.ToString("N0")</td>
+                        <td class="text-end text-danger">@item.Expense.ToString("N0")</td>
+                        <td class="text-end fw-bold text-primary">
+                            @item.Margin.ToString("N0") <span class="text-muted fw-normal" style="font-size: 0.72rem;">(@item.MarginPercentage%)</span>
+                        </td>
+                        <td class="text-center">
+                            @if (item.Status == "In Progress")
+                            {
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-1" style="font-size: 0.68rem;">
+                                    <i class="fa-solid fa-spinner me-1"></i>In Progress
+                                </span>
+                            }
+                            else if (item.Status == "On Hold")
+                            {
+                                <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-2 py-1" style="font-size: 0.68rem;">
+                                    <i class="fa-solid fa-pause me-1"></i>On Hold
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1" style="font-size: 0.68rem;">
+                                    <i class="fa-solid fa-check me-1"></i>Completed
+                                </span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+        <tfoot class="table-light fw-bold">
+            <tr>
+                <td class="text-primary">Total</td>
+                <td></td>
+                <td class="text-end text-primary">1,13,00,000</td>
+                <td class="text-end text-primary">78,35,000</td>
+                <td class="text-end text-primary">51,20,000</td>
+                <td class="text-end text-primary">27,15,000 (34%)</td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

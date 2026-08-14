@@ -53,14 +53,14 @@
                 </span>
             </a>
 
-            <!-- Middle Section: Quick Add Dropdown & Breadcrumbs -->
-            <div class="d-flex align-items-center gap-3 me-auto ps-3">
+            <!-- Right Section: Quick Add, Search, Notifications, Theme Toggle & User Profile -->
+            <div class="d-flex align-items-center gap-3 ms-auto pe-3">
                 <!-- Quick Add Dropdown -->
                 <div class="dropdown">
-                    <a class="btn btn-primary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: linear-gradient(135deg, #7539FF 0%, #A855F7 100%); border: none; box-shadow: 0 4px 12px rgba(117, 57, 255, 0.4);" data-bs-toggle="dropdown" href="javascript:void(0);" role="button" title="Quick Add">
+                    <a class="btn btn-primary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%); border: none; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);" data-bs-toggle="dropdown" href="javascript:void(0);" role="button" title="Quick Add">
                         <i class="fa-solid fa-plus text-white fs-14"></i>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-start p-2 shadow-lg quick-add-menu" style="border-radius: 12px;">
+                    <ul class="dropdown-menu dropdown-menu-end p-2 shadow-lg quick-add-menu" style="border-radius: 12px; font-size: 0.82rem;">
                         <li>
                             <a href="/projects/ProjectOverView" class="dropdown-item d-flex align-items-center py-2">
                                 <i class="fa-solid fa-folder-plus me-2 text-primary"></i>New Project
@@ -89,20 +89,34 @@
                     </ul>
                 </div>
 
-                <!-- Breadcrumb -->
-                <nav aria-label="breadcrumb" class="d-none d-lg-block">
-                    <ol class="breadcrumb breadcrumb-divide mb-0" style="background: transparent; --bs-breadcrumb-divider: '›';">
-                        <li class="breadcrumb-item"><a href="/home/newdashboard" style="color: #A855F7; font-weight: 600; text-decoration: none;"><i class="fa-solid fa-house me-1"></i>Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page" style="color: #F8FAFC; font-weight: 600;">ERP Dashboard</li>
-                    </ol>
-                </nav>
-            </div>
-
-            <!-- Right Section: Search, Theme Toggle & User Profile -->
-            <div class="d-flex align-items-center gap-3 ms-auto pe-3">
                 <!-- Search Input Pill -->
                 <div class="search-pill-wrapper d-none d-sm-block">
                     <input type="text" class="form-control form-control-sm rounded-pill px-3 header-search-input" placeholder="Search..." style="width: 190px;">
+                </div>
+
+                <!-- Notifications Dropdown -->
+                <div class="dropdown">
+                    <a href="javascript:void(0);" class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center position-relative header-icon-btn" style="width: 36px; height: 36px; flex-shrink: 0;" data-bs-toggle="dropdown" title="Notifications">
+                        <i class="fa-solid fa-bell fs-14"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem; padding: 2px 5px;">
+                            5
+                        </span>
+                    </a>
+                    <div class="dropdown-menu p-2 shadow-lg dropdown-menu-end" style="min-width: 280px; border-radius: 12px; font-size: 0.82rem;">
+                        <div class="d-flex align-items-center justify-content-between px-2 py-1 border-bottom mb-2">
+                            <span class="fw-bold">Notifications</span>
+                            <span class="badge bg-primary rounded-pill">5 New</span>
+                        </div>
+                        <a class="dropdown-item py-2 border-bottom text-wrap" href="javascript:void(0);">
+                            <i class="fa-solid fa-triangle-exclamation text-danger me-2"></i>GST pending payment for May 2025 - Oct 2025
+                        </a>
+                        <a class="dropdown-item py-2 border-bottom text-wrap" href="javascript:void(0);">
+                            <i class="fa-solid fa-folder-minus text-warning me-2"></i>2 Projects are over 80% budget
+                        </a>
+                        <a class="dropdown-item py-2 text-wrap" href="javascript:void(0);">
+                            <i class="fa-solid fa-file-invoice text-info me-2"></i>3 Invoices are overdue
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Theme Switcher Button -->
@@ -113,13 +127,13 @@
                 <!-- User Profile Dropdown -->
                 <div class="dropdown profile-dropdown">
                     <a href="javascript:void(0);" class="dropdown-toggle d-flex align-items-center gap-2 text-decoration-none" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                        <span class="avatar online rounded-circle overflow-hidden" style="width: 38px; height: 38px; border: 2px solid #7539FF; display: inline-block;">
+                        <span class="avatar online rounded-circle overflow-hidden" style="width: 38px; height: 38px; border: 2px solid #0284c7; display: inline-block;">
                             <img src="~/Content/Images/user-admin.png" alt="User" class="img-fluid rounded-circle">
                         </span>
                         <div class="d-none d-md-block text-start">
-                            <h6 class="fs-13 fw-bold mb-0 header-username" style="line-height: 1.2;">@User.Identity.Name</h6>
-                            <span class="badge" style="background: rgba(117, 57, 255, 0.22); color: #A855F7; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 9999px;">
-                                @(User.IsInRole("Super Admin") ? "Super Admin" : User.IsInRole("Admin") ? "Admin" : "Employee")
+                            <h6 class="fs-13 fw-bold mb-0 header-username" style="line-height: 1.2;">Admin User</h6>
+                            <span class="badge" style="background: rgba(2, 132, 199, 0.22); color: #38bdf8; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 9999px;">
+                                Administrator
                             </span>
                         </div>
                     </a>
@@ -129,10 +143,8 @@
                                 <img src="~/Content/Images/user-admin.png" alt="user" class="rounded-circle" style="width: 36px; height: 36px;">
                             </span>
                             <div>
-                                <h6 class="fs-13 fw-semibold mb-0 profile-user-name">@User.Identity.Name</h6>
-                                <p class="fs-11 text-muted mb-0">
-                                    @(User.IsInRole("Super Admin") ? "Super Admin" : User.IsInRole("Admin") ? "Admin" : "Employee")
-                                </p>
+                                <h6 class="fs-13 fw-semibold mb-0 profile-user-name">Admin User</h6>
+                                <p class="fs-11 text-muted mb-0">Administrator</p>
                             </div>
                         </div>
                         <a class="dropdown-item d-flex align-items-center py-2" href="@Url.Action("ChangePassword", "Manage")">
@@ -154,122 +166,50 @@
         <!-- Topbar Header End -->
 
 
+
         <!-- Sidebar Navigation Start -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-inner slimscroll" data-simplebar>
                 <div id="sidebar-menu" class="sidebar-menu">
-                    @if (!User.IsInRole("Employee"))
-                    {
-                        <ul>
-                            <li class="menu-title"><span>Main</span></li>
-                            <li class="submenu">
-                                <a href="#">
-                                    <i class="fa-solid fa-chart-pie text-primary me-2"></i> <span> Dashboard</span> <span class="menu-arrow"></span>
-                                </a>
-                                <ul>
-                                    <li>
-                                        <a href="/home/newdashboard"><i class="fa-solid fa-gauge me-1"></i> Admin Dashboard</a>
-                                    </li>
-                                </ul>
-                            </li>
+                    <ul>
+                        <li class="active">
+                            <a href="/home/newdashboard" class="active">
+                                <i class="fa-solid fa-house me-2"></i> <span>Dashboard</span>
+                            </a>
+                        </li>
 
-                            <li class="submenu">
-                                <a href="#">
-                                    <i class="fa-solid fa-sliders text-info me-2"></i> <span> Configuration</span> <span class="menu-arrow"></span>
-                                </a>
-                                <ul>
-                                    <li><a href="/Configuration/UnitList"><i class="fa-solid fa-box me-1"></i> Unit Master</a></li>
-                                    <li><a href="@Url.Action("HolidayList", "Configuration")"><i class="fa-solid fa-calendar-days me-1"></i> Holiday Master</a></li>
-                                    <li><a href="@Url.Action("VendorList", "Configuration")"><i class="fa-solid fa-users me-1"></i> Client/Vendor Master</a></li>
-                                    <li><a href="@Url.Action("ExpenseTypeList", "Configuration")"><i class="fa-solid fa-receipt me-1"></i> Expense Type Master</a></li>
-                                    <li><a href="@Url.Action("FinancialYearList", "Configuration")"><i class="fa-solid fa-calendar me-1"></i> Financial Year Master</a></li>
-                                    <li><a href="@Url.Action("MstReferenceNumberList", "Configuration")"><i class="fa-solid fa-hashtag me-1"></i> Reference Number Master</a></li>
-                                </ul>
-                            </li>
+                        <li class="menu-title"><span>SALES</span></li>
+                        <li><a href="/invoice/saleinvoicelist"><i class="fa-solid fa-file-invoice-dollar me-2"></i> <span>Invoices</span></a></li>
+                        <li><a href="/Configuration/VendorList"><i class="fa-solid fa-users me-2"></i> <span>Clients</span></a></li>
+                        <li><a href="/paymentreceivable/index"><i class="fa-solid fa-hand-holding-dollar me-2"></i> <span>Payments Received</span></a></li>
+                        <li><a href="/Ledger/ExpensesLedger"><i class="fa-solid fa-chart-line me-2"></i> <span>Sales Reports</span></a></li>
 
-                            <li class="menu-title"><span>Projects Management</span></li>
-                            <li>
-                                <a href="/projects/ProjectOverView"><i class="fa-solid fa-folder-open text-warning me-2"></i> <span>Projects List</span></a>
-                            </li>
-                            <li>
-                                <a href="/Challan/DeliveryChallanList"><i class="fa-solid fa-truck-ramp-box text-success me-2"></i> <span>Delivery List</span></a>
-                            </li>
+                        <li class="menu-title"><span>PURCHASE</span></li>
+                        <li><a href="/invoice/purchaseinvoicelist"><i class="fa-solid fa-cart-shopping me-2"></i> <span>Purchase Orders</span></a></li>
+                        <li><a href="/Configuration/VendorList"><i class="fa-solid fa-store me-2"></i> <span>Vendors</span></a></li>
+                        <li><a href="/popayment/index"><i class="fa-solid fa-money-bill-transfer me-2"></i> <span>Payments Made</span></a></li>
+                        <li><a href="/Ledger/VendorLedger"><i class="fa-solid fa-file-contract me-2"></i> <span>Purchase Reports</span></a></li>
 
-                            <li class="menu-title"><span>Payment Manager</span></li>
-                            <li class="submenu">
-                                <a href="#">
-                                    <i class="fa-solid fa-hand-holding-dollar text-emerald me-2"></i> <span>Payment Receive</span> <span class="menu-arrow"></span>
-                                </a>
-                                <ul>
-                                    <li><a href="/paymentreceivable/index">Direct Payment Received <i class="fa-solid fa-arrow-down-left text-success ms-1"></i></a></li>
-                                    <li><a href="/paymentreceivable/ProjPaymentReceiveList">Project's Payment Received <i class="fa-solid fa-arrow-down-left text-success ms-1"></i></a></li>
-                                </ul>
-                            </li>
-                            <li class="submenu">
-                                <a href="#">
-                                    <i class="fa-solid fa-money-bill-transfer text-danger me-2"></i> <span>Payment Release</span> <span class="menu-arrow"></span>
-                                </a>
-                                <ul>
-                                    <li><a href="/popayment/index">Procurement's Payment <i class="fa-solid fa-arrow-up-right text-danger ms-1"></i></a></li>
-                                    <li><a href="/directpayment/index">Direct Payment Released <i class="fa-solid fa-arrow-up-right text-danger ms-1"></i></a></li>
-                                </ul>
-                            </li>
+                        <li class="menu-title"><span>FINANCE</span></li>
+                        <li><a href="/Ledger/BankLedger"><i class="fa-solid fa-building-columns me-2"></i> <span>Accounting</span></a></li>
+                        <li><a href="/PettyCash/PettyCashBook"><i class="fa-solid fa-vault me-2"></i> <span>Banking</span></a></li>
+                        <li><a href="/Configuration/FinancialYearList"><i class="fa-solid fa-receipt me-2"></i> <span>Taxes (GST)</span></a></li>
+                        <li><a href="/Ledger/ProjectLedger"><i class="fa-solid fa-chart-pie me-2"></i> <span>Reports</span></a></li>
 
-                            <li class="menu-title"><span>Sales &amp; Purchase</span></li>
-                            <li>
-                                <a href="/invoice/saleinvoicelist"><i class="fa-solid fa-file-invoice-dollar text-indigo me-2"></i> <span>Sale Invoices</span></a>
-                            </li>
-                            <li>
-                                <a href="/invoice/purchaseinvoicelist"><i class="fa-solid fa-cart-shopping text-amber me-2"></i> <span>Purchase Order</span></a>
-                            </li>
+                        <li class="menu-title"><span>PROJECTS</span></li>
+                        <li><a href="/projects/ProjectOverView"><i class="fa-solid fa-diagram-project me-2"></i> <span>Projects</span></a></li>
+                        <li><a href="/Challan/DeliveryChallanList"><i class="fa-solid fa-truck-ramp-box me-2"></i> <span>Project Reports</span></a></li>
 
-                            <li class="menu-title"><span>Reference &amp; Petty Cash</span></li>
-                            <li>
-                                <a href="/ReferenceNumber/ReferenceNumberList"><i class="fa-solid fa-hashtag text-purple me-2"></i> <span>Issue Reference No.</span></a>
-                            </li>
-                            <li>
-                                <a href="/PettyCash/PettyCashBook"><i class="fa-solid fa-vault text-rose me-2"></i> <span>Petty Cash Book</span></a>
-                            </li>
-
-                            <li class="menu-title"><span>Reports &amp; Analysis</span></li>
-                            <li class="submenu">
-                                <a href="#">
-                                    <i class="fa-solid fa-chart-line text-cyan me-2"></i> <span>Ledger Reports</span> <span class="menu-arrow"></span>
-                                </a>
-                                <ul>
-                                    <li><a href="/Ledger/BankLedger"><i class="fa-solid fa-building-columns me-1 text-muted"></i> Bank Ledger</a></li>
-                                    <li><a href="/Ledger/VendorLedger"><i class="fa-solid fa-user-tag me-1 text-muted"></i> Vendor Ledger</a></li>
-                                    <li><a href="/Ledger/ProjectLedger"><i class="fa-solid fa-diagram-project me-1 text-muted"></i> Project Ledger</a></li>
-                                    <li><a href="/Ledger/ExpensesLedger"><i class="fa-solid fa-money-bill-wave me-1 text-muted"></i> Expenses Head Ledger</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    }
-                    else
-                    {
-                        <ul>
-                            <li class="menu-title"><span>Main</span></li>
-                            <li class="submenu">
-                                <a href="#">
-                                    <i class="isax isax-element-45"></i> <span> Dashboard</span> <span class="menu-arrow"></span>
-                                </a>
-                                <ul>
-                                    <li>
-                                        <a href="/home/dashboard"><i class="ti ti-chart-pie me-1"></i> Dashboard</a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                            <li class="menu-title"><span>Purchase</span></li>
-                            <li>
-                                <a href="/invoice/purchaseinvoicelist"><i class="isax isax-shopping-cart"></i> <span>Purchase Order</span></a>
-                            </li>
-                        </ul>
-                    }
+                        <li class="menu-title"><span>SETUP</span></li>
+                        <li><a href="/Configuration/UnitList"><i class="fa-solid fa-sliders me-2"></i> <span>Master Data</span></a></li>
+                        <li><a href="/RoleCreator/Index"><i class="fa-solid fa-user-gear me-2"></i> <span>Users &amp; Roles</span></a></li>
+                        <li><a href="/Configuration/MstReferenceNumberList"><i class="fa-solid fa-gear me-2"></i> <span>Settings</span></a></li>
+                    </ul>
                 </div>
             </div>
         </div>
         <!-- Sidebar Navigation End -->
+
 
         <!-- Page Content Wrapper Start -->
         <div class="page-wrapper">

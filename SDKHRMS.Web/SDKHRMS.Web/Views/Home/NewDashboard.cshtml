@@ -4,245 +4,474 @@
     ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
-@*<style type="text/css">
-</style>*@
+
 <link href="~/Content/datetimepicker/jquery.datetimepicker.min.css" rel="stylesheet" />
 <link href="~/Content/assets/plugins/apexchart/apexcharts.css" rel="stylesheet" />
-<div class="page-header">
-    <div class="d-flex align-items-start align-items-sm-center justify-content-between flex-column flex-sm-row gap-2 mb-3">
+
+<div class="dashboard-header mb-2">
+    <!-- Top Action Bar -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 pb-2">
         <div>
-            <h4 class="fw-bold mb-1 dashboard-title" style="color: #F8FAFC; font-size: 1.3rem;">
-                <i class="fa-solid fa-chart-pie me-2" style="color: #7539FF;"></i>ERP Dashboard
+            <h4 class="fw-bold mb-0 text-dark dark-white-text" style="font-size: 1.25rem;">
+                <i class="fa-solid fa-gauge text-primary me-2"></i>Dashboard
             </h4>
-            <p class="mb-0 dashboard-subtitle" style="color: #94A3B8; font-size: 0.82rem;">Welcome back, @User.Identity.Name &mdash; here's your business overview</p>
+            <div class="text-muted" style="font-size: 0.74rem;">
+                <i class="fa-solid fa-clock me-1 text-primary"></i>Last Updated: <span id="lastUpdatedTime">13 Aug 2026 10:30 AM</span>
+            </div>
         </div>
-        <div class="d-flex align-items-center gap-2 flex-wrap dashboard-filters">
-            <input class="form-control form-control-sm dashboarddate" type="text" placeholder="Start Date" id="startdate"
-                   value="@(Model.StartDate != null ? Model.StartDate.Value.ToString("dd MMM yyyy") : "")"
-                   style="background: #1A2030; border: 1px solid rgba(255,255,255,0.12); color: #F8FAFC; border-radius: 8px; width: 130px;" />
-            <input class="form-control form-control-sm dashboarddate" type="text" placeholder="End Date" id="enddate"
-                   value="@(Model.EndDate != null ? Model.EndDate.Value.ToString("dd MMM yyyy") : "")"
-                   style="background: #1A2030; border: 1px solid rgba(255,255,255,0.12); color: #F8FAFC; border-radius: 8px; width: 130px;" />
-            <a class="btn btn-sm fw-semibold" href="javascript:void(0)" id="btnsubmit"
-               style="background: linear-gradient(135deg, #7539FF 0%, #A855F7 100%); color: #fff; border: none; border-radius: 8px; padding: 6px 16px; box-shadow: 0 4px 12px rgba(117,57,255,0.35);">
-                <i class="fa-solid fa-check me-1"></i>Submit
+
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <!-- FY Selector -->
+            <div class="dropdown">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2 rounded-pill px-3 py-1 fw-semibold" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 0.76rem;">
+                    <i class="fa-regular fa-calendar text-primary"></i> <span id="selectedFY">FY 2025-26</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="font-size: 0.78rem;">
+                    <li><a class="dropdown-item fy-option active" href="javascript:void(0)" data-fy="2025-26" data-start="01 Apr 2025" data-end="31 Mar 2026">FY 2025-26</a></li>
+                    <li><a class="dropdown-item fy-option" href="javascript:void(0)" data-fy="2024-25" data-start="01 Apr 2024" data-end="31 Mar 2025">FY 2024-25</a></li>
+                    <li><a class="dropdown-item fy-option" href="javascript:void(0)" data-fy="2023-24" data-start="01 Apr 2023" data-end="31 Mar 2024">FY 2023-24</a></li>
+                    <li><a class="dropdown-item fy-option" href="javascript:void(0)" data-fy="2022-23" data-start="01 Apr 2022" data-end="31 Mar 2023">FY 2022-23</a></li>
+                </ul>
+            </div>
+
+
+            <!-- Download Report Button -->
+            <a class="btn btn-sm btn-primary rounded-pill px-3 py-1 fw-semibold d-flex align-items-center gap-2 shadow-sm" href="javascript:void(0)" id="btnDownloadReport" style="font-size: 0.76rem;">
+                <i class="fa-solid fa-download"></i>Download Report
             </a>
-            <a class="btn btn-sm fw-semibold" href="/home/newdashboard"
-               style="background: rgba(255,255,255,0.06); color: #94A3B8; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 6px 12px;">
-                <i class="fa-solid fa-rotate me-1"></i>Clear
-            </a>
-        </div>
-    </div>
-    <i><span id="DateErrMsg" class="text-danger" style="font-size: 0.8rem;"></span></i>
-</div>
-
-<div class="row" id="countdtls">
-    @*Count Details*@
-</div>
-<div class="clearfix">&nbsp;</div>
-<div class="row no-padding">
-    <div class="col-md-8 d-flex">
-        <div class="card flex-fill">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title"> Direct Payment Details for <span id="DirectText"></span></h5>
-                </div>
-            </div>
-            <div class="card-body">
-                <div id="directpaymentgraph">
-                    @*Direct Payment*@
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <div class="justify-content-between align-items-center">
-                    <h5 class="card-title">GST Payable for <span id="PayableText"></span></h5>
-                </div>
-            </div>
-            <div class="card-body">
-                <div id="gstpayablegraph">
-                    @*GST Payable*@
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="clearfix">&nbsp;</div>
-<div class="row no-padding">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <div class="justify-content-between align-items-center">
-                    <h5 class="card-title"> Project Wise Details <span id="ProjwiseText"></span></h5>
-                </div>
-            </div>
-            <div class="card-body">
-                <div id="projectwisegraph">
-                    @*project wise Payment*@
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card ">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">GST Input for <span id="InputText"></span></h5>
-                </div>
-            </div>
-            <div class="card-body">
-                <div id="gstinputgraph">
-                    @*GST Input*@
-
-                </div>
-            </div>
         </div>
     </div>
 
+    <!-- Compact Date Range Filter & Performance Highlights Row -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 pt-2 border-top">
+        <!-- Date Filter & Controls -->
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="fw-bold text-dark dark-white-text me-1 d-flex align-items-center gap-1" style="font-size: 0.78rem;">
+                <i class="fa-solid fa-filter text-primary"></i>Date Range:
+            </span>
+
+            <!-- Start Date Input Pill -->
+            <div class="input-group input-group-sm border rounded-pill overflow-hidden bg-light shadow-2xs" style="width: 165px; border-color: rgba(0,0,0,0.12) !important;">
+                <span class="input-group-text bg-transparent border-0 pe-1 ps-3 text-primary"><i class="fa-regular fa-calendar" style="font-size: 0.78rem;"></i></span>
+                <input class="form-control form-control-sm dashboarddate bg-transparent border-0 ps-1 shadow-none fw-semibold text-dark dark-white-text" type="text" placeholder="Start Date" id="startdate" value="@(Model.StartDate != null ? Model.StartDate.Value.ToString("dd MMM yyyy") : "01 Apr 2025")" style="font-size: 0.76rem;" />
+            </div>
+
+            <span class="text-muted fw-semibold" style="font-size: 0.72rem;">to</span>
+
+            <!-- End Date Input Pill -->
+            <div class="input-group input-group-sm border rounded-pill overflow-hidden bg-light shadow-2xs" style="width: 165px; border-color: rgba(0,0,0,0.12) !important;">
+                <span class="input-group-text bg-transparent border-0 pe-1 ps-3 text-primary"><i class="fa-regular fa-calendar" style="font-size: 0.78rem;"></i></span>
+                <input class="form-control form-control-sm dashboarddate bg-transparent border-0 ps-1 shadow-none fw-semibold text-dark dark-white-text" type="text" placeholder="End Date" id="enddate" value="@(Model.EndDate != null ? Model.EndDate.Value.ToString("dd MMM yyyy") : DateTime.Now.ToString("dd MMM yyyy"))" style="font-size: 0.76rem;" />
+            </div>
+
+            <!-- Apply & Reset Action Buttons -->
+            <button class="btn btn-sm btn-primary rounded-pill px-3 py-1 fw-semibold d-flex align-items-center gap-1 shadow-sm" id="btnsubmit" type="button" style="font-size: 0.76rem;">
+                <i class="fa-solid fa-check"></i> Apply
+            </button>
+            <button class="btn btn-sm btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center" id="btnclear" type="button" style="width: 30px; height: 30px; padding: 0;" title="Reset Dates">
+                <i class="fa-solid fa-rotate-left" style="font-size: 0.72rem;"></i>
+            </button>
+        </div>
+
+        <!-- Executive Quick Highlights Bar -->
+        <div class="d-flex align-items-center gap-2 flex-wrap" style="font-size: 0.74rem;">
+            <div class="d-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-primary-subtle border border-primary-subtle">
+                <i class="fa-solid fa-chart-line text-primary"></i>
+                <span class="text-muted">Total Sales:</span>
+                <strong class="text-primary" id="quickTotalSales">&#8377; 3.45 Cr</strong>
+
+            </div>
+            <div class="d-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-success-subtle border border-success-subtle">
+                <i class="fa-solid fa-percent text-success"></i>
+                <span class="text-muted">Net Margin:</span>
+                <strong class="text-success">34%</strong>
+            </div>
+            <div class="d-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-warning-subtle border border-warning-subtle">
+                <i class="fa-solid fa-receipt text-warning"></i>
+                <span class="text-muted">Pending GST:</span>
+                <strong class="text-warning">6 Months</strong>
+            </div>
+        </div>
+    </div>
+    <div id="DateErrMsg" class="text-danger mt-1" style="font-size: 0.72rem;"></div>
 </div>
-<div class="clearfix">&nbsp;</div>
-<div id="ErrMsg" style="display:none;">
-    <input type="hidden" id="ErrMsgHiddenField" name="ErrMsg" value="@TempData["ErrMsg"]" />
+
+<!-- Row 1: Executive KPI Stat Cards -->
+<div class="mb-2" id="countdtls">
+    <!-- Count details loaded via AJAX -->
 </div>
+
+
+<!-- Row 2: GST Details (Annual Summary & Monthly Summary) -->
+<div class="row g-3 mb-2">
+
+
+    <!-- GST Details - Annual Summary -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-3 h-100" style="background: var(--erp-bg-card, #ffffff); border: 1px solid var(--erp-border, rgba(0,0,0,0.08));">
+            <div class="card-header bg-transparent border-0 pt-3 pb-0 px-3 d-flex align-items-center justify-content-between">
+                <h6 class="fw-bold mb-0 dark-white-text" style="font-size: 0.92rem;">
+                    <i class="fa-solid fa-chart-pie me-2 text-primary"></i>GST Details - Annual Summary <span class="gst-annual-fy-title">(FY 2025-26)</span>
+                </h6>
+            </div>
+            <div class="card-body p-3" id="gstannualcontainer">
+                <!-- Loaded via _pvGSTAnnualSummary -->
+            </div>
+        </div>
+    </div>
+
+    <!-- GST Details - Monthly Summary -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-3 h-100" style="background: var(--erp-bg-card, #ffffff); border: 1px solid var(--erp-border, rgba(0,0,0,0.08));">
+            <div class="card-header bg-transparent border-0 pt-3 pb-0 px-3 d-flex align-items-center justify-content-between position-relative" style="z-index: 20;">
+                <h6 class="fw-bold mb-0 dark-white-text" style="font-size: 0.92rem;">
+                    <i class="fa-solid fa-calendar-days me-2 text-success"></i>GST Details - Monthly Summary <span class="gst-annual-fy-title">(FY 2025-26)</span>
+                </h6>
+
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-light border dropdown-toggle py-0 px-2 fw-semibold" style="font-size: 0.72rem;" type="button" data-bs-toggle="dropdown">
+                        View: Monthly
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="font-size: 0.78rem; z-index: 1050;">
+                        <li><a class="dropdown-item active" href="javascript:void(0)">Monthly</a></li>
+                        <li><a class="dropdown-item" href="javascript:void(0)">Quarterly</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body p-3" id="gstmonthlycontainer">
+                <!-- Loaded via _pvGSTMonthlySummary -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Row 3: Project Summary (Top 5 Projects) -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-3" style="background: var(--erp-bg-card, #ffffff); border: 1px solid var(--erp-border, rgba(0,0,0,0.08));">
+            <div class="card-header bg-transparent border-0 pt-3 pb-0 px-3 d-flex align-items-center justify-content-between">
+                <h6 class="fw-bold mb-0 text-dark dark-white-text" style="font-size: 0.92rem;">
+                    <i class="fa-solid fa-folder-open me-2 text-warning"></i>Project Summary (Top 5 Projects)
+                </h6>
+                <a href="/projects/ProjectOverView" class="text-primary fw-bold text-decoration-none" style="font-size: 0.78rem;">
+                    View All Projects <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+            <div class="card-body p-3" id="topprojectscontainer">
+                <!-- Loaded via _pvTopProjectsSummary -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Row 4: Financial Charts & Cash Flow Grid -->
+<div class="row g-3 mb-4">
+    <!-- Income vs Expenses Chart -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-3 h-100" style="background: var(--erp-bg-card, #ffffff); border: 1px solid var(--erp-border, rgba(0,0,0,0.08));">
+            <div class="card-header bg-transparent border-0 pt-3 pb-0 px-3 d-flex align-items-center justify-content-between">
+                <h6 class="fw-bold mb-0 text-dark dark-white-text" style="font-size: 0.88rem;">
+                    <i class="fa-solid fa-chart-column me-2 text-primary"></i>Income vs Expenses (This FY)
+                </h6>
+            </div>
+            <div class="card-body p-2 text-center">
+                <div id="incomeexpensegraph" style="min-height: 280px;"></div>
+                <div class="d-flex justify-content-center gap-3 mt-1" style="font-size: 0.72rem; font-weight: 600;">
+                    <span class="text-primary"><i class="fa-solid fa-square me-1"></i>Income (&#8377;)</span>
+                    <span class="text-success"><i class="fa-solid fa-square me-1"></i>Expense (&#8377;)</span>
+                    <span class="text-warning"><i class="fa-solid fa-square me-1"></i>Profit (&#8377;)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cash Flow Overview -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-3 h-100" style="background: var(--erp-bg-card, #ffffff); border: 1px solid var(--erp-border, rgba(0,0,0,0.08));">
+            <div class="card-header bg-transparent border-0 pt-3 pb-0 px-3">
+                <h6 class="fw-bold mb-0 text-dark dark-white-text" style="font-size: 0.88rem;">
+                    <i class="fa-solid fa-wallet me-2 text-success"></i>Cash Flow Overview (This FY)
+                </h6>
+            </div>
+            <div class="card-body p-3 d-flex flex-column justify-content-between">
+                <div class="row g-2">
+                    <!-- Cash Inflow -->
+                    <div class="col-6">
+                        <div class="p-3 rounded-3 border bg-success-subtle bg-opacity-10 border-success-subtle">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="badge bg-success rounded-circle p-1 text-white"><i class="fa-solid fa-arrow-down" style="font-size: 10px;"></i></span>
+                                <span class="text-muted fw-semibold" style="font-size: 0.7rem;">Cash Inflow</span>
+                            </div>
+                            <div class="fw-extrabold text-success" style="font-size: 1.05rem;">&#8377; 3,10,25,000</div>
+                        </div>
+                    </div>
+                    <!-- Cash Outflow -->
+                    <div class="col-6">
+                        <div class="p-3 rounded-3 border bg-danger-subtle bg-opacity-10 border-danger-subtle">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="badge bg-danger rounded-circle p-1 text-white"><i class="fa-solid fa-arrow-up" style="font-size: 10px;"></i></span>
+                                <span class="text-muted fw-semibold" style="font-size: 0.7rem;">Cash Outflow</span>
+                            </div>
+                            <div class="fw-extrabold text-danger" style="font-size: 1.05rem;">&#8377; 2,45,60,000</div>
+                        </div>
+                    </div>
+                    <!-- Net Cash Flow -->
+                    <div class="col-6 mt-2">
+                        <div class="p-3 rounded-3 border bg-primary-subtle bg-opacity-10 border-primary-subtle">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="badge bg-primary rounded-circle p-1 text-white"><i class="fa-solid fa-chart-line" style="font-size: 10px;"></i></span>
+                                <span class="text-muted fw-semibold" style="font-size: 0.7rem;">Net Cash Flow</span>
+                            </div>
+                            <div class="fw-extrabold text-primary" style="font-size: 1.05rem;">&#8377; 64,65,000</div>
+                        </div>
+                    </div>
+                    <!-- Closing Balance -->
+                    <div class="col-6 mt-2">
+                        <div class="p-3 rounded-3 border bg-purple-subtle bg-opacity-10 border-purple-subtle" style="background: rgba(168, 85, 247, 0.08); border-color: rgba(168, 85, 247, 0.2);">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="badge rounded-circle p-1 text-white" style="background: #a855f7;"><i class="fa-solid fa-vault" style="font-size: 10px;"></i></span>
+                                <span class="text-muted fw-semibold" style="font-size: 0.7rem;">Closing Balance</span>
+                            </div>
+                            <div class="fw-extrabold" style="color: #a855f7; font-size: 1.05rem;">&#8377; 81,20,450</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receivables & Payables Aging -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-3 h-100" style="background: var(--erp-bg-card, #ffffff); border: 1px solid var(--erp-border, rgba(0,0,0,0.08));">
+            <div class="card-header bg-transparent border-0 pt-3 pb-0 px-3">
+                <h6 class="fw-bold mb-0 text-dark dark-white-text" style="font-size: 0.88rem;">
+                    <i class="fa-solid fa-scale-balanced me-2 text-info"></i>Receivables & Payables
+                </h6>
+            </div>
+            <div class="card-body p-3">
+                <div class="row g-2 align-items-center">
+                    <!-- Receivables Donut & Aging -->
+                    <div class="col-6 border-end">
+                        <div class="text-center mb-1">
+                            <span class="fw-bold text-dark dark-white-text" style="font-size: 0.74rem;">Receivables</span>
+                            <div class="text-muted" style="font-size: 0.68rem;">(&#8377; 2,78,90,320)</div>
+                        </div>
+                        <div id="receivablesDonutChart" style="min-height: 120px;"></div>
+                        <div class="mt-1" style="font-size: 0.68rem;">
+                            <div class="d-flex justify-content-between text-muted mb-1"><span>0 - 30 Days</span> <span class="fw-bold text-dark dark-white-text">&#8377; 1,25,40,000 (45%)</span></div>
+                            <div class="d-flex justify-content-between text-muted mb-1"><span>31 - 60 Days</span> <span class="fw-bold text-dark dark-white-text">&#8377; 85,30,000 (31%)</span></div>
+                            <div class="d-flex justify-content-between text-muted mb-1"><span>61 - 90 Days</span> <span class="fw-bold text-dark dark-white-text">&#8377; 38,20,000 (14%)</span></div>
+                            <div class="d-flex justify-content-between text-muted"><span>> 90 Days</span> <span class="fw-bold text-danger">&#8377; 30,00,320 (10%)</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Payables Donut & Aging -->
+                    <div class="col-6">
+                        <div class="text-center mb-1">
+                            <span class="fw-bold text-dark dark-white-text" style="font-size: 0.74rem;">Payables</span>
+                            <div class="text-muted" style="font-size: 0.68rem;">(&#8377; 1,25,78,450)</div>
+                        </div>
+                        <div id="payablesDonutChart" style="min-height: 120px;"></div>
+                        <div class="mt-1" style="font-size: 0.68rem;">
+                            <div class="d-flex justify-content-between text-muted mb-1"><span>0 - 30 Days</span> <span class="fw-bold text-dark dark-white-text">&#8377; 62,10,000 (49%)</span></div>
+                            <div class="d-flex justify-content-between text-muted mb-1"><span>31 - 60 Days</span> <span class="fw-bold text-dark dark-white-text">&#8377; 35,45,000 (28%)</span></div>
+                            <div class="d-flex justify-content-between text-muted mb-1"><span>61 - 90 Days</span> <span class="fw-bold text-dark dark-white-text">&#8377; 18,15,000 (14%)</span></div>
+                            <div class="d-flex justify-content-between text-muted"><span>> 90 Days</span> <span class="fw-bold text-danger">&#8377; 10,08,450 (9%)</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Row 5: Quick Actions & Alerts & Notifications -->
+<div class="row g-3">
+    <!-- Quick Actions -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-3 h-100" style="background: var(--erp-bg-card, #ffffff); border: 1px solid var(--erp-border, rgba(0,0,0,0.08));">
+            <div class="card-header bg-transparent border-0 pt-3 pb-0 px-3">
+                <h6 class="fw-bold mb-0 text-dark dark-white-text" style="font-size: 0.88rem;">
+                    <i class="fa-solid fa-bolt me-2 text-warning"></i>Quick Actions
+                </h6>
+            </div>
+            <div class="card-body p-3">
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="/invoice/saleinvoicelist" class="btn btn-outline-primary btn-sm rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-2" style="font-size: 0.75rem;">
+                        <i class="fa-solid fa-plus-circle text-primary"></i> Create Invoice
+                    </a>
+                    <a href="/invoice/purchaseinvoicelist" class="btn btn-outline-success btn-sm rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-2" style="font-size: 0.75rem;">
+                        <i class="fa-solid fa-cart-plus text-success"></i> Create PO
+                    </a>
+                    <a href="/Configuration/VendorList" class="btn btn-outline-purple btn-sm rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-2" style="font-size: 0.75rem; color: #8b5cf6; border-color: #8b5cf6;">
+                        <i class="fa-solid fa-user-plus" style="color: #8b5cf6;"></i> Add Client
+                    </a>
+                    <a href="/Configuration/VendorList" class="btn btn-outline-warning btn-sm rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-2" style="font-size: 0.75rem;">
+                        <i class="fa-solid fa-store text-warning"></i> Add Vendor
+                    </a>
+                    <a href="javascript:void(0)" class="btn btn-outline-info btn-sm rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-2" style="font-size: 0.75rem;">
+                        <i class="fa-solid fa-file-contract text-info"></i> GST Returns
+                    </a>
+                    <a href="javascript:void(0)" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-2" style="font-size: 0.75rem;">
+                        <i class="fa-solid fa-code-compare text-danger"></i> GSTR Reconciliation
+                    </a>
+                    <a href="/projects/ProjectOverView" class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-2" style="font-size: 0.75rem;">
+                        <i class="fa-solid fa-list-check"></i> Project List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alerts & Notifications -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-3 h-100" style="background: var(--erp-bg-card, #ffffff); border: 1px solid var(--erp-border, rgba(0,0,0,0.08));">
+            <div class="card-header bg-transparent border-0 pt-3 pb-0 px-3 d-flex align-items-center justify-content-between">
+                <h6 class="fw-bold mb-0 text-dark dark-white-text" style="font-size: 0.88rem;">
+                    <i class="fa-solid fa-bell me-2 text-danger"></i>Alerts & Notifications
+                </h6>
+                <a href="javascript:void(0)" class="text-primary fw-bold text-decoration-none" style="font-size: 0.76rem;">
+                    View All Alerts <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+            <div class="card-body p-3">
+                <div class="d-flex flex-column gap-2">
+                    <div class="p-2 rounded-3 border bg-danger-subtle bg-opacity-10 border-danger-subtle d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="d-flex align-items-center gap-2" style="font-size: 0.76rem;">
+                            <span class="badge bg-danger rounded-circle p-1 text-white"><i class="fa-solid fa-triangle-exclamation" style="font-size: 10px;"></i></span>
+                            <span>You have <strong>6 months (May 2025 - Oct 2025)</strong> GST pending for payment/reconciliation.</span>
+                        </div>
+                        <a href="javascript:void(0)" class="btn btn-xs btn-outline-danger rounded-pill px-2 py-0 fw-semibold" style="font-size: 0.7rem;">View Details</a>
+                    </div>
+                    <div class="p-2 rounded-3 border bg-warning-subtle bg-opacity-10 border-warning-subtle d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="d-flex align-items-center gap-2" style="font-size: 0.76rem;">
+                            <span class="badge bg-warning rounded-circle p-1 text-white"><i class="fa-solid fa-exclamation" style="font-size: 10px;"></i></span>
+                            <span><strong>2 Projects</strong> are over 80% of budget.</span>
+                        </div>
+                        <a href="javascript:void(0)" class="btn btn-xs btn-outline-warning rounded-pill px-2 py-0 fw-semibold" style="font-size: 0.7rem;">View Projects</a>
+                    </div>
+                    <div class="p-2 rounded-3 border bg-info-subtle bg-opacity-10 border-info-subtle d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="d-flex align-items-center gap-2" style="font-size: 0.76rem;">
+                            <span class="badge bg-info rounded-circle p-1 text-white"><i class="fa-solid fa-info" style="font-size: 10px;"></i></span>
+                            <span><strong>3 Invoices</strong> are overdue for payment.</span>
+                        </div>
+                        <a href="javascript:void(0)" class="btn btn-xs btn-outline-info rounded-pill px-2 py-0 fw-semibold" style="font-size: 0.7rem;">View Invoices</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts{
-    @*<script src="~/Content/assets/plugins/c3-chart/d3.v5.min.js"></script>*@
-    @*<script src="~/Content/assets/plugins/c3-chart/c3.min.js"></script>*@
     <script src="~/Content/datetimepicker/jquery.datetimepicker.full.min.js"></script>
     <script src="~/Content/assets/plugins/apexchart/apexcharts.js"></script>
     <script src="~/Content/assets/plugins/apexchart/DashboardChart.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function () {
-            $('.dashboarddate').datetimepicker({
-                theme: 'light',
-                format: 'd M Y',
-                timepicker: false,
-                scrollInput: false,
-                maxDate: 0
+            // Datetimepicker init
+            if ($.fn.datetimepicker) {
+                $('.dashboarddate').datetimepicker({
+                    theme: 'light',
+                    format: 'd M Y',
+                    timepicker: false,
+                    scrollInput: false,
+                    maxDate: 0
+                });
+            }
+
+            // Load dashboard sections
+            function loadDashboardData() {
+                var sdate = $('#startdate').val();
+                var edate = $('#enddate').val();
+
+                // 1. Executive KPIs
+                $.ajax({
+                    type: 'GET',
+                    url: '/Home/GetCountDetails',
+                    data: { SDate: sdate, EDate: edate },
+                    success: function (data) {
+                        $('#countdtls').html(data);
+                    }
+                });
+
+                // 2. GST Annual Summary
+                $.ajax({
+                    type: 'GET',
+                    url: '/Home/GetGSTAnnualSummary',
+                    data: { SDate: sdate, EDate: edate },
+                    success: function (data) {
+                        $('#gstannualcontainer').html(data);
+                        renderGSTAnnualDonut();
+                    }
+                });
+
+                // 3. GST Monthly Summary
+                $.ajax({
+                    type: 'GET',
+                    url: '/Home/GetGSTMonthlySummary',
+                    data: { SDate: sdate, EDate: edate },
+                    success: function (data) {
+                        $('#gstmonthlycontainer').html(data);
+                    }
+                });
+
+                // 4. Top Projects Summary
+                $.ajax({
+                    type: 'GET',
+                    url: '/Home/GetTopProjectsSummary',
+                    data: { SDate: sdate, EDate: edate },
+                    success: function (data) {
+                        $('#topprojectscontainer').html(data);
+                    }
+                });
+
+                // 5. Income vs Expenses Chart
+                renderIncomeVsExpensesChart(sdate, edate);
+
+                // 6. Aging Donut Charts
+                renderAgingCharts(sdate, edate);
+            }
+
+
+            // Financial Year Dropdown Option Handler
+            $(document).on('click', '.fy-option', function () {
+                $('.fy-option').removeClass('active');
+                $(this).addClass('active');
+
+                var fyLabel = $(this).text();
+                var sDate = $(this).data('start');
+                var eDate = $(this).data('end');
+
+                $('#selectedFY').text(fyLabel);
+                if (sDate && eDate) {
+                    $('#startdate').val(sDate);
+                    $('#enddate').val(eDate);
+                }
+
+                // Update section titles with chosen FY
+                $('.gst-annual-fy-title').text(fyLabel);
+
+                loadDashboardData();
             });
-            // LoadCount Details
-            var loadcountdetails = function (sdate, edate) {
-                if (typeof sdate !== 'string') {
-                    sdate = $('#startdate').val();
-                    edate = $('#enddate').val();
-                }
-                if (sdate != "" && edate != "") {
-                    $('#countdtls').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif" /><h2>Please wait....</h2></div>');
-                    $.ajax({
-                        type: 'GET',
-                        url: '/Home/GetCountDetails',
-                        data: { SDate: sdate, EDate: edate },
-                        success: function (data) {
-                            $('#countdtls').empty().append(data);
-                        },
-                        error: function () {
-                            $('#countdtls').empty().append('<div class="panel-body"><img src="/Content/Images/img-warning.png" height="50" width="50"/><b>Could not load data. Please click here to reload...</b><button id="btncountdetails"> <i class="fa fa-refresh"></i> Reload</button></div>');
-                        }
-                    });
-                }
-            }
-            $(document).on('click', "#btncountdetails", function () { daterange(); });
 
-            var daterange = function () {
-                if ($('#startdate').val() != "" && $('#enddate').val() != "") {
-                    var d1 = Date.parse($('#startdate').val());
-                    var d2 = Date.parse($('#enddate').val());
-                    if (isNaN(d1) || isNaN(d2) || d1 <= d2) {
-                        var FromDate = $('#startdate').val();
-                        var ToDate = $('#enddate').val();
-                        $('#PayableText').text(FromDate + " - " + ToDate);
-                        $('#InputText').text(FromDate + " - " + ToDate);
-                        $('#DirectText').text(FromDate + " - " + ToDate);
-                        $('#ProjwiseText').text(FromDate + " - " + ToDate);
-                        loadcountdetails(FromDate, ToDate)
-                        GstPayableChart(FromDate, ToDate);
-                        GstInputChart(FromDate, ToDate);
-                        DirectPaymentChart(FromDate, ToDate);
-                        ProjwiseDetails(FromDate,ToDate);
-                    }
-                    else {
-                        $('#DateErrMsg').text('End date must be greater then start date. Please check and tyr again..');
-                        $('#countdtls').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
-                        $('#directpayment').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
-                        $('#gstinput').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
-                        $('#gstpayable').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
-                        $('#directpayment').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
-                        $('#projectwise').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
-                    }
-                }
-                else {
-                    $('#DateErrMsg').text('Please select both a Start & End Date, then click the Submit button..');
-                    $('#countdtls').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
-                    $('#directpayment').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
-                    $('#gstinput').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
-                    $('#gstpayable').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
-                    $('#directpayment').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
-                    $('#projectwise').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif"/><h2>Please wait....</h2></div>');
-                }
-            }
-            daterange();
-            $(document).on('click', "#btnsubmit", daterange);
-            //// Load GST Input Details
-            //var loadgstinput = function (sdate, edate) {
-            //    if (sdate != "" && edate != "") {
-            //        $('#gstinput').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif" /><h2>Please wait....</h2></div>');
-            //        $.ajax({
-            //            type: 'GET',
-            //            url: '/Home/GetGSTInputDetails',
-            //            data: { SDate: sdate, EDate: edate },
-            //            success: function (data) {
-            //                $('#gstinput').empty().append(data);
-            //            },
-            //            error: function () {
-            //                $('#gstinput').empty().append('<div class="panel-body"><img src="/Content/Images/img-warning.png" height="50" width="50"/><b>Could not load data. Please click here to reload...</b><button id="btngstinput"> <i class="fa fa-refresh"></i> Reload</button></div>');
-            //            }
-            //        });
-            //    }
-            //}
-            //$(document).on('click', "#btngstinput", loadgstinput);
-            //// Load GST Payable Details
-            //var loadgstpayable = function (sdate, edate) {
-            //    if (sdate != "" && edate != "") {
-            //        $('#gstpayable').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif" /><h2>Please wait....</h2></div>');
-            //        $.ajax({
-            //            type: 'GET',
-            //            url: '/Home/GetGSTPayableDetails',
-            //            data: { SDate: sdate, EDate: edate },
-            //            success: function (data) {
-            //                $('#gstpayable').empty().append(data);
-            //            },
-            //            error: function () {
-            //                $('#gstpayable').empty().append('<div class="panel-body"><img src="/Content/Images/img-warning.png" height="50" width="50"/><b>Could not load data. Please click here to reload...</b><button id="btngstpayable"> <i class="fa fa-refresh"></i> Reload</button></div>');
-            //            }
-            //        });
-            //    }
-            //}
-            //$(document).on('click', "#btngstpayable", loadgstpayable);
-            //// Load Direct Payment Details
-            //var loaddirectpayment = function (sdate, edate) {
-            //    if (sdate != "" && edate != "") {
-            //        $('#directpayment').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif" /><h2>Please wait....</h2></div>');
-            //        $.ajax({
-            //            type: 'GET',
-            //            url: '/Home/GetDirectPaymentDetails',
-            //            data: { SDate: sdate, EDate: edate },
-            //            success: function (data) {
-            //                $('#directpayment').empty().append(data);
-            //            },
-            //            error: function () {
-            //                $('#directpayment').empty().append('<div class="panel-body"><img src="/Content/Images/img-warning.png" height="50" width="50"/><b>Could not load data. Please click here to reload...</b><button id="btndirectpayment"> <i class="fa fa-refresh"></i> Reload</button></div>');
-            //            }
-            //        });
-            //    }
-            //}
-            //$(document).on('click', "#btndirectpayment", loaddirectpayment);
+            $('#btnsubmit').on('click', function () {
+                loadDashboardData();
+            });
 
+            $('#btnclear').on('click', function () {
+                $('.fy-option').removeClass('active');
+                $('.fy-option[data-fy="2025-26"]').addClass('active');
+                $('#selectedFY').text('FY 2025-26');
+                $('#startdate').val('01 Apr 2025');
+                $('#enddate').val('31 Mar 2026');
+                loadDashboardData();
+            });
 
+            loadDashboardData();
         });
     </script>
 }
+
 
