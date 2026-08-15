@@ -40,9 +40,10 @@ function renderIncomeVsExpensesChart(sdate, edate) {
     var chartElem = document.getElementById('incomeexpensegraph');
     if (!chartElem) return;
 
+    var targetUrl = typeof resolveUrl === 'function' ? resolveUrl('/Home/GetIncomeVsExpensesData') : '/Home/GetIncomeVsExpensesData';
     $.ajax({
         type: 'GET',
-        url: '/Home/GetIncomeVsExpensesData',
+        url: targetUrl,
         data: { SDate: sdate, EDate: edate },
         success: function (res) {
             if (!res) return;
@@ -103,9 +104,10 @@ function renderAgingCharts(sdate, edate) {
     var recElem = document.getElementById('receivablesDonutChart');
     var payElem = document.getElementById('payablesDonutChart');
 
+    var targetUrl = typeof resolveUrl === 'function' ? resolveUrl('/Home/GetReceivablesPayablesAging') : '/Home/GetReceivablesPayablesAging';
     $.ajax({
         type: 'GET',
-        url: '/Home/GetReceivablesPayablesAging',
+        url: targetUrl,
         data: { SDate: sdate, EDate: edate },
         success: function (res) {
             if (!res) return;

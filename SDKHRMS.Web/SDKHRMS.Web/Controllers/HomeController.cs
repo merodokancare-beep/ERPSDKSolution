@@ -232,7 +232,7 @@ namespace SDKHRMS.Web.Controllers
                 model = DalDash.getGstProjwisePaymentDetails(SDate, EDate) ?? new List<ProjectDetailsChart>();
             }
             catch { }
-            return Json(model);
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetGSTAnnualSummary(DateTime? SDate, DateTime? EDate)
@@ -361,7 +361,7 @@ namespace SDKHRMS.Web.Controllers
                 expense = expense,
                 profit = profit
             };
-            return Json(data);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetReceivablesPayablesAging(DateTime? SDate, DateTime? EDate)
@@ -419,7 +419,7 @@ namespace SDKHRMS.Web.Controllers
                     Pay_90_Plus = 1008450, Pay_90_Plus_Per = 9
                 };
             }
-            return Json(model);
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
 
 

@@ -6,24 +6,37 @@
     <title>@ViewBag.Title - ERP Management System</title>
     <link rel="shortcut icon" type="image/x-icon" href="~/Content/Images/smalllogo.png">
 
+    <script type="text/javascript">
+        window.appBaseUrl = '@Url.Content("~")';
+        function resolveUrl(url) {
+            if (!url) return url;
+            if (url.indexOf('://') > -1 || url.indexOf('//') === 0) return url;
+            var baseUrl = window.appBaseUrl || '/';
+            if (!baseUrl.endsWith('/')) baseUrl += '/';
+            if (url.startsWith('/')) url = url.substring(1);
+            if (url.startsWith('~/')) url = url.substring(2);
+            return baseUrl + url;
+        }
+    </script>
+
     <!-- Theme Script js (Applied before DOM renders to prevent theme flash) -->
     <script src="~/Content/assets/js/theme-script.js"></script>
 
     <!-- Bootstrap 5 CSS -->
-    <link rel="stylesheet" href="/Content/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/Content/assets/css/bootstrap.min.css">
 
     <!-- Tabler Icon CSS & Iconsax CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@("@tabler")/icons-webfont@latest/tabler-icons.min.css">
     <link rel="stylesheet" href="~/Content/assets/css/iconsax.css">
 
     <!-- Fontawesome CSS -->
-    <link rel="stylesheet" href="/Content/assets/plugins/fontawesome/css/fontawesome.min.css">
-    <link rel="stylesheet" href="/Content/assets/plugins/fontawesome/css/all.min.css">
-    <link rel="stylesheet" href="/Content/assets/plugins/feather/feather.css">
+    <link rel="stylesheet" href="~/Content/assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="~/Content/assets/plugins/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="~/Content/assets/plugins/feather/feather.css">
 
     <!-- Datatables & Main CSS -->
-    <link rel="stylesheet" href="/Content/assets/plugins/datatables/datatables.min.css">
-    <link rel="stylesheet" href="/Content/assets/css/style.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/Content/assets/plugins/datatables/datatables.min.css">
+    <link rel="stylesheet" href="~/Content/assets/css/style.css" asp-append-version="true">
     <link rel="stylesheet" href="~/Content/custom-erp.css" asp-append-version="true">
     <link rel="stylesheet" href="~/Content/ns-pager-style.css" asp-append-version="true">
     <link href="~/Content/Plugins/Toastr/toastr.min.css" rel="stylesheet" />
@@ -244,13 +257,13 @@
     </div>
 
     <!-- Core JavaScript Files -->
-    <script src="/Content/assets/js/jquery-3.6.3.min.js"></script>
-    <script src="/Content/assets/js/bootstrap.bundle.min.js"></script>
-    <script src="/Content/assets/js/feather.min.js"></script>
-    <script src="/Content/assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-    <script src="/Content/assets/plugins/apexchart/apexcharts.min.js"></script>
-    <script src="/Content/assets/plugins/apexchart/chart-data.js"></script>
-    <script src="/Content/assets/js/script.js"></script>
+    <script src="~/Content/assets/js/jquery-3.6.3.min.js"></script>
+    <script src="~/Content/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Content/assets/js/feather.min.js"></script>
+    <script src="~/Content/assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="~/Content/assets/plugins/apexchart/apexcharts.min.js"></script>
+    <script src="~/Content/assets/plugins/apexchart/chart-data.js"></script>
+    <script src="~/Content/assets/js/script.js"></script>
     <script src="~/Scripts/CustomAjax.js"></script>
     <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

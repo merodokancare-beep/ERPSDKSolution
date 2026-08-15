@@ -389,7 +389,7 @@
                 // 1. Executive KPIs
                 $.ajax({
                     type: 'GET',
-                    url: '/Home/GetCountDetails',
+                    url: resolveUrl('/Home/GetCountDetails'),
                     data: { SDate: sdate, EDate: edate },
                     success: function (data) {
                         $('#countdtls').html(data);
@@ -399,7 +399,7 @@
                 // 2. GST Annual Summary
                 $.ajax({
                     type: 'GET',
-                    url: '/Home/GetGSTAnnualSummary',
+                    url: resolveUrl('/Home/GetGSTAnnualSummary'),
                     data: { SDate: sdate, EDate: edate },
                     success: function (data) {
                         $('#gstannualcontainer').html(data);
@@ -410,7 +410,7 @@
                 // 3. GST Monthly Summary
                 $.ajax({
                     type: 'GET',
-                    url: '/Home/GetGSTMonthlySummary',
+                    url: resolveUrl('/Home/GetGSTMonthlySummary'),
                     data: { SDate: sdate, EDate: edate },
                     success: function (data) {
                         $('#gstmonthlycontainer').html(data);
@@ -420,7 +420,7 @@
                 // 4. Top Projects Summary
                 $.ajax({
                     type: 'GET',
-                    url: '/Home/GetTopProjectsSummary',
+                    url: resolveUrl('/Home/GetTopProjectsSummary'),
                     data: { SDate: sdate, EDate: edate },
                     success: function (data) {
                         $('#topprojectscontainer').html(data);

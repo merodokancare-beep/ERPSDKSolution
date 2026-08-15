@@ -1,4 +1,4 @@
-﻿$(function () {
+$(function () {
     //**************** JS to show loading progress during ajax call *********************//
     $(document).ajaxStart(function () {
         $("#ajaxLoading").css("display", "block");
@@ -321,10 +321,12 @@ function OkMyModal() {
 
 //Notification Alert for layout
 var AlertNotification = function () {
-    $('#Notification').empty().append('<div class="panel-body text-center margin-top-15"><img src="/Content/Images/loading.gif" /><h2>Please wait....</h2></div>');
+    var loaderImg = typeof resolveUrl === 'function' ? resolveUrl('/Content/Images/loading.gif') : '/Content/Images/loading.gif';
+    var targetUrl = typeof resolveUrl === 'function' ? resolveUrl('/Home/GetNotificationAlert') : '/Home/GetNotificationAlert';
+    $('#Notification').empty().append('<div class="panel-body text-center margin-top-15"><img src="' + loaderImg + '" /><h2>Please wait....</h2></div>');
     $.ajax({
         type: 'GET',
-        url: '/Home/GetNotificationAlert',
+        url: targetUrl,
         success: function (data) {
             $('#Notification').empty().append(data);
         },
