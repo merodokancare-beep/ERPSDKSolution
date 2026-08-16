@@ -184,40 +184,115 @@
         <div class="sidebar" id="sidebar">
             <div class="sidebar-inner slimscroll" data-simplebar>
                 <div id="sidebar-menu" class="sidebar-menu">
-                    <ul>
-                        <li class="active">
-                            <a href="/home/newdashboard" class="active">
-                                <i class="fa-solid fa-house me-2"></i> <span>Dashboard</span>
-                            </a>
-                        </li>
+                    @if (!User.IsInRole("Employee"))
+                    {
+                        <ul>
+                            <li class="menu-title"><span>Main</span></li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fa-solid fa-chart-pie icon-badge icon-badge-primary me-2"></i> <span> Dashboard</span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="/home/newdashboard"><i class="fa-solid fa-gauge-high icon-badge icon-badge-primary me-2"></i> Admin Dashboard</a>
+                                    </li>
+                                </ul>
+                            </li>
 
-                        <li class="menu-title"><span>SALES</span></li>
-                        <li><a href="/invoice/saleinvoicelist"><i class="fa-solid fa-file-invoice-dollar me-2"></i> <span>Invoices</span></a></li>
-                        <li><a href="/Configuration/VendorList"><i class="fa-solid fa-users me-2"></i> <span>Clients</span></a></li>
-                        <li><a href="/paymentreceivable/index"><i class="fa-solid fa-hand-holding-dollar me-2"></i> <span>Payments Received</span></a></li>
-                        <li><a href="/Ledger/ExpensesLedger"><i class="fa-solid fa-chart-line me-2"></i> <span>Sales Reports</span></a></li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fa-solid fa-sliders icon-badge icon-badge-info me-2"></i> <span> Configuration</span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="/Configuration/UnitList"><i class="fa-solid fa-boxes-stacked icon-badge icon-badge-warning me-2"></i> Unit Master</a></li>
+                                    <li><a href="@Url.Action("HolidayList", "Configuration")"><i class="fa-solid fa-calendar-check icon-badge icon-badge-danger me-2"></i> Holiday Master</a></li>
+                                    <li><a href="@Url.Action("VendorList", "Configuration")"><i class="fa-solid fa-users-gear icon-badge icon-badge-success me-2"></i> Client/Vendor Master</a></li>
+                                    <li><a href="@Url.Action("ExpenseTypeList", "Configuration")"><i class="fa-solid fa-tags icon-badge icon-badge-primary me-2"></i> Expense Type Master</a></li>
+                                    <li><a href="@Url.Action("FinancialYearList", "Configuration")"><i class="fa-solid fa-calendar-days icon-badge icon-badge-info me-2"></i> Financial Year Master</a></li>
+                                    <li><a href="@Url.Action("MstReferenceNumberList", "Configuration")"><i class="fa-solid fa-barcode icon-badge icon-badge-purple me-2"></i> Reference Number Master</a></li>
+                                    <li><a href="@Url.Action("Index", "RoleCreator")"><i class="fa-solid fa-user-shield icon-badge icon-badge-indigo me-2"></i> Users &amp; Roles</a></li>
+                                </ul>
+                            </li>
 
-                        <li class="menu-title"><span>PURCHASE</span></li>
-                        <li><a href="/invoice/purchaseinvoicelist"><i class="fa-solid fa-cart-shopping me-2"></i> <span>Purchase Orders</span></a></li>
-                        <li><a href="/Configuration/VendorList"><i class="fa-solid fa-store me-2"></i> <span>Vendors</span></a></li>
-                        <li><a href="/popayment/index"><i class="fa-solid fa-money-bill-transfer me-2"></i> <span>Payments Made</span></a></li>
-                        <li><a href="/Ledger/VendorLedger"><i class="fa-solid fa-file-contract me-2"></i> <span>Purchase Reports</span></a></li>
+                            <li class="menu-title"><span>Projects Management</span></li>
+                            <li>
+                                <a href="/projects/ProjectOverView"><i class="fa-solid fa-diagram-project icon-badge icon-badge-warning me-2"></i> <span>Projects List</span></a>
+                            </li>
+                            <li>
+                                <a href="/Challan/DeliveryChallanList"><i class="fa-solid fa-truck-fast icon-badge icon-badge-success me-2"></i> <span>Delivery List</span></a>
+                            </li>
 
-                        <li class="menu-title"><span>FINANCE</span></li>
-                        <li><a href="/Ledger/BankLedger"><i class="fa-solid fa-building-columns me-2"></i> <span>Accounting</span></a></li>
-                        <li><a href="/PettyCash/PettyCashBook"><i class="fa-solid fa-vault me-2"></i> <span>Banking</span></a></li>
-                        <li><a href="/Configuration/FinancialYearList"><i class="fa-solid fa-receipt me-2"></i> <span>Taxes (GST)</span></a></li>
-                        <li><a href="/Ledger/ProjectLedger"><i class="fa-solid fa-chart-pie me-2"></i> <span>Reports</span></a></li>
+                            <li class="menu-title"><span>Payment Manager</span></li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fa-solid fa-hand-holding-dollar icon-badge icon-badge-success me-2"></i> <span>Payment Receive</span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="/paymentreceivable/index"><i class="fa-solid fa-money-bill-trend-up icon-badge icon-badge-success me-2"></i> Direct Payment Received</a></li>
+                                    <li><a href="/paymentreceivable/ProjPaymentReceiveList"><i class="fa-solid fa-sack-dollar icon-badge icon-badge-teal me-2"></i> Project's Payment Received</a></li>
+                                </ul>
+                            </li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fa-solid fa-money-bill-transfer icon-badge icon-badge-danger me-2"></i> <span>Payment Release</span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="/popayment/index"><i class="fa-solid fa-cart-flatbed icon-badge icon-badge-amber me-2"></i> Procurement's Payment</a></li>
+                                    <li><a href="/directpayment/index"><i class="fa-solid fa-money-bill-wave icon-badge icon-badge-danger me-2"></i> Direct Payment Released</a></li>
+                                </ul>
+                            </li>
 
-                        <li class="menu-title"><span>PROJECTS</span></li>
-                        <li><a href="/projects/ProjectOverView"><i class="fa-solid fa-diagram-project me-2"></i> <span>Projects</span></a></li>
-                        <li><a href="/Challan/DeliveryChallanList"><i class="fa-solid fa-truck-ramp-box me-2"></i> <span>Project Reports</span></a></li>
+                            <li class="menu-title"><span>Sales &amp; Purchase</span></li>
+                            <li>
+                                <a href="/invoice/saleinvoicelist"><i class="fa-solid fa-file-invoice-dollar icon-badge icon-badge-indigo me-2"></i> <span>Sale Invoices</span></a>
+                            </li>
+                            <li>
+                                <a href="/invoice/purchaseinvoicelist"><i class="fa-solid fa-cart-shopping icon-badge icon-badge-amber me-2"></i> <span>Purchase Order</span></a>
+                            </li>
 
-                        <li class="menu-title"><span>SETUP</span></li>
-                        <li><a href="/Configuration/UnitList"><i class="fa-solid fa-sliders me-2"></i> <span>Master Data</span></a></li>
-                        <li><a href="/RoleCreator/Index"><i class="fa-solid fa-user-gear me-2"></i> <span>Users &amp; Roles</span></a></li>
-                        <li><a href="/Configuration/MstReferenceNumberList"><i class="fa-solid fa-gear me-2"></i> <span>Settings</span></a></li>
-                    </ul>
+                            <li class="menu-title"><span>Reference &amp; Petty Cash</span></li>
+                            <li>
+                                <a href="/ReferenceNumber/ReferenceNumberList"><i class="fa-solid fa-stamp icon-badge icon-badge-purple me-2"></i> <span>Issue Reference No.</span></a>
+                            </li>
+                            <li>
+                                <a href="/PettyCash/PettyCashBook"><i class="fa-solid fa-vault icon-badge icon-badge-rose me-2"></i> <span>Petty Cash Book</span></a>
+                            </li>
+
+                            <li class="menu-title"><span>Reports &amp; Analysis</span></li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fa-solid fa-chart-column icon-badge icon-badge-cyan me-2"></i> <span>Ledger Reports</span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="/Ledger/BankLedger"><i class="fa-solid fa-building-columns icon-badge icon-badge-primary me-2"></i> Bank Ledger</a></li>
+                                    <li><a href="/Ledger/VendorLedger"><i class="fa-solid fa-user-tag icon-badge icon-badge-info me-2"></i> Vendor Ledger</a></li>
+                                    <li><a href="/Ledger/ProjectLedger"><i class="fa-solid fa-diagram-project icon-badge icon-badge-warning me-2"></i> Project Ledger</a></li>
+                                    <li><a href="/Ledger/ExpensesLedger"><i class="fa-solid fa-scale-balanced icon-badge icon-badge-danger me-2"></i> Expenses Head Ledger</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <ul>
+                            <li class="menu-title"><span>Main</span></li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fa-solid fa-chart-pie icon-badge icon-badge-primary me-2"></i> <span> Dashboard</span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="/home/dashboard"><i class="fa-solid fa-gauge-high icon-badge icon-badge-primary me-2"></i> Dashboard</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="menu-title"><span>Purchase</span></li>
+                            <li>
+                                <a href="/invoice/purchaseinvoicelist"><i class="fa-solid fa-cart-shopping icon-badge icon-badge-amber me-2"></i> <span>Purchase Order</span></a>
+                            </li>
+                        </ul>
+                    }
                 </div>
             </div>
         </div>
