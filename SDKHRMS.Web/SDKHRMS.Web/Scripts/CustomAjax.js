@@ -13,43 +13,48 @@ $(function () {
 
     //*************************  Highlight Active Menu  ***********************************//
     jQuery(function () {
-        var url = window.location.pathname,
-            urlRegExp = new RegExp(url.replace(/\/$/, '') + "$");
-        var IsActivated = false;
+        var currentUrl = (window.location.pathname || '').toLowerCase().replace(/\/$/, "");
+        if (!currentUrl || currentUrl === '/home' || currentUrl === '/home/index') {
+            currentUrl = '/home/newdashboard';
+        }
+        var isActivated = false;
 
-        $("#sidebar ul li").each(function () {
-            $(this).removeClass("active");
-            try {
-                if ($(this).children().attr("href").toLowerCase() == url.toLowerCase()) {
-                    $(this).addClass("active");
-                    $(this).children().addClass("active");
-                    $(this).closest('.nav-second-level').addClass("in");
-                    $(this).closest('.submenu').addClass("active");
-                    IsActivated = true;
-                    return false;
-                }
-            } catch (e) {
-
-            }
-        })
-        if (IsActivated == false) {
-            $("#sidebar ul li").each(function () {
-                $(this).removeClass("active");
-                try {
-
-                    if ($(this).children().attr("href").toLowerCase() == $("#ActiveURL").data("value").toLowerCase()) {
-                        $(this).addClass("active");
-                        $(this).children().addClass("active");
-                        $(this).closest('.submenu').addClass("active");
-                        $(this).closest('.nav-second-level').addClass("in");
-                        IsActivated = true;
-                        return false;
+        $("#sidebar-menu a").each(function () {
+            var $link = $(this);
+            var linkHref = ($link.attr("href") || '').toLowerCase().replace(/\/$/, "");
+            if (linkHref && linkHref !== '#' && linkHref !== 'javascript:void(0);') {
+                if (linkHref === currentUrl || (linkHref.length > 2 && currentUrl.indexOf(linkHref) === 0)) {
+                    $link.addClass("active");
+                    $link.closest('li').addClass("active");
+                    var $parentSubmenu = $link.closest('li.submenu');
+                    if ($parentSubmenu.length) {
+                        $parentSubmenu.addClass("active");
+                        $parentSubmenu.children('a:first').addClass("active subdrop");
+                        $parentSubmenu.children('ul:first').show();
                     }
-                } catch (e) {
-
+                    isActivated = true;
                 }
+            }
+        });
 
-            })
+        if (!isActivated && $("#ActiveURL").length > 0) {
+            var activeDataVal = ($("#ActiveURL").data("value") || '').toLowerCase().replace(/\/$/, "");
+            if (activeDataVal) {
+                $("#sidebar-menu a").each(function () {
+                    var $link = $(this);
+                    var linkHref = ($link.attr("href") || '').toLowerCase().replace(/\/$/, "");
+                    if (linkHref && linkHref === activeDataVal) {
+                        $link.addClass("active");
+                        $link.closest('li').addClass("active");
+                        var $parentSubmenu = $link.closest('li.submenu');
+                        if ($parentSubmenu.length) {
+                            $parentSubmenu.addClass("active");
+                            $parentSubmenu.children('a:first').addClass("active subdrop");
+                            $parentSubmenu.children('ul:first').show();
+                        }
+                    }
+                });
+            }
         }
     });
     //************************************************************************************//

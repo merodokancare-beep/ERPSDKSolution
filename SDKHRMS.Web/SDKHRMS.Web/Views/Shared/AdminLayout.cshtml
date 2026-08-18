@@ -45,20 +45,8 @@
     <div class="main-wrapper">
         <!-- Topbar Header Start -->
         <div class="header">
-            <!-- Left Brand Logo + Toggle — 240px column aligns with sidebar -->
-            <div class="header-left">
-                <a href="/home/newdashboard" class="logo d-flex align-items-center flex-grow-1">
-                    <img src="~/Content/Images/LOGOSDK1.png" alt="SDK Solutions Logo" class="img-fluid logo-normal" style="max-height: 38px;" asp-append-version="true">
-                    <img src="~/Content/Images/smalllogo.png" alt="SDK" class="img-fluid logo-small" style="max-height: 36px; display: none;" asp-append-version="true">
-                </a>
-                <!-- Sidebar Collapse Toggle -->
-                <a id="toggle_btn" href="javascript:void(0);" class="text-white ms-auto" style="line-height:1; flex-shrink:0;">
-                    <i class="fa-solid fa-bars fs-18"></i>
-                </a>
-            </div>
-
             <!-- Mobile menu toggle (small screens only) -->
-            <a id="mobile_btn" class="mobile_btn me-2 d-lg-none" href="#sidebar">
+            <a id="mobile_btn" class="mobile_btn d-lg-none" href="#sidebar">
                 <span class="bar-icon">
                     <span></span>
                     <span></span>
@@ -66,11 +54,23 @@
                 </span>
             </a>
 
+            <!-- Left Brand Logo + Toggle — 240px column aligns with sidebar -->
+            <div class="header-left">
+                <a href="/home/newdashboard" class="logo d-flex align-items-center flex-grow-1">
+                    <img src="~/Content/Images/LOGOSDK1.png" alt="SDK Solutions Logo" class="img-fluid logo-normal" style="max-height: 38px;" asp-append-version="true">
+                    <img src="~/Content/Images/smalllogo.png" alt="SDK" class="img-fluid logo-small" style="max-height: 36px; display: none;" asp-append-version="true">
+                </a>
+                <!-- Sidebar Collapse Toggle (Desktop only) -->
+                <a id="toggle_btn" href="javascript:void(0);" class="text-white ms-auto d-none d-lg-inline-flex align-items-center justify-content-center" style="line-height:1; flex-shrink:0;">
+                    <i class="fa-solid fa-bars fs-18"></i>
+                </a>
+            </div>
+
             <!-- Right Section: Quick Add, Search, Notifications, Theme Toggle & User Profile -->
-            <div class="d-flex align-items-center gap-3 ms-auto pe-3">
+            <div class="d-flex align-items-center gap-2 gap-sm-3 ms-auto pe-2 pe-sm-3 header-right-section">
                 <!-- Quick Add Dropdown -->
                 <div class="dropdown">
-                    <a class="btn btn-primary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%); border: none; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);" data-bs-toggle="dropdown" href="javascript:void(0);" role="button" title="Quick Add">
+                    <a class="btn btn-primary btn-sm rounded-circle d-flex align-items-center justify-content-center header-action-btn" style="background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%); border: none; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);" data-bs-toggle="dropdown" href="javascript:void(0);" role="button" title="Quick Add">
                         <i class="fa-solid fa-plus text-white fs-14"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end p-2 shadow-lg quick-add-menu" style="border-radius: 12px; font-size: 0.82rem;">
@@ -103,13 +103,13 @@
                 </div>
 
                 <!-- Search Input Pill -->
-                <div class="search-pill-wrapper d-none d-sm-block">
-                    <input type="text" class="form-control form-control-sm rounded-pill px-3 header-search-input" placeholder="Search..." style="width: 190px;">
+                <div class="search-pill-wrapper d-none d-md-block">
+                    <input type="text" class="form-control form-control-sm rounded-pill px-3 header-search-input" placeholder="Search..." style="width: 170px;">
                 </div>
 
                 <!-- Notifications Dropdown -->
                 <div class="dropdown">
-                    <a href="javascript:void(0);" class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center position-relative header-icon-btn" style="width: 36px; height: 36px; flex-shrink: 0;" data-bs-toggle="dropdown" title="Notifications">
+                    <a href="javascript:void(0);" class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center position-relative header-icon-btn header-action-btn" style="flex-shrink: 0;" data-bs-toggle="dropdown" title="Notifications">
                         <i class="fa-solid fa-bell fs-14"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem; padding: 2px 5px;">
                             5
@@ -133,17 +133,17 @@
                 </div>
 
                 <!-- Theme Switcher Button -->
-                <a id="theme_toggle_btn" href="javascript:void(0);" class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center theme-toggle-btn" style="width: 36px; height: 36px; line-height: 1; flex-shrink: 0;" title="Toggle Light/Dark Mode">
+                <a id="theme_toggle_btn" href="javascript:void(0);" class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center theme-toggle-btn header-action-btn" style="line-height: 1; flex-shrink: 0;" title="Toggle Light/Dark Mode">
                     <i id="theme_toggle_icon" class="fa-solid fa-sun fs-14" style="color: #FBBF24;"></i>
                 </a>
 
                 <!-- User Profile Dropdown -->
                 <div class="dropdown profile-dropdown">
-                    <a href="javascript:void(0);" class="dropdown-toggle d-flex align-items-center gap-2 text-decoration-none" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                        <span class="avatar online rounded-circle overflow-hidden" style="width: 38px; height: 38px; border: 2px solid #0284c7; display: inline-block;">
+                    <a href="javascript:void(0);" class="dropdown-toggle d-flex align-items-center gap-2 text-decoration-none border-0 p-0" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                        <span class="avatar online rounded-circle overflow-hidden header-user-avatar" style="border: 2px solid #0284c7; display: inline-block;">
                             <img src="~/Content/Images/user-admin.png" alt="User" class="img-fluid rounded-circle">
                         </span>
-                        <div class="d-none d-md-block text-start">
+                        <div class="d-none d-lg-block text-start">
                             <h6 class="fs-13 fw-bold mb-0 header-username" style="line-height: 1.2;">Admin User</h6>
                             <span class="badge" style="background: rgba(2, 132, 199, 0.22); color: #38bdf8; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 9999px;">
                                 Administrator
@@ -188,19 +188,14 @@
                     {
                         <ul>
                             <li class="menu-title"><span>Main</span></li>
-                            <li class="submenu">
-                                <a href="#">
-                                    <i class="fa-solid fa-chart-pie icon-badge icon-badge-primary me-2"></i> <span> Dashboard</span> <span class="menu-arrow"></span>
+                            <li>
+                                <a href="/home/newdashboard">
+                                    <i class="fa-solid fa-chart-pie icon-badge icon-badge-primary me-2"></i> <span>Dashboard</span>
                                 </a>
-                                <ul>
-                                    <li>
-                                        <a href="/home/newdashboard"><i class="fa-solid fa-gauge-high icon-badge icon-badge-primary me-2"></i> Admin Dashboard</a>
-                                    </li>
-                                </ul>
                             </li>
 
                             <li class="submenu">
-                                <a href="#">
+                                <a href="javascript:void(0);">
                                     <i class="fa-solid fa-sliders icon-badge icon-badge-info me-2"></i> <span> Configuration</span> <span class="menu-arrow"></span>
                                 </a>
                                 <ul>
@@ -224,7 +219,7 @@
 
                             <li class="menu-title"><span>Payment Manager</span></li>
                             <li class="submenu">
-                                <a href="#">
+                                <a href="javascript:void(0);">
                                     <i class="fa-solid fa-hand-holding-dollar icon-badge icon-badge-success me-2"></i> <span>Payment Receive</span> <span class="menu-arrow"></span>
                                 </a>
                                 <ul>
@@ -233,7 +228,7 @@
                                 </ul>
                             </li>
                             <li class="submenu">
-                                <a href="#">
+                                <a href="javascript:void(0);">
                                     <i class="fa-solid fa-money-bill-transfer icon-badge icon-badge-danger me-2"></i> <span>Payment Release</span> <span class="menu-arrow"></span>
                                 </a>
                                 <ul>
@@ -242,12 +237,17 @@
                                 </ul>
                             </li>
 
-                            <li class="menu-title"><span>Sales &amp; Purchase</span></li>
-                            <li>
-                                <a href="/invoice/saleinvoicelist"><i class="fa-solid fa-file-invoice-dollar icon-badge icon-badge-indigo me-2"></i> <span>Sale Invoices</span></a>
-                            </li>
-                            <li>
-                                <a href="/invoice/purchaseinvoicelist"><i class="fa-solid fa-cart-shopping icon-badge icon-badge-amber me-2"></i> <span>Purchase Order</span></a>
+                            <li class="menu-title"><span>Sales &amp; Invoicing</span></li>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="fa-solid fa-file-invoice-dollar icon-badge icon-badge-indigo me-2"></i> <span>Invoices</span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="/invoice/saleinvoicelist"><i class="fa-solid fa-list me-2 text-primary"></i> Invoices List</a></li>
+                                    <li><a href="/invoice/saleinvoice"><i class="fa-solid fa-file-circle-plus me-2 text-success"></i> Create Invoice</a></li>
+                                    <li><a href="/invoice/purchaseinvoicelist"><i class="fa-solid fa-cart-shopping me-2 text-amber" style="color: #f59e0b;"></i> Purchase Orders</a></li>
+                                    <li><a href="/invoice/purchaseinvoice"><i class="fa-solid fa-cart-plus me-2 text-warning"></i> Create Purchase Order</a></li>
+                                </ul>
                             </li>
 
                             <li class="menu-title"><span>Reference &amp; Petty Cash</span></li>
@@ -260,7 +260,7 @@
 
                             <li class="menu-title"><span>Reports &amp; Analysis</span></li>
                             <li class="submenu">
-                                <a href="#">
+                                <a href="javascript:void(0);">
                                     <i class="fa-solid fa-chart-column icon-badge icon-badge-cyan me-2"></i> <span>Ledger Reports</span> <span class="menu-arrow"></span>
                                 </a>
                                 <ul>
@@ -276,15 +276,10 @@
                     {
                         <ul>
                             <li class="menu-title"><span>Main</span></li>
-                            <li class="submenu">
-                                <a href="#">
-                                    <i class="fa-solid fa-chart-pie icon-badge icon-badge-primary me-2"></i> <span> Dashboard</span> <span class="menu-arrow"></span>
+                            <li>
+                                <a href="/home/dashboard">
+                                    <i class="fa-solid fa-chart-pie icon-badge icon-badge-primary me-2"></i> <span>Dashboard</span>
                                 </a>
-                                <ul>
-                                    <li>
-                                        <a href="/home/dashboard"><i class="fa-solid fa-gauge-high icon-badge icon-badge-primary me-2"></i> Dashboard</a>
-                                    </li>
-                                </ul>
                             </li>
 
                             <li class="menu-title"><span>Purchase</span></li>

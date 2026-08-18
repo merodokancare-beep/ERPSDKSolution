@@ -273,34 +273,42 @@ body.mini-sidebar.expand-menu .sidebar .sidebar-menu .menu-title {
     background: #0B0E17 !important;
   }
 
-  /* ── Content div: cleared BELOW the fixed 56px header ── */
+  /* ── Content div: cleared BELOW the fixed header ── */
   .page-wrapper > .content,
   .page-wrapper > .content.container-fluid {
-    padding-top: 70px !important;
+    padding-top: 64px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    padding-bottom: 20px !important;
   }
 
-  /* ── Header: full-width fixed bar ── */
+  /* ── Header: full-width sleek fixed bar ── */
   .header, .header-one {
     height: 56px !important;
     min-height: 56px !important;
     max-height: 56px !important;
-    padding: 0 !important;
-    justify-content: flex-start !important;
+    padding: 0 10px 0 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
     background: rgba(13, 17, 28, 0.98) !important;
     border-bottom: 1px solid rgba(117, 57, 255, 0.25) !important;
     box-shadow: 0 2px 20px rgba(0,0,0,0.4) !important;
+    z-index: 1001 !important;
   }
 
-  /* ── Header-left: auto width, just logo ── */
+  /* ── Header-left: auto width, flush logo next to hamburger ── */
   .header .header-left, .header-left {
     width: auto !important;
     min-width: unset !important;
     max-width: unset !important;
-    padding: 0 10px 0 12px !important;
+    padding: 0 6px !important;
     border-right: none !important;
     flex-shrink: 0 !important;
     background: transparent !important;
-    order: 2;
+    display: flex !important;
+    align-items: center !important;
+    margin: 0 !important;
   }
 
   /* ── Hide desktop-only toggle on mobile ── */
@@ -311,12 +319,13 @@ body.mini-sidebar.expand-menu .sidebar .sidebar-menu .menu-title {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 44px !important;
-    height: 56px !important;
+    width: 38px !important;
+    height: 38px !important;
     flex-shrink: 0 !important;
-    order: 1 !important;
     margin: 0 !important;
-    padding: 0 12px !important;
+    padding: 0 !important;
+    border-radius: 8px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
   }
 
   /* ── Hide search input on mobile; show icon only ── */
@@ -324,31 +333,32 @@ body.mini-sidebar.expand-menu .sidebar .sidebar-menu .menu-title {
   .top-nav-search,
   #header-search { display: none !important; }
 
-  /* ── Middle section (breadcrumb + quick add) ── */
-  .d-flex.align-items-center.gap-3.me-auto {
-    flex: 1 !important;
-    justify-content: flex-end !important;
-    padding: 0 8px !important;
-    order: 3;
-    gap: 8px !important;
+  /* ── Right user section compact & aligned ── */
+  .header-right-section {
+    gap: 6px !important;
+    padding-right: 0 !important;
+    margin-left: auto !important;
   }
 
-  /* ── Hide breadcrumb on mobile ── */
-  nav[aria-label="breadcrumb"] { display: none !important; }
-
-  /* ── Right user section compact ── */
-  .d-flex.align-items-center.gap-3.ms-auto {
-    order: 4;
-    padding: 0 10px 0 0 !important;
-    gap: 8px !important;
+  .header-action-btn {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 13px !important;
+    flex-shrink: 0 !important;
   }
 
-  /* ── Hide username text on mobile, show only avatar ── */
-  .d-flex.align-items-center.gap-3.ms-auto .d-none.d-md-block { display: none !important; }
+  .header-user-avatar {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .profile-dropdown .dropdown-toggle::after {
+    display: none !important;
+  }
 
   /* ── Logo image sizing ── */
   .header-left .logo img.logo-normal {
-    max-height: 30px !important;
+    max-height: 28px !important;
   }
 
   /* ── Sidebar: premium slide-in panel ── */
@@ -433,18 +443,8 @@ body.mini-sidebar.expand-menu .sidebar .sidebar-menu .menu-title {
 
   /* ── General card polish for mobile ── */
   .card {
-    border-radius: 16px !important;
+    border-radius: 14px !important;
     border: 1px solid rgba(255,255,255,0.07) !important;
-  }
-
-  /* ── Page title section ── */
-  .page-header, .content-page-header {
-    padding: 16px !important;
-    margin-bottom: 0 !important;
-  }
-
-  .page-header h3, .page-header .page-title {
-    font-size: 1.25rem !important;
   }
 
   /* ── Content container padding ── */
@@ -452,20 +452,112 @@ body.mini-sidebar.expand-menu .sidebar .sidebar-menu .menu-title {
   .content {
     padding: 12px !important;
   }
+}
 
-  /* ── Quick Add button sizing ── */
-  .btn.btn-primary.btn-sm.rounded-circle {
-    width: 38px !important;
-    height: 38px !important;
+/* ── Mobile Tablet & Phone (≤ 767.98px) ── */
+@media (max-width: 767.98px) {
+  /* Dashboard Top Action Buttons */
+  .dashboard-header .dashboard-top-actions {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    margin-top: 4px !important;
+  }
+  
+  .dashboard-header .dashboard-top-actions .dropdown,
+  .dashboard-header .dashboard-top-actions #btnDownloadReport {
+    flex: 1 1 0% !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  .dashboard-header .dashboard-top-actions .dropdown > button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .dashboard-header .dashboard-top-actions #btnDownloadReport {
+    justify-content: center !important;
+  }
+
+  /* Date Range Filter Section */
+  .dashboard-date-controls {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 6px !important;
+  }
+
+  .dashboard-filter-label {
+    margin-bottom: 0 !important;
+    font-size: 0.74rem !important;
+  }
+
+  .dashboard-date-inputs-wrapper {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+
+  .dashboard-date-pill {
+    flex: 1 1 0% !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+
+  .dashboard-date-pill input {
+    font-size: 0.72rem !important;
+    padding-left: 2px !important;
+    padding-right: 4px !important;
+    text-align: center !important;
+  }
+
+  .dashboard-btn-group {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+
+  .dashboard-btn-group #btnsubmit {
+    flex: 1 1 auto !important;
+  }
+
+  /* Executive Highlights Ribbon: sleek horizontal swipeable ribbon on mobile */
+  .dashboard-highlights-ribbon {
+    width: 100% !important;
+    display: flex !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    padding: 6px 0 2px !important;
+    margin-top: 4px !important;
+    gap: 8px !important;
+  }
+  
+  .dashboard-highlights-ribbon::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .dashboard-highlights-ribbon .highlight-chip {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+    font-size: 0.72rem !important;
+    padding: 5px 12px !important;
   }
 }
 
 /* ── Smaller phones (≤ 575.98px) ── */
 @media (max-width: 575.98px) {
-  /* Adjust content top padding for 52px header */
+  /* Adjust content top padding for 56px header */
   .page-wrapper > .content,
   .page-wrapper > .content.container-fluid {
-    padding-top: 66px !important;
+    padding-top: 64px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
   }
 
   /* All stat cards full-width on very small phones */
@@ -477,10 +569,20 @@ body.mini-sidebar.expand-menu .sidebar .sidebar-menu .menu-title {
     max-width: 100% !important;
   }
 
-  .header, .header-one {
-    height: 52px !important;
-    min-height: 52px !important;
-    max-height: 52px !important;
+  .stat-value-text {
+    font-size: 1.25rem !important;
+  }
+
+  .card-body {
+    padding: 12px !important;
+  }
+
+  .col-lg-4 .card-body .row.g-2 .col-6 .p-3 {
+    padding: 8px 6px !important;
+  }
+
+  .col-lg-4 .card-body .row.g-2 .col-6 .fw-extrabold {
+    font-size: 0.92rem !important;
   }
 }
 
@@ -2615,10 +2717,286 @@ body.light-mode .card-header {
   font-weight: 700 !important;
 }
 
-body:not(.light-mode) .bg-success-subtle { color: #34d399 !important; }
-body:not(.light-mode) .bg-warning-subtle { color: #fbbf24 !important; }
-body:not(.light-mode) .bg-danger-subtle { color: #f87171 !important; }
-body:not(.light-mode) .bg-info-subtle { color: #38bdf8 !important; }
+/* ==========================================================================
+   KANAKKU EXECUTIVE INVOICE DESIGN SYSTEM
+   ========================================================================== */
+.invoice-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.invoice-page-header .invoice-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--erp-text-main, #f8fafc);
+  font-weight: 700;
+  font-size: 1.25rem;
+  text-decoration: none;
+}
+
+.invoice-page-header .invoice-back-link:hover {
+  color: var(--erp-info, #38bdf8);
+}
+
+.invoice-section-card {
+  background: var(--erp-bg-card, #131825);
+  border: 1px solid var(--erp-border, rgba(255, 255, 255, 0.08));
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.invoice-section-card .card-header {
+  background: transparent;
+  border-bottom: 1px solid var(--erp-border, rgba(255, 255, 255, 0.08));
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.invoice-section-card .card-title {
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: var(--erp-text-main, #f8fafc);
+  margin-bottom: 0;
+}
+
+.invoice-section-card .card-body {
+  padding: 20px;
+}
+
+/* Bill From / Bill To Modern Cards */
+.invoice-bill-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--erp-border, rgba(255, 255, 255, 0.07));
+  border-radius: 12px;
+  padding: 16px;
+  height: 100%;
+}
+
+.invoice-bill-card .bill-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--erp-text-secondary, #cbd5e1);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Invoice Form Labels and Inputs */
+.invoice-form-label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--erp-text-secondary, #cbd5e1);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.invoice-form-label.required::after {
+  content: " *";
+  color: #ef4444;
+}
+
+.invoice-input-pill {
+  border-radius: 10px !important;
+  background: var(--erp-bg-input, #1a2030) !important;
+  border: 1px solid var(--erp-border, rgba(255, 255, 255, 0.12)) !important;
+  color: var(--erp-text-main, #f8fafc) !important;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: var(--erp-transition);
+}
+
+.invoice-input-pill:focus {
+  border-color: #0284c7 !important;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25) !important;
+}
+
+/* Items Table */
+.invoice-items-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.8rem;
+}
+
+.invoice-items-table thead th {
+  background: rgba(2, 132, 199, 0.08) !important;
+  color: #38bdf8 !important;
+  font-weight: 700;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 10px 8px !important;
+  border-bottom: 1px solid var(--erp-border, rgba(255, 255, 255, 0.1)) !important;
+}
+
+.invoice-items-table tbody td {
+  padding: 8px 6px !important;
+  border-bottom: 1px solid var(--erp-border, rgba(255, 255, 255, 0.05)) !important;
+  vertical-align: middle;
+}
+
+.invoice-items-table .form-control {
+  font-size: 0.78rem;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: var(--erp-bg-input, #1a2030) !important;
+  border: 1px solid var(--erp-border, rgba(255, 255, 255, 0.1)) !important;
+  color: var(--erp-text-main, #f8fafc) !important;
+}
+
+.invoice-items-table .form-control:focus {
+  border-color: #0284c7 !important;
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.25) !important;
+}
+
+.invoice-items-table .btn-delete-row {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.invoice-items-table .btn-delete-row:hover {
+  background: #ef4444;
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+/* Invoice Summary / Totals Breakdown */
+.invoice-summary-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--erp-border, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.invoice-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 0.8rem;
+  color: var(--erp-text-secondary, #cbd5e1);
+}
+
+.invoice-summary-row .form-control {
+  max-width: 150px;
+  text-align: right;
+  font-weight: 700;
+  background: transparent !important;
+  border: none !important;
+  color: var(--erp-text-main, #f8fafc) !important;
+  padding: 2px 0;
+  font-size: 0.85rem;
+}
+
+.invoice-payable-box {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.15) 0%, rgba(56, 189, 248, 0.1) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.invoice-payable-box .payable-label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #38bdf8;
+}
+
+.invoice-payable-box .payable-amount {
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: #ffffff;
+  background: transparent !important;
+  border: none !important;
+  text-align: right;
+  max-width: 160px;
+}
+
+@media (max-width: 767.98px) {
+  .invoice-page-header {
+    margin-bottom: 14px;
+  }
+  .invoice-section-card .card-body {
+    padding: 12px;
+  }
+  .invoice-payable-box {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    text-align: center;
+  }
+  .invoice-payable-box .payable-amount {
+    text-align: center;
+    max-width: 100%;
+  }
+}
+
+/* Dashboard Table Shared Alignment System */
+.dashboard-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+}
+
+.dashboard-table thead th {
+  padding: 8px 10px !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  color: var(--erp-text-muted, #94a3b8) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-bottom: 1px solid var(--erp-border, rgba(255, 255, 255, 0.08)) !important;
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+}
+
+body.light-mode .dashboard-table thead th {
+  background: #f1f5f9 !important;
+  color: #64748b !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.dashboard-table tbody td {
+  padding: 7px 10px !important;
+  vertical-align: middle !important;
+  border-bottom: 1px solid var(--erp-border, rgba(255, 255, 255, 0.05)) !important;
+  font-size: 0.76rem !important;
+}
+
+.dashboard-table tfoot td {
+  padding: 8px 10px !important;
+  vertical-align: middle !important;
+  border-top: 1.5px solid var(--erp-border, rgba(255, 255, 255, 0.12)) !important;
+  font-size: 0.78rem !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+body.light-mode .dashboard-table tfoot td {
+  background: #f8fafc !important;
+  border-top: 1.5px solid #cbd5e1 !important;
+}
 
 
 

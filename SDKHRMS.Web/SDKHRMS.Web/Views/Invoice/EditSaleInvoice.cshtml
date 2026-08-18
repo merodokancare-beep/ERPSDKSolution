@@ -1,6 +1,6 @@
-﻿@model SDKHRMS.Entities.ViewModels.InvoiceAddViewModel
+@model SDKHRMS.Entities.ViewModels.InvoiceAddViewModel
 @{
-    ViewBag.Title = "Edit Invoice";
+    ViewBag.Title = "Edit Sales Invoice";
     Layout = "~/Views/Shared/AdminLayout.cshtml";
     int i = 1; int j = 0;
 }
@@ -9,287 +9,354 @@
 <link href="~/Content/datetimepicker/jquery.datetimepicker.min.css" rel="stylesheet" />
 <link href="~/Content/Plugins/Select2/newselect2.css" rel="stylesheet" />
 
-<div class="page-header">
-    <div class="content-page-header">
-        <h5>Edit Sales Invoice Details</h5>
-        @*<h5>Project Details</h5>*@
+<!-- Kanakku Page Header & Breadcrumb -->
+<div class="invoice-page-header">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1" style="font-size: 0.76rem;">
+                <li class="breadcrumb-item"><a href="/home/newdashboard" class="text-muted"><i class="fa-solid fa-house me-1"></i>Home</a></li>
+                <li class="breadcrumb-item"><a href="/invoice/saleinvoicelist" class="text-muted">Invoices</a></li>
+                <li class="breadcrumb-item active text-primary fw-semibold" aria-current="page">Edit Sales Invoice</li>
+            </ol>
+        </nav>
+        <a href="/invoice/saleinvoicelist" class="invoice-back-link">
+            <i class="fa-solid fa-arrow-left fs-18"></i> <span>Edit Sales Invoice</span>
+        </a>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <a href="/invoice/saleinvoicelist" class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-1 fw-semibold">
+            <i class="fa-solid fa-arrow-left me-1"></i> Back to List
+        </a>
+        <button type="button" onclick="$('#save').click();" class="btn btn-primary btn-sm rounded-pill px-3 py-1 fw-semibold shadow-sm">
+            <i class="fa-solid fa-check me-1"></i> Update Invoice
+        </button>
     </div>
 </div>
 
 @using (Html.BeginForm())
 {
-    @*Client & Project Details Partial View*@
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(m => m.SaleInvoiceKeyModel.SaleInvoiceID)
+    @Html.HiddenFor(m => m.SaleInvoiceKeyModel.ReferenceNo)
+    @Html.HiddenFor(m => m.PageParameter.PageNo)
+    @Html.HiddenFor(m => m.PageParameter.PageSize)
+    @Html.HiddenFor(m => m.PageParameter.SearchTerm)
+    @Html.HiddenFor(@m => m.SaleInvoiceKeyModel.VenderID, new { id = "ClientID" })
 
-
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card">
-
-                <div class="card-body card-buttons">
-                    @Html.AntiForgeryToken()
-                    @Html.ValidationSummary(true)
-                    @Html.HiddenFor(m => m.SaleInvoiceKeyModel.SaleInvoiceID)
-                    @Html.HiddenFor(m => m.SaleInvoiceKeyModel.ReferenceNo)
-                    @Html.HiddenFor(m => m.PageParameter.PageNo)
-                    @Html.HiddenFor(m => m.PageParameter.PageSize)
-                    @Html.HiddenFor(m => m.PageParameter.SearchTerm)
-                    @Html.HiddenFor(@m => m.SaleInvoiceKeyModel.VenderID, new { id = "ClientID" })@*Vender/Client *@
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="form-group">
-                                <div class="hidden" id="DataGrid">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-8" style="margin-top:-20px!important">
-                            <div class="form-group row">
-                                @Html.LabelFor(m => m.SaleInvoiceKeyModel.ProjectID, new { @class = "control-label required" })
-                                @Html.DropDownListFor(m => m.SaleInvoiceKeyModel.ProjectID, new SelectList(@Model.ProjectDDList, "ProjectID", "ProjectName"), "--- Select Project---", new { @class = "form-control ddSelect2", @id = "proj", autocomplete = "false" })
-                                @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.ProjectID)
-                            </div>
-                        </div>
-                        <div class="col-xl-4" style="margin-top:-20px!important">
-                            <div class="form-group row">
-                                <label class="control-label">Reference No</label>
-                                @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.ReferenceNo, new { @class = "form-control", autocomplete = "off", @placeholder = "Reference", @id = "ref", @Disabled = "Disabled" })
-                                @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.ReferenceNo)
-                            </div>
-                        </div>
-                        <div class="col-xl-3">
-                            <div class="form-group row">
-                                @Html.LabelFor(m => m.SaleInvoiceKeyModel.InvoiceTo, new { @class = "control-label required" })
-                                @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.InvoiceTo, new { @class = "form-control", autocomplete = "off", @placeholder = "Invoice To", @id = "invto" })
-                                @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.InvoiceTo)
-                            </div>
-                        </div>
-                        <div class="col-xl-3">
-                            <div class="form-group row">
-                                @Html.LabelFor(m => m.SaleInvoiceKeyModel.InvoiceDate, new { @class = "control-label required" })
-                                @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.InvoiceDate, new { @class = "form-control", autocomplete = "off", @placeholder = "Select Invoice Date", @id = "invdt", @Value = @Model.SaleInvoiceKeyModel.InvoiceDate.ToString("dd MMM yyyy") })
-                                @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.InvoiceDate)
-                            </div>
-                        </div>
-                        <div class="col-xl-3">
-                            <div class="form-group row">
-                                @Html.LabelFor(m => m.SaleInvoiceKeyModel.OrderNo, new { @class = "control-label " })
-                                @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.OrderNo, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Order No.", id = "orderno" })
-                                @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.OrderNo)
-                            </div>
-                        </div>
-                        <div class="col-xl-3">
-                            <div class="form-group row">
-                                @Html.LabelFor(m => m.SaleInvoiceKeyModel.OrderDate, new { @class = "control-label " })
-                                @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.OrderDate, new { @class = "form-control", autocomplete = "off", @placeholder = "Select Order Date", @id = "orderdt" })
-                                @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.OrderDate)
-                            </div>
-                        </div>
-
+    <!-- Card 1: Invoice Details -->
+    <div class="invoice-section-card">
+        <div class="card-header">
+            <h5 class="card-title">
+                <i class="fa-solid fa-file-invoice me-2 text-primary"></i>Invoice Details
+            </h5>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1" style="font-size: 0.72rem;">
+                    <i class="fa-solid fa-hashtag me-1"></i>Ref: @Model.SaleInvoiceKeyModel.ReferenceNo
+                </span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1" style="font-size: 0.72rem;">
+                    <i class="fa-solid fa-indian-rupee-sign me-1"></i>Currency: INR
+                </span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <!-- Reference Number -->
+                <div class="col-xl-3 col-md-6">
+                    <label class="invoice-form-label">Reference Number</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light border text-primary"><i class="fa-solid fa-hashtag"></i></span>
+                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.ReferenceNo, new { @class = "form-control invoice-input-pill fw-bold text-primary", autocomplete = "off", @placeholder = "Reference", @id = "ref", @Disabled = "Disabled" })
                     </div>
-                    <div class="row">
-                        <div class="form-group col-xl-12"><button class="btn btn-dark btn-sm float-end" type="button" id="addnewitems"><i class="fe fe-plus-circle me-2"></i>Add New Row</button></div>
-                    </div>
-                    <div class="row">
-                        <div class=" col-md-12 ">
-                            <table class="table table-bordered table-condensed table-striped">
-                                <thead>
-                                    <tr>
-                                        <th class="col-width-25 text-center" style="vertical-align:middle;width:4%">
-                                            Sl
-                                        </th>
-                                        <th class="col-width-400 text-center" style="vertical-align: middle; width: 20%">
-                                            Item Name
-                                        </th>
-                                        <th class="col-width-200 text-center" style="vertical-align: middle; width: 10%">
-                                            HSN Code
-                                        </th>
-                                        <th class="col-width-100 text-center" style="vertical-align: middle; width: 6%">
-                                            GST %
-                                        </th>
-                                        <th class="col-width-100 text-center" style="vertical-align: middle; width: 6%">
-                                            IGST %
-                                        </th>
-                                        <th class="col-width-100 text-center" style="vertical-align: middle; width: 6%">
-                                            CGST %
-                                        </th>
-                                        <th class="col-width-100 text-center" style="vertical-align: middle; width: 6%">
-                                            SGST %
-                                        </th>
-                                        <th class="col-width-100 text-center" style="vertical-align: middle; width: 6%">
-                                            Order Qty
-                                        </th>
-                                        <th class="col-width-200 text-center" style="vertical-align: middle; width: 15%">
-                                            Rate
-                                        </th>
-                                        <th class="col-width-300 text-center" style="vertical-align: middle; width: 17%">
-                                            Amount
-                                        </th>
-                                        <th class="col-width-25 text-center" style="vertical-align: middle; width: 4%">
-                                            Action
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody id="itemtable">
-                                    @if (@Model.CustomInvoiceItemList == null)
-                                    {
-                                        <tr class="member-data-row">
-                                            <td class="slno text-center" style="vertical-align:middle;">1</td>
-                                            <td class="text-center" style="vertical-align:middle;">
-                                                @Html.TextAreaFor(m => m.CustomInvoiceItemList[0].ItemName, new { @class = "form-control itemname", autocomplete = "off", @placeholder = "Item Name" })
-                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].ItemName)
-                                            </td>
-                                            <td class="text-center" style="vertical-align:middle;">
-                                                @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].ItemHSNCode, new { @class = "form-control ItemHSNCode", autocomplete = "off", @placeholder = "HSN Code" })
-                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].ItemHSNCode)
-                                            </td>
-                                            <td class="text-center" style="vertical-align:middle;">
-                                                @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].GSTPercentage, new { @class = "form-control gstper", autocomplete = "off", @placeholder = "Gst %" })
-                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].GSTPercentage)
-                                            </td>
-                                            <td class="text-center" style="vertical-align:middle;">
-                                                @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].IGSTPercentage, new { @class = "form-control igst", autocomplete = "off", @placeholder = "IGST %" })
-                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].IGSTPercentage)
-                                            </td>
-                                            <td class="text-center" style="vertical-align:middle;">
-                                                @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].CGSTPercentage, new { @class = "form-control cgst", autocomplete = "off", @placeholder = "CGST %" })
-                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].CGSTPercentage)
-                                            </td>
-                                            <td class="text-center" style="vertical-align:middle;">
-                                                @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].SGSTPercentage, new { @class = "form-control sgst", autocomplete = "off", @placeholder = "SGST %" })
-                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].SGSTPercentage)
-                                            </td>
-                                            <td class="text-center" style="vertical-align:middle;">
-                                                @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].Qty, new { @class = "form-control qty", autocomplete = "off", @placeholder = "Qty" })
-                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].Qty)
-                                            </td>
-                                            <td class="text-center" style="vertical-align:middle;">
-                                                @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].Rate, new { @class = "form-control rate", autocomplete = "off", @placeholder = "Rate" })
-                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].Rate)
-                                            </td>
-                                            <td class="text-center" style="vertical-align:middle;">
-                                                @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].Amount, new { @class = "form-control amount", autocomplete = "off", @placeholder = "Amount", @readonly = "readonly" })
-                                                @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].Amount)
-                                            </td>
-                                            <td class="text-center" style="vertical-align:middle;">
-                                                <i class="fe fe-trash-2 rowremove btn-sm btn-danger" title="Remove"></i>
-                                            </td>
-                                        </tr>
-                                    }
-                                    else
-                                    {
-                                        foreach (var item in @Model.CustomInvoiceItemList)
-                                        {
-                                            <tr class="member-data-row">
-                                                <td class="slno text-center" style="vertical-align:middle;">@i</td>
-                                                <td class="text-center" style="vertical-align:middle;">
-                                                    @Html.TextAreaFor(m => m.CustomInvoiceItemList[i - 1].ItemName, new { @class = "form-control itemname", autocomplete = "off", @placeholder = "Item Name" })
-                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].ItemName)
-                                                </td>
-                                                <td class="text-center" style="vertical-align:middle;">
-                                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].ItemHSNCode, new { @class = "form-control ItemHSNCode", autocomplete = "off", @placeholder = "HSN Code" })
-                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].ItemHSNCode)
-                                                </td>
-                                                <td class="text-center" style="vertical-align:middle;">
-                                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].GSTPercentage, new { @class = "form-control gstper", autocomplete = "off", @placeholder = "Gst %" })
-                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].GSTPercentage)
-                                                </td>
-                                                <td class="text-center" style="vertical-align:middle;">
-                                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].IGSTPercentage, new { @class = "form-control igst", autocomplete = "off", @placeholder = "IGST %" })
-                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].IGSTPercentage)
-                                                </td>
-                                                <td class="text-center" style="vertical-align:middle;">
-                                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].CGSTPercentage, new { @class = "form-control cgst", autocomplete = "off", @placeholder = "CGST %" })
-                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].CGSTPercentage)
-                                                </td>
-                                                <td class="text-center" style="vertical-align:middle;">
-                                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].SGSTPercentage, new { @class = "form-control sgst", autocomplete = "off", @placeholder = "SGST %" })
-                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].SGSTPercentage)
-                                                </td>
-                                                <td class="text-center" style="vertical-align:middle;">
-                                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].Qty, new { @class = "form-control qty", autocomplete = "off", @placeholder = "Qty" })
-                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].Qty)
-                                                </td>
-                                                <td class="text-center" style="vertical-align:middle;">
-                                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].Rate, new { @class = "form-control rate", autocomplete = "off", @placeholder = "Rate", @Value = @Model.CustomInvoiceItemList[i - 1].Rate.ToString("0.00") })
-                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].Rate)
-                                                </td>
-                                                <td class="text-center" style="vertical-align:middle;">
-                                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].Amount, new { @class = "form-control amount", autocomplete = "off", @placeholder = "Amount", @readonly = "readonly", @Value = @Model.CustomInvoiceItemList[i - 1].Amount.ToString("0.00") })
-                                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].Amount)
-                                                </td>
-                                                <td class="text-center" style="vertical-align:middle;">
-                                                    <i class="rowremove btn-sm btn-danger fe fe-trash-2" title="Remove"></i>
-                                                </td>
-                                            </tr>
-                                            i++; j++;
-                                        }
-                                    }
-                                </tbody>
-                                <tr class="TotalSec">
-                                    <td colspan="9" class="text-right font-bold">Net Billing Amount</td>
-                                    <td class="text-right font-bold">
-                                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.ExcludingTaxAmt, new { @class = "form-control", @autocomplete = "off", @id = "EXcludeTax", @readonly = "readonly" })
-                                    </td>
-                                    <td class="text-center font-bold"><span>-</span></td>
-                                </tr>
-                                <tr class="TotalSec">
-                                    <td colspan="9" class="text-right font-bold">IGST Amount</td>
-                                    <td class="text-right font-bold">
-                                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.IGSTAmount, new { @class = "form-control", @autocomplete = "off", @id = "IGSTAmt", @readonly = "readonly" })
-                                    </td>
-                                    <td class="text-center font-bold"><span>-</span></td>
-                                </tr>
-                                <tr class="TotalSec">
-                                    <td colspan="9" class="text-right font-bold">CGST Amount</td>
-                                    <td class="text-right font-bold">
-                                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.CGSTAmount, new { @class = "form-control", @autocomplete = "off", @id = "CGSTAmt", @readonly = "readonly" })
-                                    </td>
-                                    <td class="text-center font-bold"><span>-</span></td>
-                                </tr>
-                                <tr class="TotalSec">
-                                    <td colspan="9" class="text-right font-bold">SGST Amount</td>
-                                    <td class="text-right font-bold">
-                                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.SGSTAmount, new { @class = "form-control", @autocomplete = "off", @style = "margin-bottom:2px;", @id = "SGSTAmt", @readonly = "readonly" })
-                                    </td>
-                                    <td class="text-center font-bold"><span>-</span></td>
-                                </tr>
-                                <tr class="TotalSec">
-                                    <td colspan="9" class="text-right font-bold">Net Amount</td>
-                                    <td class="text-right font-bold">
-                                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.IncludingTaxAmt, new { @class = "form-control", @autocomplete = "off", @id = "GTAmt", @readonly = "readonly" })
-                                    </td>
-                                    <td class="text-center font-bold"><span>-</span></td>
-                                </tr>
-                                <tr class="TotalSec">
-                                    <td colspan="9" class="text-right font-bold">
-                                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.ReceivedRemarks, new { @class = "form-control", autocomplete = "off", @placeholder = "Advance Or Deduction Remarks", @id = "dremarks" })
-                                        @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.ReceivedRemarks)
-                                    </td>
-                                    <td class="text-right font-bold">
-                                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.AdvanceReceived, new { @class = "form-control", autocomplete = "off", @placeholder = "Amount", @id = "damt" })
-                                        @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.AdvanceReceived)
-                                    </td>
-                                    <td class="text-center font-bold"><span>-</span></td>
-                                </tr>
-                                <tr class="TotalSec">
-                                    <td colspan="9" class="text-right font-bold">Net Payable Amount</td>
-                                    <td class="text-right font-bold"><input id="netpayable" class="form-control text-left" readonly="readonly" min="0" /></td>
-                                    <td class="text-center font-bold"><span>-</span></td>
-                                </tr>
+                    @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.ReferenceNo)
+                </div>
 
-                            </table>
-                        </div>
+                <!-- Invoice Date -->
+                <div class="col-xl-3 col-md-6">
+                    <label class="invoice-form-label required">Invoice Date</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light border text-primary"><i class="fa-regular fa-calendar"></i></span>
+                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.InvoiceDate, new { @class = "form-control invoice-input-pill", autocomplete = "off", @placeholder = "Select Invoice Date", @id = "invdt", @Value = @Model.SaleInvoiceKeyModel.InvoiceDate.ToString("dd MMM yyyy") })
+                    </div>
+                    @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.InvoiceDate)
+                </div>
+
+                <!-- Work Order / PO Number -->
+                <div class="col-xl-3 col-md-6">
+                    <label class="invoice-form-label">Work Order / PO No.</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light border text-primary"><i class="fa-solid fa-receipt"></i></span>
+                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.OrderNo, new { @class = "form-control invoice-input-pill", @autocomplete = "off", @placeholder = "Enter Order No.", id = "orderno" })
+                    </div>
+                    @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.OrderNo)
+                </div>
+
+                <!-- Work Order Date -->
+                <div class="col-xl-3 col-md-6">
+                    <label class="invoice-form-label">Work Order Date</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light border text-primary"><i class="fa-regular fa-calendar-check"></i></span>
+                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.OrderDate, new { @class = "form-control invoice-input-pill", autocomplete = "off", @placeholder = "Select Order Date", @id = "orderdt" })
+                    </div>
+                    @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.OrderDate)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 2: Bill From & Bill To -->
+    <div class="row g-3 mb-3">
+        <!-- Bill From -->
+        <div class="col-lg-6">
+            <div class="invoice-bill-card">
+                <div class="bill-title">
+                    <span><i class="fa-solid fa-building me-2 text-primary"></i>Bill From (Billed By)</span>
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-0.5" style="font-size: 0.68rem;">Company</span>
+                </div>
+                <div class="p-2 rounded-3 bg-light-subtle border">
+                    <h6 class="fw-bold text-primary mb-1" style="font-size: 0.9rem;">SDK Solutions &amp; Engineering Services</h6>
+                    <p class="text-muted mb-0" style="font-size: 0.76rem; line-height: 1.4;">
+                        <i class="fa-solid fa-location-dot me-1 text-primary"></i> Corporate Office &amp; Engineering Center<br />
+                        <i class="fa-solid fa-file-shield me-1 text-primary"></i> GSTIN: Registered Regular Taxpayer
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bill To -->
+        <div class="col-lg-6">
+            <div class="invoice-bill-card">
+                <div class="bill-title">
+                    <span><i class="fa-solid fa-user-tag me-2 text-success"></i>Bill To (Client &amp; Project)</span>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5" style="font-size: 0.68rem;">Customer</span>
+                </div>
+                
+                <div class="mb-2">
+                    <label class="invoice-form-label required">Select Project / Client</label>
+                    @Html.DropDownListFor(m => m.SaleInvoiceKeyModel.ProjectID, new SelectList(@Model.ProjectDDList, "ProjectID", "ProjectName"), "--- Select Project ---", new { @class = "form-control ddSelect2 invoice-input-pill", @id = "proj", autocomplete = "false" })
+                    @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.ProjectID)
+                </div>
+
+                <div class="mb-2">
+                    <label class="invoice-form-label required">Invoice To (Billing Attention)</label>
+                    @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.InvoiceTo, new { @class = "form-control form-control-sm invoice-input-pill", autocomplete = "off", @placeholder = "Invoice To", @id = "invto" })
+                    @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.InvoiceTo)
+                </div>
+
+                <div class="mt-2" id="DataGrid">
+                    <!-- Loaded via AJAX -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 3: Items & Details -->
+    <div class="invoice-section-card">
+        <div class="card-header">
+            <h5 class="card-title">
+                <i class="fa-solid fa-list-check me-2 text-primary"></i>Items &amp; Details
+            </h5>
+            <button class="btn btn-primary btn-sm rounded-pill px-3 py-1 fw-semibold d-flex align-items-center gap-1 shadow-sm" type="button" id="addnewitems" style="font-size: 0.76rem;">
+                <i class="fa-solid fa-plus-circle"></i> Add New Row
+            </button>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 invoice-items-table" id="itemtable">
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width: 4%;">#</th>
+                            <th style="width: 24%;">Item Name &amp; Description</th>
+                            <th class="text-center" style="width: 11%;">HSN/SAC</th>
+                            <th class="text-center" style="width: 7%;">GST %</th>
+                            <th class="text-center" style="width: 7%;">IGST %</th>
+                            <th class="text-center" style="width: 7%;">CGST %</th>
+                            <th class="text-center" style="width: 7%;">SGST %</th>
+                            <th class="text-center" style="width: 7%;">Qty</th>
+                            <th class="text-end" style="width: 12%;">Rate (&#8377;)</th>
+                            <th class="text-end" style="width: 13%;">Amount (&#8377;)</th>
+                            <th class="text-center" style="width: 4%;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemtablebody">
+                        @if (@Model.CustomInvoiceItemList == null)
+                        {
+                            <tr class="member-data-row">
+                                <td class="slno text-center fw-bold text-muted">1</td>
+                                <td>
+                                    @Html.TextAreaFor(m => m.CustomInvoiceItemList[0].ItemName, new { @class = "form-control itemname", autocomplete = "off", @placeholder = "Item Name & Description", rows = "2" })
+                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].ItemName)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].ItemHSNCode, new { @class = "form-control text-center ItemHSNCode", autocomplete = "off", @placeholder = "HSN Code" })
+                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].ItemHSNCode)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].GSTPercentage, new { @class = "form-control text-center gstper", autocomplete = "off", @placeholder = "GST %" })
+                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].GSTPercentage)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].IGSTPercentage, new { @class = "form-control text-center igst", autocomplete = "off", @placeholder = "IGST %" })
+                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].IGSTPercentage)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].CGSTPercentage, new { @class = "form-control text-center cgst", autocomplete = "off", @placeholder = "CGST %" })
+                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].CGSTPercentage)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].SGSTPercentage, new { @class = "form-control text-center sgst", autocomplete = "off", @placeholder = "SGST %" })
+                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].SGSTPercentage)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].Qty, new { @class = "form-control text-center qty", autocomplete = "off", @placeholder = "Qty" })
+                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].Qty)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].Rate, new { @class = "form-control text-end rate", autocomplete = "off", @placeholder = "0.00" })
+                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].Rate)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.CustomInvoiceItemList[0].Amount, new { @class = "form-control text-end fw-bold amount", autocomplete = "off", @placeholder = "0.00", @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].Amount)
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="btn-delete-row rowremove" title="Remove Item"><i class="fa-solid fa-trash-can"></i></button>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var item in @Model.CustomInvoiceItemList)
+                            {
+                                <tr class="member-data-row">
+                                    <td class="slno text-center fw-bold text-muted">@i</td>
+                                    <td>
+                                        @Html.TextAreaFor(m => m.CustomInvoiceItemList[i - 1].ItemName, new { @class = "form-control itemname", autocomplete = "off", @placeholder = "Item Name & Description", rows = "2" })
+                                        @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].ItemName)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].ItemHSNCode, new { @class = "form-control text-center ItemHSNCode", autocomplete = "off", @placeholder = "HSN Code" })
+                                        @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].ItemHSNCode)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].GSTPercentage, new { @class = "form-control text-center gstper", autocomplete = "off", @placeholder = "GST %" })
+                                        @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].GSTPercentage)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].IGSTPercentage, new { @class = "form-control text-center igst", autocomplete = "off", @placeholder = "IGST %" })
+                                        @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].IGSTPercentage)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].CGSTPercentage, new { @class = "form-control text-center cgst", autocomplete = "off", @placeholder = "CGST %" })
+                                        @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].CGSTPercentage)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].SGSTPercentage, new { @class = "form-control text-center sgst", autocomplete = "off", @placeholder = "SGST %" })
+                                        @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].SGSTPercentage)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].Qty, new { @class = "form-control text-center qty", autocomplete = "off", @placeholder = "Qty" })
+                                        @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].Qty)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].Rate, new { @class = "form-control text-end rate", autocomplete = "off", @placeholder = "0.00", @Value = @Model.CustomInvoiceItemList[i - 1].Rate.ToString("0.00") })
+                                        @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[0].Rate)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.CustomInvoiceItemList[i - 1].Amount, new { @class = "form-control text-end fw-bold amount", autocomplete = "off", @placeholder = "0.00", @readonly = "readonly", @Value = @Model.CustomInvoiceItemList[i - 1].Amount.ToString("0.00") })
+                                        @Html.ValidationMessageFor(m => m.CustomInvoiceItemList[i - 1].Amount)
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn-delete-row rowremove" title="Remove Item"><i class="fa-solid fa-trash-can"></i></button>
+                                    </td>
+                                </tr>
+                                i++; j++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 4: Summary, Remarks & Action Buttons -->
+    <div class="row g-3 mb-4">
+        <!-- Left: Remarks & Terms -->
+        <div class="col-lg-6">
+            <div class="invoice-section-card h-100">
+                <div class="card-header">
+                    <h5 class="card-title"><i class="fa-solid fa-message me-2 text-primary"></i>Terms, Remarks &amp; Deductions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="invoice-form-label required">General Remarks &amp; Notes</label>
+                        @Html.TextAreaFor(m => m.SaleInvoiceKeyModel.Remarks, new { @class = "form-control invoice-input-pill", autocomplete = "off", @placeholder = "Enter payment terms, delivery notes or bank reference details...", rows = "3", @id = "rem" })
+                        @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.Remarks)
                     </div>
 
-                    <div class="row mt-3 mb-3">
-                        <div class="col-xl-12">
-                            @Html.LabelFor(m => m.SaleInvoiceKeyModel.Remarks, new { @class = "control-label required" })
-                            @Html.TextAreaFor(m => m.SaleInvoiceKeyModel.Remarks, new { @class = "form-control", autocomplete = "off", @placeholder = "Remarks", @id = "rem" })
-                            @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.Remarks)
+                    <div class="row g-2">
+                        <div class="col-8">
+                            <label class="invoice-form-label">Advance / Deduction Remarks</label>
+                            @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.ReceivedRemarks, new { @class = "form-control form-control-sm invoice-input-pill", autocomplete = "off", @placeholder = "e.g. Less: 10% Advance Received", @id = "dremarks" })
+                            @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.ReceivedRemarks)
+                        </div>
+                        <div class="col-4">
+                            <label class="invoice-form-label">Deduction (&#8377;)</label>
+                            @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.AdvanceReceived, new { @class = "form-control form-control-sm invoice-input-pill text-end", autocomplete = "off", @placeholder = "0.00", @id = "damt" })
+                            @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.AdvanceReceived)
                         </div>
                     </div>
-                    <div class="text-end">
-                        <button type="reset" onclick="location.href='@Url.Action("SaleInvoiceList")'" class="btn btn-primary cancel me-2">Cancel</button>
-                        <input type="submit" value="Save" id="save" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Financial Calculations Summary -->
+        <div class="col-lg-6">
+            <div class="invoice-section-card h-100">
+                <div class="card-header">
+                    <h5 class="card-title"><i class="fa-solid fa-calculator me-2 text-success"></i>Invoice Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="invoice-summary-card">
+                        <div class="invoice-summary-row">
+                            <span class="fw-semibold">Net Billing Amount (Subtotal):</span>
+                            @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.ExcludingTaxAmt, new { @class = "form-control", @autocomplete = "off", @id = "EXcludeTax", @readonly = "readonly" })
+                        </div>
+                        <div class="invoice-summary-row">
+                            <span>IGST Amount:</span>
+                            @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.IGSTAmount, new { @class = "form-control", @autocomplete = "off", @id = "IGSTAmt", @readonly = "readonly" })
+                        </div>
+                        <div class="invoice-summary-row">
+                            <span>CGST Amount:</span>
+                            @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.CGSTAmount, new { @class = "form-control", @autocomplete = "off", @id = "CGSTAmt", @readonly = "readonly" })
+                        </div>
+                        <div class="invoice-summary-row">
+                            <span>SGST Amount:</span>
+                            @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.SGSTAmount, new { @class = "form-control", @autocomplete = "off", @style = "margin-bottom:2px;", @id = "SGSTAmt", @readonly = "readonly" })
+                        </div>
+                        <div class="invoice-summary-row border-top pt-2">
+                            <span class="fw-bold text-primary">Gross Amount (Incl. Tax):</span>
+                            @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.IncludingTaxAmt, new { @class = "form-control fw-bold text-primary", @autocomplete = "off", @id = "GTAmt", @readonly = "readonly" })
+                        </div>
+
+                        <!-- Grand Total Net Payable -->
+                        <div class="invoice-payable-box">
+                            <div>
+                                <div class="payable-label">Net Payable Amount</div>
+                                <div class="text-muted" style="font-size: 0.68rem;">(After advance &amp; deductions)</div>
+                            </div>
+                            <input id="netpayable" class="payable-amount" readonly="readonly" min="0" />
+                        </div>
+                    </div>
+
+                    <!-- Bottom Action Buttons -->
+                    <div class="d-flex align-items-center justify-content-end gap-2 mt-3">
+                        <a href="@Url.Action("SaleInvoiceList")" class="btn btn-outline-secondary btn-sm rounded-pill px-4 py-2 fw-semibold">
+                            Cancel
+                        </a>
+                        <button type="submit" id="save" class="btn btn-primary btn-sm rounded-pill px-4 py-2 fw-semibold shadow-sm">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> Update Invoice
+                        </button>
                     </div>
                 </div>
             </div>
