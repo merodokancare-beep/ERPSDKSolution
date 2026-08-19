@@ -341,6 +341,7 @@ namespace SDKHRMS.Web.Controllers
             ViewBag.RoundOfAmount = RoundOfAmount;
             return new Rotativa.PartialViewAsPdf("_pvDownloadPO", model)
             {
+                ViewData = ViewData,
                 FileName = "PO" + model.PODetails.PORefNo + ".pdf",
                 PageMargins = new Rotativa.Options.Margins(5, 5, 10, 5),
                 PageSize = Rotativa.Options.Size.A4
@@ -400,6 +401,7 @@ namespace SDKHRMS.Web.Controllers
             //return PartialView("_pvDownloadSaleInvoice", objInv);
             return new Rotativa.PartialViewAsPdf("_pvDownloadSaleInvoice", objInv)
             {
+                ViewData = ViewData,
                 FileName = "Invoice" + objInv.SaleInvoiceKeyModel.ReferenceNo + ".pdf",
                 PageMargins = new Rotativa.Options.Margins(5, 5, 10, 5),
                 PageSize = Rotativa.Options.Size.A4

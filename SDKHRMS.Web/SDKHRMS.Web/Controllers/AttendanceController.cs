@@ -186,6 +186,7 @@ namespace SDKHRMS.Web.Controllers
             string filename = "Attendance Report for " + MonthName + "," + year + ".pdf";
             return new Rotativa.ViewAsPdf("ExportAsPDF", dt)
             {
+                ViewData = ViewData,
                 FileName = filename,
                 PageOrientation =Rotativa.Options.Orientation.Landscape,
                 PageSize =Rotativa.Options.Size.A4

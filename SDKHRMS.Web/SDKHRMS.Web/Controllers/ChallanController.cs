@@ -145,6 +145,7 @@ namespace SDKHRMS.Web.Controllers
             model.ChallanItemList = dalch.GetChallanItemList(ID);
             return new Rotativa.PartialViewAsPdf("_pvPrintDeliveryChallan", model)
             {
+                ViewData = ViewData,
                 FileName = "Delivery_Challan" + model.ChallanDetailsKey.CHRefNo + ".pdf",
                 PageMargins = new Rotativa.Options.Margins(5, 5, 10, 5),
                 PageSize = Rotativa.Options.Size.A4

@@ -199,6 +199,7 @@ namespace SDKHRMS.Web.Controllers
             string filename = "Purchase & Sale Details of SDK Solutions For " + MonthName + "," + year + ".pdf";
             return new Rotativa.ViewAsPdf("ExportAsPDF", objmodel)
             {
+                ViewData = ViewData,
                 FileName = filename,
                 PageOrientation = Rotativa.Options.Orientation.Landscape,
                 PageSize = Rotativa.Options.Size.A4

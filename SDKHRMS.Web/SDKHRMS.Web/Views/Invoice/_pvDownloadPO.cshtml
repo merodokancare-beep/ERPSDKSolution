@@ -1,11 +1,14 @@
-﻿@model SDKHRMS.Entities.ViewModels.POExportVM
+@model SDKHRMS.Entities.ViewModels.POExportVM
 @{
     Layout = null;
-    decimal IGST = @Model.POItemsList.Sum(x => x.IGSTAmt);
-    decimal CGST = @Model.POItemsList.Sum(x => x.CGSTAmt);
-    decimal SGST = @Model.POItemsList.Sum(x => x.SGSTAmt);
+    decimal IGST = Model.POItemsList != null ? Model.POItemsList.Sum(x => x.IGSTAmt) : 0;
+    decimal CGST = Model.POItemsList != null ? Model.POItemsList.Sum(x => x.CGSTAmt) : 0;
+    decimal SGST = Model.POItemsList != null ? Model.POItemsList.Sum(x => x.SGSTAmt) : 0;
     decimal TTax = CGST + SGST + IGST;
-    //decimal NetAmt = @Model.PODetails.IncludingTaxAmt - @Model.PODetails.AdvanceReceived;
+    decimal totalAmt = Model.POItemsList != null ? Model.POItemsList.Sum(x => x.TotalAmt) : 0;
+    decimal baseAmt = Model.PODetails != null ? Model.PODetails.IncludingTaxAmt : totalAmt;
+    decimal roundOfAmount = Math.Round(baseAmt);
+    decimal roundOfValue = roundOfAmount - baseAmt;
 }
 <!DOCTYPE html>
 <html>
@@ -236,11 +239,11 @@
                     <div class="inv-date">Total Net Amount: &#8377 @Model.POItemsList.Sum(x => x.Amount).ToString("0.00")</div>
                     @*<strong class="text-info pull-right">Total Tax Amount: &#8377 @Model.POItemsList.Sum(x => x.IGSTAmt).ToString("0.00")</strong>*@
                     <div class="inv-date">Total Tax Amount: &#8377 @TTax.ToString("0.00")</div>
-                    @if (@ViewBag.RoundOfValue.ToString("0.00") != "0.00")
+                    @if (roundOfValue != 0)
                     {
                         <div class="inv-date">Total Amount: &#8377 @Model.POItemsList.Sum(x => x.TotalAmt).ToString("0.00")</div>
-                        <div class="inv-date">Round Of Value: &#8377  @ViewBag.RoundOfValue.ToString("0.00")</div>
-                        <div class="inv-date">Total Value of PO: &#8377 @ViewBag.RoundOfAmount.ToString("0.00")</div>
+                        <div class="inv-date">Round Of Value: &#8377  @roundOfValue.ToString("0.00")</div>
+                        <div class="inv-date">Total Value of PO: &#8377 @roundOfAmount.ToString("0.00")</div>
                     }
                     else
                     {

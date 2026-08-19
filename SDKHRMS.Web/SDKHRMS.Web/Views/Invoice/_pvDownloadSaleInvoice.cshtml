@@ -1,10 +1,13 @@
-﻿@model SDKHRMS.Entities.ViewModels.InvoiceViewModel
+@model SDKHRMS.Entities.ViewModels.InvoiceViewModel
 @{
     Layout = null;
-    decimal CGST = @Model.ItemsViewList.Sum(x => x.CGSTAmt);
-    decimal SGST = @Model.ItemsViewList.Sum(x => x.SGSTAmt);
+    decimal CGST = Model.ItemsViewList != null ? Model.ItemsViewList.Sum(x => x.CGSTAmt) : 0;
+    decimal SGST = Model.ItemsViewList != null ? Model.ItemsViewList.Sum(x => x.SGSTAmt) : 0;
     decimal TTax = CGST + SGST;
-    //decimal NetAmt = @Model.SaleInvoiceKeyModel.IncludingTaxAmt - @Model.SaleInvoiceKeyModel.AdvanceReceived;
+    decimal totalAmt = Model.ItemsViewList != null ? Model.ItemsViewList.Sum(x => x.TotalAmt) : 0;
+    decimal baseAmt = Model.SaleInvoiceKeyModel != null ? Model.SaleInvoiceKeyModel.BalanceAmount : totalAmt;
+    decimal roundOfAmount = Math.Round(baseAmt);
+    decimal roundOfValue = roundOfAmount - baseAmt;
 }
 <!DOCTYPE html>
 <html>
@@ -350,11 +353,11 @@
                             {
                                 <div class="inv-date">Total Tax Amount: &#8377 @TTax.ToString("0.00")</div>
                             }
-                            @if (@ViewBag.RoundOfValue.ToString("0.00") != "0.00")
+                            @if (roundOfValue != 0)
                             {
                                 <div class="inv-date">Total Amount: &#8377 @Model.ItemsViewList.Sum(x => x.TotalAmt).ToString("0.00")</div>
-                                <div class="inv-date">Round Of Value: &#8377  @ViewBag.RoundOfValue.ToString("0.00")</div>
-                                <div class="inv-date">Total Value of Invoice: &#8377 @ViewBag.RoundOfAmount.ToString("0.00")</div>
+                                <div class="inv-date">Round Of Value: &#8377  @roundOfValue.ToString("0.00")</div>
+                                <div class="inv-date">Total Value of Invoice: &#8377 @roundOfAmount.ToString("0.00")</div>
                             }
                             else
                             {

@@ -231,6 +231,7 @@ namespace SDKHRMS.Web.Controllers
             ViewBag.FigureAmount = NumberToWords(Convert.ToInt32(RoundOfAmount));
             return new Rotativa.PartialViewAsPdf("_pvPrintVoucher", model)
             {
+                ViewData = ViewData,
                 FileName = "Voucher No._" + model.DirectPayment.DirectPaymentID + "_" + model.DirectPayment.PaymentDate.ToString("dd MMM yyyy") + ".pdf",
                 PageMargins = new Rotativa.Options.Margins(10, 5, 10, 5),
                 PageSize = Rotativa.Options.Size.A4

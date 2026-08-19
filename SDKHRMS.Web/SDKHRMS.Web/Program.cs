@@ -93,6 +93,10 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseRouting();
 
+// Configure Rotativa for PDF generation
+var rotativaPath = Path.Combine(app.Environment.ContentRootPath, "Rotativa");
+Rotativa.AspNetCore.RotativaConfiguration.Setup(app.Environment.ContentRootPath, "Rotativa");
+
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
