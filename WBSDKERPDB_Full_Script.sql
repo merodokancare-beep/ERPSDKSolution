@@ -8,6 +8,644 @@ SET QUOTED_IDENTIFIER ON;
 GO
 
 -- ==========================================================
+-- DROP ALL EXISTING FOREIGN KEYS & TABLES FIRST
+-- ==========================================================
+DECLARE @dropFK NVARCHAR(MAX) = N'';
+SELECT @dropFK += N'ALTER TABLE ' + QUOTENAME(OBJECT_SCHEMA_NAME(parent_object_id)) + N'.' + QUOTENAME(OBJECT_NAME(parent_object_id)) 
+    + N' DROP CONSTRAINT ' + QUOTENAME(name) + N';' + CHAR(13) + CHAR(10)
+FROM sys.foreign_keys;
+IF LEN(@dropFK) > 0
+    EXEC sp_executesql @dropFK;
+
+DECLARE @dropTables NVARCHAR(MAX) = N'';
+SELECT @dropTables += N'DROP TABLE ' + QUOTENAME(s.name) + N'.' + QUOTENAME(t.name) + N';' + CHAR(13) + CHAR(10)
+FROM sys.tables t
+JOIN sys.schemas s ON t.schema_id = s.schema_id;
+IF LEN(@dropTables) > 0
+    EXEC sp_executesql @dropTables;
+GO
+
+-- ==========================================================
+-- CREATE TABLES
+-- ==========================================================
+IF OBJECT_ID('[__MigrationHistory]', 'U') IS NULL
+BEGIN
+CREATE TABLE [__MigrationHistory] (
+    [MigrationId] nvarchar(150)  NOT NULL,
+    [ContextKey] nvarchar(300)  NOT NULL,
+    [Model] varbinary  NOT NULL,
+    [ProductVersion] nvarchar(32)  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[AspNetRoles]', 'U') IS NULL
+BEGIN
+CREATE TABLE [AspNetRoles] (
+    [Id] nvarchar(128)  NOT NULL,
+    [Name] nvarchar(256)  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[AspNetUserClaims]', 'U') IS NULL
+BEGIN
+CREATE TABLE [AspNetUserClaims] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [UserId] nvarchar(128)  NOT NULL,
+    [ClaimType] nvarchar(MAX)  NULL,
+    [ClaimValue] nvarchar(MAX)  NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[AspNetUserLogins]', 'U') IS NULL
+BEGIN
+CREATE TABLE [AspNetUserLogins] (
+    [LoginProvider] nvarchar(128)  NOT NULL,
+    [ProviderKey] nvarchar(128)  NOT NULL,
+    [UserId] nvarchar(128)  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[AspNetUserRoles]', 'U') IS NULL
+BEGIN
+CREATE TABLE [AspNetUserRoles] (
+    [UserId] nvarchar(128)  NOT NULL,
+    [RoleId] nvarchar(128)  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[AspNetUsers]', 'U') IS NULL
+BEGIN
+CREATE TABLE [AspNetUsers] (
+    [Id] nvarchar(128)  NOT NULL,
+    [Role] nvarchar(MAX)  NULL,
+    [EmployeeID] nvarchar(MAX)  NULL,
+    [IsActive] bit  NOT NULL,
+    [Email] nvarchar(256)  NULL,
+    [EmailConfirmed] bit  NOT NULL,
+    [PasswordHash] nvarchar(MAX)  NULL,
+    [SecurityStamp] nvarchar(MAX)  NULL,
+    [PhoneNumber] nvarchar(MAX)  NULL,
+    [PhoneNumberConfirmed] bit  NOT NULL,
+    [TwoFactorEnabled] bit  NOT NULL,
+    [LockoutEndDateUtc] datetime  NULL,
+    [LockoutEnabled] bit  NOT NULL,
+    [AccessFailedCount] int  NOT NULL,
+    [UserName] nvarchar(256)  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblChallanItems]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblChallanItems] (
+    [CHItemID] nvarchar(128)  NOT NULL,
+    [ChallanID] varchar(8)  NOT NULL,
+    [ItemName] nvarchar(MAX)  NOT NULL,
+    [Quantity] int  NOT NULL,
+    [UnitID] bigint  NOT NULL,
+    [SlNo] int  NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblChallanKeys]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblChallanKeys] (
+    [ChallanID] varchar(8)  NOT NULL,
+    [VenderID] bigint  NOT NULL,
+    [ProjectID] bigint  NULL,
+    [CHRefNo] nvarchar(20)  NOT NULL,
+    [CHDate] date  NOT NULL,
+    [CHToName] nvarchar(100)  NOT NULL,
+    [ClientAddress] nvarchar(MAX)  NOT NULL,
+    [Remarks] nvarchar(MAX)  NOT NULL,
+    [SlNo] int  NOT NULL,
+    [FiscalYear] varchar(10)  NOT NULL,
+    [IsCancel] bit  NOT NULL,
+    [AddedBy] nvarchar(100)  NOT NULL,
+    [AddedOn] datetime  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblDirectPayments]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblDirectPayments] (
+    [DirectPaymentID] bigint IDENTITY(1,1) NOT NULL,
+    [ExpenseTypeID] bigint  NOT NULL,
+    [ProjectID] bigint  NULL,
+    [PaymentDate] date  NOT NULL,
+    [PaymentAmt] money  NOT NULL,
+    [IsDeclined] bit  NOT NULL,
+    [Purpose] nvarchar(512)  NOT NULL,
+    [Remarks] nvarchar(MAX)  NOT NULL,
+    [Status] varchar(50)  NOT NULL,
+    [AddedBy] varchar(128)  NOT NULL,
+    [AddedOn] datetime  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblEmpAttendanceMappings]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblEmpAttendanceMappings] (
+    [EmpDeviceMappingID] bigint IDENTITY(1,1) NOT NULL,
+    [EmployeeID] varchar(8)  NOT NULL,
+    [EmpDeviceID] int  NOT NULL,
+    [UserID] varchar(50)  NOT NULL,
+    [LastModifiedOn] datetime  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblEmpAttendances]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblEmpAttendances] (
+    [AttendanceID] varchar(16)  NOT NULL,
+    [EmployeeID] varchar(8)  NOT NULL,
+    [AttendanceDate] date  NULL,
+    [InTime] datetime  NULL,
+    [OutTime] datetime  NULL,
+    [AttendanceStatusID] tinyint  NULL,
+    [Remarks] varchar(256)  NULL,
+    [LogType] varchar(50)  NULL,
+    [UserID] varchar(50)  NOT NULL,
+    [LastModifiedOn] datetime  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblEmpPersonalInfoKeys]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblEmpPersonalInfoKeys] (
+    [EmployeeID] varchar(8)  NOT NULL,
+    [FName] varchar(50)  NOT NULL,
+    [MName] varchar(50)  NULL,
+    [LName] varchar(50)  NOT NULL,
+    [DateOfBirth] datetime  NOT NULL,
+    [Gender] varchar(50)  NOT NULL,
+    [Nationality] varchar(50)  NOT NULL,
+    [MaritalStatus] varchar(50)  NOT NULL,
+    [Religion] varchar(50)  NOT NULL,
+    [BloodGroup] varchar(20)  NOT NULL,
+    [PhoneNumber] varchar(10)  NOT NULL,
+    [Email] varchar(50)  NOT NULL,
+    [PanNo] varchar(10)  NULL,
+    [AadharNo] varchar(12)  NULL,
+    [PresentAddress] varchar(MAX)  NOT NULL,
+    [EmgContactName] varchar(256)  NULL,
+    [EmgContactNo] varchar(10)  NULL,
+    [EmgContactAddress] varchar(MAX)  NULL,
+    [PhotoNormal] varchar(MAX)  NULL,
+    [PhotoThumb] varchar(MAX)  NULL,
+    [UserID] varchar(50)  NOT NULL,
+    [LastModifiedOn] datetime  NOT NULL,
+    [JoinDate] datetime  NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblExpenseDetails]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblExpenseDetails] (
+    [ExpenseID] bigint IDENTITY(1,1) NOT NULL,
+    [ExpenseDate] datetime  NOT NULL,
+    [ExpenseType] varchar(50)  NOT NULL,
+    [ExpenseAmount] decimal(18, 2)  NOT NULL,
+    [AccountType] varchar(50)  NOT NULL,
+    [Remarks] varchar(MAX)  NOT NULL,
+    [UserID] varchar(100)  NOT NULL,
+    [LastModifiedOn] datetime  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblMstBanks]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblMstBanks] (
+    [BankID] bigint IDENTITY(1,1) NOT NULL,
+    [BankName] nvarchar(256)  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblMstClients]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblMstClients] (
+    [ClientID] bigint IDENTITY(1,1) NOT NULL,
+    [ClientName] varchar(256)  NOT NULL,
+    [ClientAddress] varchar(MAX)  NOT NULL,
+    [GSTNo] varchar(50)  NOT NULL,
+    [ContactNo] varchar(15)  NULL,
+    [UserID] varchar(100)  NOT NULL,
+    [LastModifiedOn] datetime  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblMstExpenseTypes]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblMstExpenseTypes] (
+    [ExpenseTypeID] bigint IDENTITY(1,1) NOT NULL,
+    [ExpenseType] nvarchar(MAX)  NOT NULL,
+    [Description] nvarchar(MAX)  NOT NULL,
+    [IsProjectRelated] bit  NOT NULL,
+    [CanReceiveDirectPayment] bit  NOT NULL,
+    [OpeningAmount] money  NULL,
+    [OpeningDate] date  NULL,
+    [UserID] nvarchar(256)  NOT NULL,
+    [LastModifiedOn] datetime  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[UtblMstFinancialYears]', 'U') IS NULL
+BEGIN
+CREATE TABLE [UtblMstFinancialYears] (
+    [FiscalID] int IDENTITY(1,1) NOT NULL,
+    [StartDate] date  NOT NULL,
+    [EndDate] date  NOT NULL,
+    [FiscalYearSymbol] varchar(7)  NOT NULL,
+    [Active] bit  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblMstGenCodeSeeds]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblMstGenCodeSeeds] (
+    [SLNO] bigint IDENTITY(1,1) NOT NULL,
+    [Year] int  NOT NULL,
+    [CharRange] char(1)  NOT NULL,
+    [StartRange] int  NOT NULL,
+    [TableName] varchar(50)  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblMstHolidays]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblMstHolidays] (
+    [HolidayID] varchar(10)  NOT NULL,
+    [HolidayName] varchar(128)  NOT NULL,
+    [HolidayDesc] varchar(256)  NULL,
+    [DateFrom] date  NOT NULL,
+    [DateTo] date  NOT NULL,
+    [NoofDays] int  NOT NULL,
+    [UserID] varchar(50)  NOT NULL,
+    [LastModifiedOn] datetime  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblMstItems]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblMstItems] (
+    [ItemID] bigint IDENTITY(1,1) NOT NULL,
+    [ItemName] varchar(50)  NOT NULL,
+    [ItemHSNCode] varchar(50)  NOT NULL,
+    [GSTPercentage] int  NOT NULL,
+    [ItemDescription] varchar(MAX)  NULL,
+    [UserID] varchar(100)  NOT NULL,
+    [LastModifiedOn] datetime  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblMstProjects]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblMstProjects] (
+    [ProjectID] bigint IDENTITY(1,1) NOT NULL,
+    [ProjectName] nvarchar(MAX)  NOT NULL,
+    [VendorID] bigint  NOT NULL,
+    [ProjStartDate] date  NOT NULL,
+    [ProjEndDate] date  NULL,
+    [ProjStatus] nvarchar(50)  NOT NULL,
+    [ProjValue] money  NOT NULL,
+    [ProjDescription] nvarchar(MAX)  NOT NULL,
+    [WODate] date  NULL,
+    [WONo] nvarchar(200)  NULL,
+    [WOPath] nvarchar(MAX)  NULL,
+    [PCCPath] nvarchar(MAX)  NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblMstReferenceNumbers]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblMstReferenceNumbers] (
+    [RefID] int IDENTITY(1,1) NOT NULL,
+    [FiscalYearSymbol] varchar(7)  NOT NULL,
+    [Prefix] varchar(3)  NOT NULL,
+    [Suffix] varchar(3)  NOT NULL,
+    [StartNo] int  NOT NULL,
+    [CurrentNo] int  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblMstUnits]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblMstUnits] (
+    [UnitID] bigint IDENTITY(1,1) NOT NULL,
+    [UnitName] varchar(100)  NOT NULL,
+    [UnitDescription] varchar(MAX)  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblMstVendorDetails]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblMstVendorDetails] (
+    [VenderID] bigint IDENTITY(1,1) NOT NULL,
+    [VenderName] varchar(100)  NOT NULL,
+    [VenderAddress] varchar(MAX)  NULL,
+    [GSTNo] varchar(50)  NULL,
+    [ContactName] varchar(100)  NULL,
+    [Email] varchar(50)  NULL,
+    [ContactNo] varchar(15)  NULL,
+    [UserID] varchar(100)  NOT NULL,
+    [LastModifiedOn] datetime  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblOfficalLetterDocs]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblOfficalLetterDocs] (
+    [DocID] bigint IDENTITY(1,1) NOT NULL,
+    [DocName] nvarchar(256)  NOT NULL,
+    [ReferenceID] bigint  NOT NULL,
+    [DocPath] nvarchar(MAX)  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblPaymentDetails]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblPaymentDetails] (
+    [PaymentID] varchar(8)  NOT NULL,
+    [ExpenseTypeID] bigint  NOT NULL,
+    [PaymentDate] date  NOT NULL,
+    [PaymentAmt] money  NOT NULL,
+    [PaymentMode] varchar(50)  NOT NULL,
+    [BankID] bigint  NULL,
+    [ChequeTransNo] nvarchar(256)  NULL,
+    [PaymentFile] nvarchar(MAX)  NULL,
+    [VendorID] bigint  NULL,
+    [ProjectID] bigint  NULL,
+    [PaymentType] nvarchar(50)  NOT NULL,
+    [Remarks] nvarchar(MAX)  NOT NULL,
+    [UserID] nvarchar(128)  NOT NULL,
+    [LastModifiedOn] datetime  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblPaymentReceivables]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblPaymentReceivables] (
+    [ReceivedID] bigint IDENTITY(1,1) NOT NULL,
+    [ExpenseTypeID] bigint  NOT NULL,
+    [AmtReceived] money  NOT NULL,
+    [ReceivedDate] date  NOT NULL,
+    [ReceivedMode] varchar(50)  NOT NULL,
+    [BankID] bigint  NULL,
+    [TransactionNo] varchar(128)  NULL,
+    [Remarks] nvarchar(MAX)  NOT NULL,
+    [UploadedFile] nvarchar(MAX)  NULL,
+    [AddedBy] varchar(128)  NOT NULL,
+    [AddedOn] datetime  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblPaymentReleasedTrans]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblPaymentReleasedTrans] (
+    [PaymentID] bigint IDENTITY(1,1) NOT NULL,
+    [PaymentDate] date  NOT NULL,
+    [PaymentAmt] money  NOT NULL,
+    [PaymentMode] nvarchar(100)  NOT NULL,
+    [PurchaseInvoiceID] varchar(8)  NULL,
+    [DirectPaymentID] bigint  NULL,
+    [BankID] bigint  NULL,
+    [PaymentTransNo] nvarchar(50)  NULL,
+    [UploadedFile] nvarchar(MAX)  NULL,
+    [Remarks] nvarchar(MAX)  NOT NULL,
+    [AddedBy] nvarchar(126)  NOT NULL,
+    [AddedOn] datetime  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblPettyCashs]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblPettyCashs] (
+    [PettyCashID] bigint IDENTITY(1,1) NOT NULL,
+    [TransDate] date  NOT NULL,
+    [ExpenseTypeID] bigint  NOT NULL,
+    [ProjPaymentReceiveID] bigint  NULL,
+    [ReceivedID] bigint  NULL,
+    [PaymentID] bigint  NULL,
+    [BankID] bigint  NULL,
+    [CreditAmt] money  NULL,
+    [DebitAmt] money  NULL,
+    [Remarks] nvarchar(MAX)  NOT NULL,
+    [IsClosed] bit  NOT NULL,
+    [FilePath] varchar(128)  NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblProjPaymentReceivables]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblProjPaymentReceivables] (
+    [ProjPaymentReceiveID] bigint IDENTITY(1,1) NOT NULL,
+    [ProjectID] bigint  NOT NULL,
+    [BankID] bigint  NULL,
+    [ReceivedDate] date  NOT NULL,
+    [ReceivedMode] nvarchar(100)  NOT NULL,
+    [Remarks] varchar(MAX)  NOT NULL,
+    [NetAmtReceived] money  NOT NULL,
+    [TDSDeductionAmt] money  NOT NULL,
+    [GstDeductionAmt] money  NOT NULL,
+    [SecurityDepositAmt] money  NOT NULL,
+    [OtherDeductionAmt] money  NOT NULL,
+    [IsAdvance] bit  NOT NULL,
+    [UploadedFile] nvarchar(MAX)  NULL,
+    [SaleInvoiceID] varchar(8)  NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblPurchaseInvoiceItems]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblPurchaseInvoiceItems] (
+    [ItemDtlID] nvarchar(128)  NOT NULL,
+    [PurchaseInvoiceID] varchar(8)  NOT NULL,
+    [ItemName] nvarchar(MAX)  NULL,
+    [ItemHSNCode] nvarchar(50)  NOT NULL,
+    [GSTPercentage] int  NOT NULL,
+    [IGSTPercentage] float  NULL,
+    [CGSTPercentage] float  NULL,
+    [SGSTPercentage] float  NULL,
+    [Qty] int  NOT NULL,
+    [Rate] money  NOT NULL,
+    [Amount] money  NOT NULL,
+    [SlNo] varchar(10)  NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblPurchaseInvoiceKeys]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblPurchaseInvoiceKeys] (
+    [PurchaseInvoiceID] varchar(8)  NOT NULL,
+    [PurchaseDate] datetime  NOT NULL,
+    [PORefNo] nvarchar(50)  NULL,
+    [BillNo] nvarchar(50)  NULL,
+    [POType] nvarchar(50)  NOT NULL,
+    [ProjectID] bigint  NULL,
+    [VenderID] bigint  NOT NULL,
+    [IGSTAmount] money  NULL,
+    [CGSTAmount] money  NULL,
+    [SGSTAmount] money  NULL,
+    [ExcludingTaxAmt] money  NOT NULL,
+    [IncludingTaxAmt] money  NOT NULL,
+    [AmountPaid] money  NOT NULL,
+    [BalanceAmount] money  NOT NULL,
+    [Remarks] nvarchar(MAX)  NOT NULL,
+    [UploadBill] nvarchar(MAX)  NULL,
+    [ShipTo] nvarchar(MAX)  NULL,
+    [TermsConditions] nvarchar(MAX)  NULL,
+    [IsPOCancelled] bit  NOT NULL,
+    [HasMarkForPayment] bit  NOT NULL,
+    [IsPaymentDeclined] bit  NOT NULL,
+    [UserID] nvarchar(100)  NOT NULL,
+    [LastModifiedOn] datetime  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblPurchaseSales]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblPurchaseSales] (
+    [PurchaseSaleID] bigint IDENTITY(1,1) NOT NULL,
+    [PurchaseSaleDate] datetime  NOT NULL,
+    [PurchaseSaleInvoiceNo] varchar(50)  NOT NULL,
+    [VenderID] bigint  NULL,
+    [ClientID] bigint  NULL,
+    [HSNSAC] varchar(20)  NULL,
+    [IsIGST] bit  NOT NULL,
+    [IGST] float  NULL,
+    [SGST] float  NULL,
+    [CGST] float  NULL,
+    [TaxableAmount] float  NOT NULL,
+    [PurchaseSaleType] varchar(50)  NOT NULL,
+    [Description] varchar(MAX)  NULL,
+    [UserID] varchar(100)  NOT NULL,
+    [LastModifiedOn] datetime  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblReceivedAmountDetails]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblReceivedAmountDetails] (
+    [RecvDtlsID] nvarchar(128)  NOT NULL,
+    [ReceivedID] varchar(8)  NOT NULL,
+    [ReferenceNo] varchar(25)  NOT NULL,
+    [ReceivedAmount] decimal(18, 2)  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblReceivedAmountKeys]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblReceivedAmountKeys] (
+    [ReceivedID] varchar(8)  NOT NULL,
+    [ReceivedDate] datetime  NOT NULL,
+    [PaymentMode] varchar(50)  NOT NULL,
+    [Amount] decimal(18, 2)  NOT NULL,
+    [Description] varchar(MAX)  NOT NULL,
+    [UserID] varchar(50)  NOT NULL,
+    [LastModifiedOn] datetime  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblReferenceDetails]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblReferenceDetails] (
+    [ReferenceID] bigint IDENTITY(1,1) NOT NULL,
+    [RefDate] datetime  NOT NULL,
+    [RefType] varchar(100)  NOT NULL,
+    [DescORSubject] varchar(MAX)  NOT NULL,
+    [FiscalYear] varchar(10)  NOT NULL,
+    [RefNumber] varchar(20)  NOT NULL,
+    [LetterTO] varchar(256)  NOT NULL,
+    [VendorID] bigint  NOT NULL,
+    [SLNO] int  NULL,
+    [IsCancelled] bit  NOT NULL,
+    [UserID] varchar(100)  NOT NULL,
+    [LastModifiedOn] datetime  NOT NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblSaleInvoiceItems]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblSaleInvoiceItems] (
+    [ItemDtlID] nvarchar(128)  NOT NULL,
+    [SaleInvoiceID] varchar(8)  NOT NULL,
+    [ItemName] nvarchar(MAX)  NOT NULL,
+    [ItemHSNCode] varchar(50)  NOT NULL,
+    [GSTPercentage] int  NOT NULL,
+    [IGSTPercentage] float  NULL,
+    [CGSTPercentage] float  NULL,
+    [SGSTPercentage] float  NULL,
+    [Qty] int  NOT NULL,
+    [Rate] money  NOT NULL,
+    [Amount] money  NOT NULL,
+    [SequenceNo] varchar(5)  NULL
+);
+END;
+GO
+
+IF OBJECT_ID('[utblSaleInvoiceKeys]', 'U') IS NULL
+BEGIN
+CREATE TABLE [utblSaleInvoiceKeys] (
+    [SaleInvoiceID] varchar(8)  NOT NULL,
+    [OrderNo] nvarchar(200)  NULL,
+    [OrderDate] date  NULL,
+    [InvoiceTo] nvarchar(100)  NOT NULL,
+    [InvoiceDate] date  NOT NULL,
+    [ReferenceNo] varchar(25)  NOT NULL,
+    [VenderID] bigint  NOT NULL,
+    [ProjectID] bigint  NOT NULL,
+    [IGSTAmount] money  NULL,
+    [CGSTAmount] money  NULL,
+    [SGSTAmount] money  NULL,
+    [ExcludingTaxAmt] money  NOT NULL,
+    [IncludingTaxAmt] money  NOT NULL,
+    [AdvanceReceived] money  NULL,
+    [ReceivedRemarks] nvarchar(MAX)  NULL,
+    [BalanceAmount] money  NOT NULL,
+    [Remarks] nvarchar(MAX)  NOT NULL,
+    [IsCancelled] bit  NOT NULL,
+    [UserID] nvarchar(200)  NOT NULL,
+    [LastModifiedOn] datetime  NOT NULL
+);
+END;
+GO
+
+-- ==========================================================
 -- USER-DEFINED TABLE TYPES (TVPs)
 -- ==========================================================
 IF TYPE_ID(N'[dbo].[AddChallanItemDtlsTVP]') IS NULL
@@ -696,626 +1334,6 @@ BEGIN
 	
 END
 
-GO
-
--- ==========================================================
--- CREATE TABLES
--- ==========================================================
-IF OBJECT_ID('[__MigrationHistory]', 'U') IS NULL
-BEGIN
-CREATE TABLE [__MigrationHistory] (
-    [MigrationId] nvarchar(150)  NOT NULL,
-    [ContextKey] nvarchar(300)  NOT NULL,
-    [Model] varbinary  NOT NULL,
-    [ProductVersion] nvarchar(32)  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[AspNetRoles]', 'U') IS NULL
-BEGIN
-CREATE TABLE [AspNetRoles] (
-    [Id] nvarchar(128)  NOT NULL,
-    [Name] nvarchar(256)  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[AspNetUserClaims]', 'U') IS NULL
-BEGIN
-CREATE TABLE [AspNetUserClaims] (
-    [Id] int IDENTITY(1,1) NOT NULL,
-    [UserId] nvarchar(128)  NOT NULL,
-    [ClaimType] nvarchar(MAX)  NULL,
-    [ClaimValue] nvarchar(MAX)  NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[AspNetUserLogins]', 'U') IS NULL
-BEGIN
-CREATE TABLE [AspNetUserLogins] (
-    [LoginProvider] nvarchar(128)  NOT NULL,
-    [ProviderKey] nvarchar(128)  NOT NULL,
-    [UserId] nvarchar(128)  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[AspNetUserRoles]', 'U') IS NULL
-BEGIN
-CREATE TABLE [AspNetUserRoles] (
-    [UserId] nvarchar(128)  NOT NULL,
-    [RoleId] nvarchar(128)  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[AspNetUsers]', 'U') IS NULL
-BEGIN
-CREATE TABLE [AspNetUsers] (
-    [Id] nvarchar(128)  NOT NULL,
-    [Role] nvarchar(MAX)  NULL,
-    [EmployeeID] nvarchar(MAX)  NULL,
-    [IsActive] bit  NOT NULL,
-    [Email] nvarchar(256)  NULL,
-    [EmailConfirmed] bit  NOT NULL,
-    [PasswordHash] nvarchar(MAX)  NULL,
-    [SecurityStamp] nvarchar(MAX)  NULL,
-    [PhoneNumber] nvarchar(MAX)  NULL,
-    [PhoneNumberConfirmed] bit  NOT NULL,
-    [TwoFactorEnabled] bit  NOT NULL,
-    [LockoutEndDateUtc] datetime  NULL,
-    [LockoutEnabled] bit  NOT NULL,
-    [AccessFailedCount] int  NOT NULL,
-    [UserName] nvarchar(256)  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblChallanItems]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblChallanItems] (
-    [CHItemID] nvarchar(128)  NOT NULL,
-    [ChallanID] varchar(8)  NOT NULL,
-    [ItemName] nvarchar(MAX)  NOT NULL,
-    [Quantity] int  NOT NULL,
-    [UnitID] bigint  NOT NULL,
-    [SlNo] int  NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblChallanKeys]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblChallanKeys] (
-    [ChallanID] varchar(8)  NOT NULL,
-    [VenderID] bigint  NOT NULL,
-    [ProjectID] bigint  NULL,
-    [CHRefNo] nvarchar(20)  NOT NULL,
-    [CHDate] date  NOT NULL,
-    [CHToName] nvarchar(100)  NOT NULL,
-    [ClientAddress] nvarchar(MAX)  NOT NULL,
-    [Remarks] nvarchar(MAX)  NOT NULL,
-    [SlNo] int  NOT NULL,
-    [FiscalYear] varchar(10)  NOT NULL,
-    [IsCancel] bit  NOT NULL,
-    [AddedBy] nvarchar(100)  NOT NULL,
-    [AddedOn] datetime  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblDirectPayments]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblDirectPayments] (
-    [DirectPaymentID] bigint IDENTITY(1,1) NOT NULL,
-    [ExpenseTypeID] bigint  NOT NULL,
-    [ProjectID] bigint  NULL,
-    [PaymentDate] date  NOT NULL,
-    [PaymentAmt] money  NOT NULL,
-    [IsDeclined] bit  NOT NULL,
-    [Purpose] nvarchar(512)  NOT NULL,
-    [Remarks] nvarchar(MAX)  NOT NULL,
-    [Status] varchar(50)  NOT NULL,
-    [AddedBy] varchar(128)  NOT NULL,
-    [AddedOn] datetime  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblEmpAttendanceMappings]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblEmpAttendanceMappings] (
-    [EmpDeviceMappingID] bigint IDENTITY(1,1) NOT NULL,
-    [EmployeeID] varchar(8)  NOT NULL,
-    [EmpDeviceID] int  NOT NULL,
-    [UserID] varchar(50)  NOT NULL,
-    [LastModifiedOn] datetime  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblEmpAttendances]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblEmpAttendances] (
-    [AttendanceID] varchar(16)  NOT NULL,
-    [EmployeeID] varchar(8)  NOT NULL,
-    [AttendanceDate] date  NULL,
-    [InTime] datetime  NULL,
-    [OutTime] datetime  NULL,
-    [AttendanceStatusID] tinyint  NULL,
-    [Remarks] varchar(256)  NULL,
-    [LogType] varchar(50)  NULL,
-    [UserID] varchar(50)  NOT NULL,
-    [LastModifiedOn] datetime  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblEmpPersonalInfoKeys]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblEmpPersonalInfoKeys] (
-    [EmployeeID] varchar(8)  NOT NULL,
-    [FName] varchar(50)  NOT NULL,
-    [MName] varchar(50)  NULL,
-    [LName] varchar(50)  NOT NULL,
-    [DateOfBirth] datetime  NOT NULL,
-    [Gender] varchar(50)  NOT NULL,
-    [Nationality] varchar(50)  NOT NULL,
-    [MaritalStatus] varchar(50)  NOT NULL,
-    [Religion] varchar(50)  NOT NULL,
-    [BloodGroup] varchar(20)  NOT NULL,
-    [PhoneNumber] varchar(10)  NOT NULL,
-    [Email] varchar(50)  NOT NULL,
-    [PanNo] varchar(10)  NULL,
-    [AadharNo] varchar(12)  NULL,
-    [PresentAddress] varchar(MAX)  NOT NULL,
-    [EmgContactName] varchar(256)  NULL,
-    [EmgContactNo] varchar(10)  NULL,
-    [EmgContactAddress] varchar(MAX)  NULL,
-    [PhotoNormal] varchar(MAX)  NULL,
-    [PhotoThumb] varchar(MAX)  NULL,
-    [UserID] varchar(50)  NOT NULL,
-    [LastModifiedOn] datetime  NOT NULL,
-    [JoinDate] datetime  NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblExpenseDetails]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblExpenseDetails] (
-    [ExpenseID] bigint IDENTITY(1,1) NOT NULL,
-    [ExpenseDate] datetime  NOT NULL,
-    [ExpenseType] varchar(50)  NOT NULL,
-    [ExpenseAmount] decimal(18, 2)  NOT NULL,
-    [AccountType] varchar(50)  NOT NULL,
-    [Remarks] varchar(MAX)  NOT NULL,
-    [UserID] varchar(100)  NOT NULL,
-    [LastModifiedOn] datetime  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblMstBanks]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblMstBanks] (
-    [BankID] bigint IDENTITY(1,1) NOT NULL,
-    [BankName] nvarchar(256)  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblMstClients]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblMstClients] (
-    [ClientID] bigint IDENTITY(1,1) NOT NULL,
-    [ClientName] varchar(256)  NOT NULL,
-    [ClientAddress] varchar(MAX)  NOT NULL,
-    [GSTNo] varchar(50)  NOT NULL,
-    [ContactNo] varchar(15)  NULL,
-    [UserID] varchar(100)  NOT NULL,
-    [LastModifiedOn] datetime  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblMstExpenseTypes]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblMstExpenseTypes] (
-    [ExpenseTypeID] bigint IDENTITY(1,1) NOT NULL,
-    [ExpenseType] nvarchar(MAX)  NOT NULL,
-    [Description] nvarchar(MAX)  NOT NULL,
-    [IsProjectRelated] bit  NOT NULL,
-    [CanReceiveDirectPayment] bit  NOT NULL,
-    [OpeningAmount] money  NULL,
-    [OpeningDate] date  NULL,
-    [UserID] nvarchar(256)  NOT NULL,
-    [LastModifiedOn] datetime  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[UtblMstFinancialYears]', 'U') IS NULL
-BEGIN
-CREATE TABLE [UtblMstFinancialYears] (
-    [FiscalID] int IDENTITY(1,1) NOT NULL,
-    [StartDate] date  NOT NULL,
-    [EndDate] date  NOT NULL,
-    [FiscalYearSymbol] varchar(7)  NOT NULL,
-    [Active] bit  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblMstGenCodeSeeds]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblMstGenCodeSeeds] (
-    [SLNO] bigint IDENTITY(1,1) NOT NULL,
-    [Year] int  NOT NULL,
-    [CharRange] char(1)  NOT NULL,
-    [StartRange] int  NOT NULL,
-    [TableName] varchar(50)  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblMstHolidays]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblMstHolidays] (
-    [HolidayID] varchar(10)  NOT NULL,
-    [HolidayName] varchar(128)  NOT NULL,
-    [HolidayDesc] varchar(256)  NULL,
-    [DateFrom] date  NOT NULL,
-    [DateTo] date  NOT NULL,
-    [NoofDays] int  NOT NULL,
-    [UserID] varchar(50)  NOT NULL,
-    [LastModifiedOn] datetime  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblMstItems]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblMstItems] (
-    [ItemID] bigint IDENTITY(1,1) NOT NULL,
-    [ItemName] varchar(50)  NOT NULL,
-    [ItemHSNCode] varchar(50)  NOT NULL,
-    [GSTPercentage] int  NOT NULL,
-    [ItemDescription] varchar(MAX)  NULL,
-    [UserID] varchar(100)  NOT NULL,
-    [LastModifiedOn] datetime  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblMstProjects]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblMstProjects] (
-    [ProjectID] bigint IDENTITY(1,1) NOT NULL,
-    [ProjectName] nvarchar(MAX)  NOT NULL,
-    [VendorID] bigint  NOT NULL,
-    [ProjStartDate] date  NOT NULL,
-    [ProjEndDate] date  NULL,
-    [ProjStatus] nvarchar(50)  NOT NULL,
-    [ProjValue] money  NOT NULL,
-    [ProjDescription] nvarchar(MAX)  NOT NULL,
-    [WODate] date  NULL,
-    [WONo] nvarchar(200)  NULL,
-    [WOPath] nvarchar(MAX)  NULL,
-    [PCCPath] nvarchar(MAX)  NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblMstReferenceNumbers]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblMstReferenceNumbers] (
-    [RefID] int IDENTITY(1,1) NOT NULL,
-    [FiscalYearSymbol] varchar(7)  NOT NULL,
-    [Prefix] varchar(3)  NOT NULL,
-    [Suffix] varchar(3)  NOT NULL,
-    [StartNo] int  NOT NULL,
-    [CurrentNo] int  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblMstUnits]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblMstUnits] (
-    [UnitID] bigint IDENTITY(1,1) NOT NULL,
-    [UnitName] varchar(100)  NOT NULL,
-    [UnitDescription] varchar(MAX)  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblMstVendorDetails]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblMstVendorDetails] (
-    [VenderID] bigint IDENTITY(1,1) NOT NULL,
-    [VenderName] varchar(100)  NOT NULL,
-    [VenderAddress] varchar(MAX)  NULL,
-    [GSTNo] varchar(50)  NULL,
-    [ContactName] varchar(100)  NULL,
-    [Email] varchar(50)  NULL,
-    [ContactNo] varchar(15)  NULL,
-    [UserID] varchar(100)  NOT NULL,
-    [LastModifiedOn] datetime  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblOfficalLetterDocs]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblOfficalLetterDocs] (
-    [DocID] bigint IDENTITY(1,1) NOT NULL,
-    [DocName] nvarchar(256)  NOT NULL,
-    [ReferenceID] bigint  NOT NULL,
-    [DocPath] nvarchar(MAX)  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblPaymentDetails]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblPaymentDetails] (
-    [PaymentID] varchar(8)  NOT NULL,
-    [ExpenseTypeID] bigint  NOT NULL,
-    [PaymentDate] date  NOT NULL,
-    [PaymentAmt] money  NOT NULL,
-    [PaymentMode] varchar(50)  NOT NULL,
-    [BankID] bigint  NULL,
-    [ChequeTransNo] nvarchar(256)  NULL,
-    [PaymentFile] nvarchar(MAX)  NULL,
-    [VendorID] bigint  NULL,
-    [ProjectID] bigint  NULL,
-    [PaymentType] nvarchar(50)  NOT NULL,
-    [Remarks] nvarchar(MAX)  NOT NULL,
-    [UserID] nvarchar(128)  NOT NULL,
-    [LastModifiedOn] datetime  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblPaymentReceivables]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblPaymentReceivables] (
-    [ReceivedID] bigint IDENTITY(1,1) NOT NULL,
-    [ExpenseTypeID] bigint  NOT NULL,
-    [AmtReceived] money  NOT NULL,
-    [ReceivedDate] date  NOT NULL,
-    [ReceivedMode] varchar(50)  NOT NULL,
-    [BankID] bigint  NULL,
-    [TransactionNo] varchar(128)  NULL,
-    [Remarks] nvarchar(MAX)  NOT NULL,
-    [UploadedFile] nvarchar(MAX)  NULL,
-    [AddedBy] varchar(128)  NOT NULL,
-    [AddedOn] datetime  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblPaymentReleasedTrans]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblPaymentReleasedTrans] (
-    [PaymentID] bigint IDENTITY(1,1) NOT NULL,
-    [PaymentDate] date  NOT NULL,
-    [PaymentAmt] money  NOT NULL,
-    [PaymentMode] nvarchar(100)  NOT NULL,
-    [PurchaseInvoiceID] varchar(8)  NULL,
-    [DirectPaymentID] bigint  NULL,
-    [BankID] bigint  NULL,
-    [PaymentTransNo] nvarchar(50)  NULL,
-    [UploadedFile] nvarchar(MAX)  NULL,
-    [Remarks] nvarchar(MAX)  NOT NULL,
-    [AddedBy] nvarchar(126)  NOT NULL,
-    [AddedOn] datetime  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblPettyCashs]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblPettyCashs] (
-    [PettyCashID] bigint IDENTITY(1,1) NOT NULL,
-    [TransDate] date  NOT NULL,
-    [ExpenseTypeID] bigint  NOT NULL,
-    [ProjPaymentReceiveID] bigint  NULL,
-    [ReceivedID] bigint  NULL,
-    [PaymentID] bigint  NULL,
-    [BankID] bigint  NULL,
-    [CreditAmt] money  NULL,
-    [DebitAmt] money  NULL,
-    [Remarks] nvarchar(MAX)  NOT NULL,
-    [IsClosed] bit  NOT NULL,
-    [FilePath] varchar(128)  NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblProjPaymentReceivables]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblProjPaymentReceivables] (
-    [ProjPaymentReceiveID] bigint IDENTITY(1,1) NOT NULL,
-    [ProjectID] bigint  NOT NULL,
-    [BankID] bigint  NULL,
-    [ReceivedDate] date  NOT NULL,
-    [ReceivedMode] nvarchar(100)  NOT NULL,
-    [Remarks] varchar(MAX)  NOT NULL,
-    [NetAmtReceived] money  NOT NULL,
-    [TDSDeductionAmt] money  NOT NULL,
-    [GstDeductionAmt] money  NOT NULL,
-    [SecurityDepositAmt] money  NOT NULL,
-    [OtherDeductionAmt] money  NOT NULL,
-    [IsAdvance] bit  NOT NULL,
-    [UploadedFile] nvarchar(MAX)  NULL,
-    [SaleInvoiceID] varchar(8)  NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblPurchaseInvoiceItems]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblPurchaseInvoiceItems] (
-    [ItemDtlID] nvarchar(128)  NOT NULL,
-    [PurchaseInvoiceID] varchar(8)  NOT NULL,
-    [ItemName] nvarchar(MAX)  NULL,
-    [ItemHSNCode] nvarchar(50)  NOT NULL,
-    [GSTPercentage] int  NOT NULL,
-    [IGSTPercentage] float  NULL,
-    [CGSTPercentage] float  NULL,
-    [SGSTPercentage] float  NULL,
-    [Qty] int  NOT NULL,
-    [Rate] money  NOT NULL,
-    [Amount] money  NOT NULL,
-    [SlNo] varchar(10)  NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblPurchaseInvoiceKeys]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblPurchaseInvoiceKeys] (
-    [PurchaseInvoiceID] varchar(8)  NOT NULL,
-    [PurchaseDate] datetime  NOT NULL,
-    [PORefNo] nvarchar(50)  NULL,
-    [BillNo] nvarchar(50)  NULL,
-    [POType] nvarchar(50)  NOT NULL,
-    [ProjectID] bigint  NULL,
-    [VenderID] bigint  NOT NULL,
-    [IGSTAmount] money  NULL,
-    [CGSTAmount] money  NULL,
-    [SGSTAmount] money  NULL,
-    [ExcludingTaxAmt] money  NOT NULL,
-    [IncludingTaxAmt] money  NOT NULL,
-    [AmountPaid] money  NOT NULL,
-    [BalanceAmount] money  NOT NULL,
-    [Remarks] nvarchar(MAX)  NOT NULL,
-    [UploadBill] nvarchar(MAX)  NULL,
-    [ShipTo] nvarchar(MAX)  NULL,
-    [TermsConditions] nvarchar(MAX)  NULL,
-    [IsPOCancelled] bit  NOT NULL,
-    [HasMarkForPayment] bit  NOT NULL,
-    [IsPaymentDeclined] bit  NOT NULL,
-    [UserID] nvarchar(100)  NOT NULL,
-    [LastModifiedOn] datetime  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblPurchaseSales]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblPurchaseSales] (
-    [PurchaseSaleID] bigint IDENTITY(1,1) NOT NULL,
-    [PurchaseSaleDate] datetime  NOT NULL,
-    [PurchaseSaleInvoiceNo] varchar(50)  NOT NULL,
-    [VenderID] bigint  NULL,
-    [ClientID] bigint  NULL,
-    [HSNSAC] varchar(20)  NULL,
-    [IsIGST] bit  NOT NULL,
-    [IGST] float  NULL,
-    [SGST] float  NULL,
-    [CGST] float  NULL,
-    [TaxableAmount] float  NOT NULL,
-    [PurchaseSaleType] varchar(50)  NOT NULL,
-    [Description] varchar(MAX)  NULL,
-    [UserID] varchar(100)  NOT NULL,
-    [LastModifiedOn] datetime  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblReceivedAmountDetails]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblReceivedAmountDetails] (
-    [RecvDtlsID] nvarchar(128)  NOT NULL,
-    [ReceivedID] varchar(8)  NOT NULL,
-    [ReferenceNo] varchar(25)  NOT NULL,
-    [ReceivedAmount] decimal(18, 2)  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblReceivedAmountKeys]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblReceivedAmountKeys] (
-    [ReceivedID] varchar(8)  NOT NULL,
-    [ReceivedDate] datetime  NOT NULL,
-    [PaymentMode] varchar(50)  NOT NULL,
-    [Amount] decimal(18, 2)  NOT NULL,
-    [Description] varchar(MAX)  NOT NULL,
-    [UserID] varchar(50)  NOT NULL,
-    [LastModifiedOn] datetime  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblReferenceDetails]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblReferenceDetails] (
-    [ReferenceID] bigint IDENTITY(1,1) NOT NULL,
-    [RefDate] datetime  NOT NULL,
-    [RefType] varchar(100)  NOT NULL,
-    [DescORSubject] varchar(MAX)  NOT NULL,
-    [FiscalYear] varchar(10)  NOT NULL,
-    [RefNumber] varchar(20)  NOT NULL,
-    [LetterTO] varchar(256)  NOT NULL,
-    [VendorID] bigint  NOT NULL,
-    [SLNO] int  NULL,
-    [IsCancelled] bit  NOT NULL,
-    [UserID] varchar(100)  NOT NULL,
-    [LastModifiedOn] datetime  NOT NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblSaleInvoiceItems]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblSaleInvoiceItems] (
-    [ItemDtlID] nvarchar(128)  NOT NULL,
-    [SaleInvoiceID] varchar(8)  NOT NULL,
-    [ItemName] nvarchar(MAX)  NOT NULL,
-    [ItemHSNCode] varchar(50)  NOT NULL,
-    [GSTPercentage] int  NOT NULL,
-    [IGSTPercentage] float  NULL,
-    [CGSTPercentage] float  NULL,
-    [SGSTPercentage] float  NULL,
-    [Qty] int  NOT NULL,
-    [Rate] money  NOT NULL,
-    [Amount] money  NOT NULL,
-    [SequenceNo] varchar(5)  NULL
-);
-END;
-GO
-
-IF OBJECT_ID('[utblSaleInvoiceKeys]', 'U') IS NULL
-BEGIN
-CREATE TABLE [utblSaleInvoiceKeys] (
-    [SaleInvoiceID] varchar(8)  NOT NULL,
-    [OrderNo] nvarchar(200)  NULL,
-    [OrderDate] date  NULL,
-    [InvoiceTo] nvarchar(100)  NOT NULL,
-    [InvoiceDate] date  NOT NULL,
-    [ReferenceNo] varchar(25)  NOT NULL,
-    [VenderID] bigint  NOT NULL,
-    [ProjectID] bigint  NOT NULL,
-    [IGSTAmount] money  NULL,
-    [CGSTAmount] money  NULL,
-    [SGSTAmount] money  NULL,
-    [ExcludingTaxAmt] money  NOT NULL,
-    [IncludingTaxAmt] money  NOT NULL,
-    [AdvanceReceived] money  NULL,
-    [ReceivedRemarks] nvarchar(MAX)  NULL,
-    [BalanceAmount] money  NOT NULL,
-    [Remarks] nvarchar(MAX)  NOT NULL,
-    [IsCancelled] bit  NOT NULL,
-    [UserID] nvarchar(200)  NOT NULL,
-    [LastModifiedOn] datetime  NOT NULL
-);
-END;
 GO
 
 -- ==========================================================
