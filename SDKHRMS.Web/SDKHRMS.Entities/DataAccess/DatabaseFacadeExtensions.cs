@@ -35,12 +35,11 @@ namespace SDKHRMS.Entities.DataAccess
                         {
                             if (param is SqlParameter sqlParam)
                             {
-                                var p = command.CreateParameter();
-                                p.ParameterName = sqlParam.ParameterName;
-                                p.Value = sqlParam.Value ?? DBNull.Value;
-                                p.DbType = sqlParam.DbType;
-                                p.Direction = sqlParam.Direction;
-                                if (sqlParam.Size > 0) p.Size = sqlParam.Size;
+                                var p = (SqlParameter)((ICloneable)sqlParam).Clone();
+                                if (p.Value == null)
+                                {
+                                    p.Value = DBNull.Value;
+                                }
                                 command.Parameters.Add(p);
                             }
                             else if (param is IDataParameter dataParam)

@@ -42,7 +42,7 @@ namespace SDKHRMS.Entities.DataAccess
             try
             {
                 ConvertListToDT objDT = new ConvertListToDT();
-                var dt = objDT.ConvertIEnumerableToDataTable(item.CustomInvoiceItemList);
+                var dt = objDT.ConvertInvoiceItemsToDataTable(item.CustomInvoiceItemList);
                 var parItemDtls = new SqlParameter("@ItemDtlsList", dt);
                 parItemDtls.SqlDbType = SqlDbType.Structured;
                 parItemDtls.TypeName = "dbo.AddItemDtlsTVP";
@@ -194,7 +194,7 @@ namespace SDKHRMS.Entities.DataAccess
             try
             {
                 ConvertListToDT objDT = new ConvertListToDT();
-                var dt = objDT.ConvertIEnumerableToDataTable(item.CustomInvoiceItemList);
+                var dt = objDT.ConvertInvoiceItemsToDataTable(item.CustomInvoiceItemList);
                 var parItemDtls = new SqlParameter("@ItemDtlsList", dt);
                 parItemDtls.SqlDbType = SqlDbType.Structured;
                 parItemDtls.TypeName = "dbo.AddItemDtlsTVP";

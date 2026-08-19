@@ -60,7 +60,7 @@ namespace SDKHRMS.Entities.DataAccess
             try
             {
                 ConvertListToDT objDT = new ConvertListToDT();
-                var dt = objDT.ConvertIEnumerableToDataTable(item.ChallanItemList);
+                var dt = objDT.ConvertChallanItemsToDataTable(item.ChallanItemList);
                 var parItemDtls = new SqlParameter("@ItemDtlsList", dt);
                 parItemDtls.SqlDbType = SqlDbType.Structured;
                 parItemDtls.TypeName = "dbo.AddChallanItemDtlsTVP";
