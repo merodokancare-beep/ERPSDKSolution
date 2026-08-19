@@ -55,7 +55,7 @@ namespace Rotativa
 
                     foreach (var dir in candidates)
                     {
-                        if (Directory.Exists(dir) && File.Exists(Path.Combine(dir, "wkhtmltopdf.exe")))
+                        if (Directory.Exists(dir) && (File.Exists(Path.Combine(dir, "wkhtmltopdf.exe")) || File.Exists(Path.Combine(dir, "wkhtmltopdf"))))
                         {
                             rotativaDir = dir;
                             break;

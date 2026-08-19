@@ -1,0 +1,20 @@
+Yes, absolutely!
+
+Notice the Ubuntu logo (the circle with three dots) right at the top-right corner of that card next to the Windows logo.
+
+How it works during checkout:
+When you click "Order Now", you will be taken to the Product Configuration / Order Details page.
+Under the "Operating System" / "OS Template" dropdown, you will see options like:
+Ubuntu (Select Ubuntu 22.04 LTS or Ubuntu 24.04 LTS)
+Debian
+AlmaLinux / CentOS
+Windows Server (paid add-on)
+Choose Ubuntu (22.04 LTS recommended). It is 100% free (no extra license fee) and comes pre-installed as soon as the VPS is provisioned.
+What happens after ordering:
+Once your order is complete, you will receive an email with:
+
+Server IP Address
+Username: root
+SSH Port: 22
+Root Password
+From there, we can install the .NET 8 runtime / Docker and deploy the ERP application.

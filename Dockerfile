@@ -13,7 +13,30 @@ RUN dotnet publish "SDKHRMS.Web.csproj" -c Release -o /app/publish /p:UseAppHost
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
+
+# Install wkhtmltopdf and rendering dependencies for Linux
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        wkhtmltopdf \
+        libgdiplus \
+        libc6-dev \
+        libxrender1 \
+        libxext6 \
+        libfontconfig1 \
+        libx11-dev \
+        libjpeg62-turbo \
+        fontconfig \
+        fonts-dejavu-core \
+        xfonts-75dpi \
+        xfonts-base \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY --from=build /app/publish .
+
+# Ensure /app/Rotativa directory exists and wkhtmltopdf binary is available with execute permissions
+RUN mkdir -p /app/Rotativa \
+    && cp -f /usr/bin/wkhtmltopdf /app/Rotativa/wkhtmltopdf 2>/dev/null || ln -sf /usr/bin/wkhtmltopdf /app/Rotativa/wkhtmltopdf \
+    && chmod +x /app/Rotativa/wkhtmltopdf
 
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
