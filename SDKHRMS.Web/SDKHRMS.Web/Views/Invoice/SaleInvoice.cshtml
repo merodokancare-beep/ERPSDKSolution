@@ -71,7 +71,7 @@
                     <label class="invoice-form-label required">Invoice Date</label>
                     <div class="input-group input-group-sm">
                         <span class="input-group-text bg-light border text-primary"><i class="fa-regular fa-calendar"></i></span>
-                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.InvoiceDate, new { @class = "form-control invoice-input-pill", autocomplete = "off", @placeholder = "Select Invoice Date", @id = "invdt" })
+                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.InvoiceDate, "{0:dd MMM yyyy}", new { @class = "form-control invoice-input-pill", autocomplete = "off", @placeholder = "Select Invoice Date", @id = "invdt", @Value = (Model?.SaleInvoiceKeyModel?.InvoiceDate != null && Model.SaleInvoiceKeyModel.InvoiceDate != default(DateTime) ? Model.SaleInvoiceKeyModel.InvoiceDate.ToString("dd MMM yyyy") : DateTime.Now.ToString("dd MMM yyyy")) })
                     </div>
                     @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.InvoiceDate)
                 </div>
@@ -623,8 +623,18 @@
             $(document).on('change', '#invdt', RefNo);
             RefNo();
             //Project Details
+            var applyWorkOrderDetails = function () {
+                var woNo = $('#hdnWONo').val() || '';
+                var woDate = $('#hdnWODate').val() || '';
+                var vendorID = $('#hdnVendorID').val() || '';
+
+                $('#ClientID, #SaleInvoiceKeyModel_VenderID, input[name$="VenderID"]').val(vendorID);
+                $('#orderno, #SaleInvoiceKeyModel_OrderNo, input[name$="OrderNo"]').val(woNo);
+                $('#orderdt, #SaleInvoiceKeyModel_OrderDate, input[name$="OrderDate"]').val(woDate);
+            };
+
             var ddProject = function () {
-                if ($('#proj').val() != "" || $('#proj').val() != 0) {
+                if ($('#proj').val() != "" && $('#proj').val() != "0") {
                     var SelectType = $("#proj").find('option:selected').val();
                     $.ajax({
                         type: 'GET',
@@ -633,41 +643,22 @@
                         success: function (data) {
                             $('#DataGrid').html(data);
                             $('#DataGrid').removeClass("d-none");
-                            OrderDTNo();
-                            //changeProject($(".member-data-row").length);
+                            applyWorkOrderDetails();
                         }
-                    })
+                    });
                 }
                 else {
                     $('#DataGrid').addClass("d-none");
-                    $('#orderdt').val('');
-                    $('#orderno').val('');
-                    $('#ClientID').val('');
+                    $('#orderdt, #SaleInvoiceKeyModel_OrderDate, input[name$="OrderDate"]').val('');
+                    $('#orderno, #SaleInvoiceKeyModel_OrderNo, input[name$="OrderNo"]').val('');
+                    $('#ClientID, #SaleInvoiceKeyModel_VenderID, input[name$="VenderID"]').val('');
                 }
             };
+            $('#proj').on('select2:select change', function () {
+                ddProject();
+            });
             $(document).on('change', '#proj', ddProject);
             ddProject();
-
-            var OrderDTNo = function () {
-                if (($('#proj').val() != "" || $('#proj').val() != 0)) {
-                    var ProjectID = $("#proj").find('option:selected').val();
-                    //alert(ProjectID);
-                    $.ajax({
-                        type: 'GET',
-                        url: "/Invoice/WorkingOrderDTNo",
-                        dataType: 'json',
-                        data: { ProjID: ProjectID },
-                        // here we are get value of selected property and passing same value as inputto json method getJsonSectionList.
-                        success: function (data) {
-                                 //$('#WorkingOrderSec').removeClass('hidden');
-                                $('#orderdt').val(data.WODate);
-                                $('#orderno').val(data.WONo);
-                                $('#ClientID').val(data.VendorID);
-                                //$('#ClientID').text(data.ClientID);
-                            },
-                        });
-                }
-            }
 
         });
 

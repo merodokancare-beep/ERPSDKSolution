@@ -76,7 +76,7 @@
                     <label class="invoice-form-label required">Invoice Date</label>
                     <div class="input-group input-group-sm">
                         <span class="input-group-text bg-light border text-primary"><i class="fa-regular fa-calendar"></i></span>
-                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.InvoiceDate, new { @class = "form-control invoice-input-pill", autocomplete = "off", @placeholder = "Select Invoice Date", @id = "invdt", @Value = @Model.SaleInvoiceKeyModel.InvoiceDate.ToString("dd MMM yyyy") })
+                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.InvoiceDate, "{0:dd MMM yyyy}", new { @class = "form-control invoice-input-pill", autocomplete = "off", @placeholder = "Select Invoice Date", @id = "invdt" })
                     </div>
                     @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.InvoiceDate)
                 </div>
@@ -96,7 +96,7 @@
                     <label class="invoice-form-label">Work Order Date</label>
                     <div class="input-group input-group-sm">
                         <span class="input-group-text bg-light border text-primary"><i class="fa-regular fa-calendar-check"></i></span>
-                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.OrderDate, new { @class = "form-control invoice-input-pill", autocomplete = "off", @placeholder = "Select Order Date", @id = "orderdt" })
+                        @Html.TextBoxFor(m => m.SaleInvoiceKeyModel.OrderDate, "{0:dd MMM yyyy}", new { @class = "form-control invoice-input-pill", autocomplete = "off", @placeholder = "Select Order Date", @id = "orderdt" })
                     </div>
                     @Html.ValidationMessageFor(m => m.SaleInvoiceKeyModel.OrderDate)
                 </div>
@@ -380,15 +380,13 @@
             $('#orderdt').datetimepicker({
                 theme: 'light',
                 format: 'd M Y',
-                timepicker: false,
-                minDate: 1
-            })
+                timepicker: false
+            });
             $('#invdt').datetimepicker({
                 theme: 'light',
                 format: 'd M Y',
-                timepicker: false,
-                minDate: 1
-            })
+                timepicker: false
+            });
             var bindAutoComplete = function () {
                 $('.member-data-row').each(function (index) {
                     $('#CustomInvoiceItemList_' + index + '__Qty').on('input', function () { calculateamount(this) })
@@ -407,36 +405,34 @@
                 var CGSTAmtSum = 0;
                 var SGSTAmtSum = 0;
                 var GTAmt = 0;
-                var rowno = $(".member-data-row").length;
-                //var newrowno = rowno + 1;
                 $('.amount').each(function (rowno) {
-                    var indxetamt = parseFloat($('#CustomInvoiceItemList_' + rowno + '__Amount').val());
-                    if ($('#CustomInvoiceItemList_' + rowno + '__IGSTPercentage').val() != 0) {
-                        var indxigstamt = parseFloat($('#CustomInvoiceItemList_' + rowno + '__IGSTPercentage').val() / 100) * indxetamt;
+                    var indxetamt = parseFloat($('#CustomInvoiceItemList_' + rowno + '__Amount').val()) || 0;
+                    var igst = parseFloat($('#CustomInvoiceItemList_' + rowno + '__IGSTPercentage').val()) || 0;
+                    var cgst = parseFloat($('#CustomInvoiceItemList_' + rowno + '__CGSTPercentage').val()) || 0;
+                    var sgst = parseFloat($('#CustomInvoiceItemList_' + rowno + '__SGSTPercentage').val()) || 0;
+
+                    if (igst > 0) {
+                        var indxigstamt = (igst / 100) * indxetamt;
                         IGSTAmtSum += indxigstamt;
                         ETAmtSum += indxetamt;
                     }
-                    else if ($('#CustomInvoiceItemList_' + rowno + '__CGSTPercentage').val() != 0 && $('#CustomInvoiceItemList_' + rowno + '__SGSTPercentage').val() != 0) {
-                        var indxcgstamt = parseFloat($('#CustomInvoiceItemList_' + rowno + '__CGSTPercentage').val() / 100) * indxetamt;
+                    else if (cgst > 0 || sgst > 0) {
+                        var indxcgstamt = (cgst / 100) * indxetamt;
                         CGSTAmtSum += indxcgstamt;
-                        var indxsgstamt = parseFloat($('#CustomInvoiceItemList_' + rowno + '__SGSTPercentage').val() / 100) * indxetamt;
+                        var indxsgstamt = (sgst / 100) * indxetamt;
                         SGSTAmtSum += indxsgstamt;
                         ETAmtSum += indxetamt;
                     }
                     else {
-                        alert('Please Enter The IGST OR CGST & SGST Percentage according to ur transaction in ' + (rowno + 1) + ' Row');
-                        $('#CustomInvoiceItemList_' + rowno + '__Qty').val("")
-                        $('#CustomInvoiceItemList_' + rowno + '__Rate').val("")
-                        $('#CustomInvoiceItemList_' + rowno + '__Amount').val("")
+                        ETAmtSum += indxetamt;
                     }
-                    ($('#EXcludeTax').val(ETAmtSum.toFixed(2)));
-                    ($('#IGSTAmt').val(IGSTAmtSum.toFixed(2)));
-                    ($('#CGSTAmt').val(CGSTAmtSum.toFixed(2)));
-                    ($('#SGSTAmt').val(SGSTAmtSum.toFixed(2)));
-                })
+                    $('#EXcludeTax').val(ETAmtSum.toFixed(2));
+                    $('#IGSTAmt').val(IGSTAmtSum.toFixed(2));
+                    $('#CGSTAmt').val(CGSTAmtSum.toFixed(2));
+                    $('#SGSTAmt').val(SGSTAmtSum.toFixed(2));
+                });
                 GTAmt = parseFloat(ETAmtSum + IGSTAmtSum + CGSTAmtSum + SGSTAmtSum);
-                ($('#GTAmt').val(GTAmt.toFixed(2)));
-
+                $('#GTAmt').val(GTAmt.toFixed(2));
             };
             var deductionvalue = function () {
                 var NetPayableTotal = 0
@@ -614,47 +610,54 @@
             $(document).on('change', '#invdt', RefNo);
             RefNo();*@
             //Project Details
-            var ddProject = function () {
-                if ($('#proj').val() != "" || $('#proj').val() != 0) {
-                    var SelectType = $("#proj").find('option:selected').val();
+            var applyWorkOrderDetails = function (isUserChange) {
+                var woNo = $('#hdnWONo').val() || '';
+                var woDate = $('#hdnWODate').val() || '';
+                var vendorID = $('#hdnVendorID').val() || '';
+
+                var $clientInput = $('#ClientID, #SaleInvoiceKeyModel_VenderID, input[name$="VenderID"]');
+                var $ordernoInput = $('#orderno, #SaleInvoiceKeyModel_OrderNo, input[name$="OrderNo"]');
+                var $orderdtInput = $('#orderdt, #SaleInvoiceKeyModel_OrderDate, input[name$="OrderDate"]');
+
+                if (vendorID) {
+                    $clientInput.val(vendorID);
+                }
+
+                if (isUserChange === true || !$ordernoInput.val()) {
+                    $ordernoInput.val(woNo);
+                }
+
+                if (isUserChange === true || !$orderdtInput.val()) {
+                    $orderdtInput.val(woDate);
+                }
+            };
+
+            var ddProject = function (isUserChange) {
+                var selectVal = $('#proj').val();
+                if (selectVal && selectVal != "0" && selectVal != "") {
                     $.ajax({
                         type: 'GET',
                         url: "/Invoice/GetProjectClientDetails",
-                        data: { id: SelectType },
+                        data: { id: selectVal },
                         success: function (data) {
                             $('#DataGrid').html(data);
-                            $('#DataGrid').removeClass("hidden");
-                            OrderDTNo();
-                            //changeProject($(".member-data-row").length);
+                            $('#DataGrid').removeClass("d-none hidden");
+                            applyWorkOrderDetails(isUserChange);
                         }
-                    })
-                }
-                else {
-                    $('#DataGrid').addClass("hidden");
-                }
-            };
-            $(document).on('change', '#proj', ddProject);
-            ddProject();
-
-            var OrderDTNo = function () {
-                if (($('#proj').val() != "" || $('#proj').val() != 0)) {
-                    var ProjectID = $("#proj").find('option:selected').val();
-                    $.ajax({
-                        type: 'GET',
-                        url: "/Invoice/WorkingOrderDTNo",
-                        dataType: 'json',
-                        data: { ProjID: ProjectID },
-                        // here we are get value of selected property and passing same value as inputto json method getJsonSectionList.
-                        success: function (data) {
-                            //$('#WorkingOrderSec').removeClass('hidden');
-                            $('#orderdt').val(data.WODate);
-                            $('#orderno').val(data.WONo);
-                            $('#ClientID').val(data.VendorID);
-                            //$('#ClientID').text(data.ClientID);
-                        },
                     });
                 }
-            }
+                else {
+                    $('#DataGrid').addClass("d-none hidden");
+                }
+            };
+
+            $('#proj').on('select2:select change', function () {
+                ddProject(true);
+            });
+            $(document).on('change', '#proj', function () {
+                ddProject(true);
+            });
+            ddProject(false);
 
         });
 

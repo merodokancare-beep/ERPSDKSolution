@@ -2948,6 +2948,40 @@ body.light-mode .card-header {
 }
 
 /* ==========================================================================
+   INVOICE CLIENT & PROJECT SUMMARY CARD (_pvVendorDetails.cshtml)
+   ========================================================================== */
+.invoice-client-summary-card {
+  background: rgba(16, 185, 129, 0.06) !important;
+  border: 1px solid rgba(16, 185, 129, 0.25) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15) !important;
+  transition: var(--erp-transition, all 0.25s ease);
+}
+
+.invoice-client-summary-card .client-project-name {
+  color: #F8FAFC !important;
+}
+
+.invoice-client-summary-card .client-address-row {
+  border-top-color: rgba(255, 255, 255, 0.08) !important;
+  color: #94A3B8 !important;
+}
+
+body.light-mode .invoice-client-summary-card {
+  background: #F0FDF4 !important;
+  border-color: #BBF7D0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.light-mode .invoice-client-summary-card .client-project-name {
+  color: #0F172A !important;
+}
+
+body.light-mode .invoice-client-summary-card .client-address-row {
+  border-top-color: #DCFCE7 !important;
+  color: #475569 !important;
+}
+
+/* ==========================================================================
    KANAKKU EXECUTIVE INVOICE DESIGN SYSTEM
    ========================================================================== */
 .invoice-page-header {

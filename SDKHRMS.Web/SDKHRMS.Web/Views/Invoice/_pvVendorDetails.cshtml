@@ -1,50 +1,47 @@
-﻿@model SDKHRMS.Entities.ViewModels.InvoiceAddViewModel
+@model SDKHRMS.Entities.ViewModels.InvoiceAddViewModel
 
-@if (@Model.ProjectClientDtlsView != null)
+@if (Model?.ProjectClientDtlsView != null)
 {
-    <div class="row">
-        <div class="col-xl-9 col-lg-9 col-sm-12 col-12 d-flex">
-            <div class="card inovices-card w-100" style="padding:0px!important">
-                <div class="card-body">
-                    <div class="dash-widget-header">
-                        <div class="dash-count">
-                            <div class="dash-title">Project Name</div>
-                            <div class="dash-counts">
-                                <p>@Model.ProjectClientDtlsView.ProjectName</p>
-                            </div>
-                            <div class="dash-title">Client Name</div>
-                            <div class="dash-counts">
-                                <p>@Model.ProjectClientDtlsView.VenderName</p>
-                            </div>
-                            <div class="dash-title">Client Address:</div>
-                            <div class="dash-counts">
-                                <p>@Model.ProjectClientDtlsView.VenderAddress</p>
-                            </div>
-                        </div>
-                    </div>
+    <input type="hidden" id="hdnWONo" value="@(Model.ProjectClientDtlsView.WONo ?? "")" />
+    <input type="hidden" id="hdnWODate" value="@(Model.ProjectClientDtlsView.WODate ?? "")" />
+    <input type="hidden" id="hdnVendorID" value="@Model.ProjectClientDtlsView.VendorID" />
 
+    <div class="invoice-client-summary-card p-2.5 rounded-3 border mt-2">
+        <div class="row g-2 align-items-start">
+            <!-- Left: Client & Project Info -->
+            <div class="col-sm-7 col-12">
+                <div class="d-flex align-items-center gap-1.5 mb-1">
+                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5" style="font-size: 0.68rem;">Customer</span>
+                    <h6 class="fw-bold text-success mb-0 text-truncate" style="font-size: 0.88rem;" title="@Model.ProjectClientDtlsView.VenderName">
+                        <i class="fa-solid fa-building-user me-1"></i>@Model.ProjectClientDtlsView.VenderName
+                    </h6>
+                </div>
+                <div class="small mb-1" style="font-size: 0.76rem; line-height: 1.35;">
+                    <span class="text-muted">Project:</span>
+                    <span class="fw-semibold client-project-name">@Model.ProjectClientDtlsView.ProjectName</span>
+                </div>
+            </div>
+
+            <!-- Right: Project Cost & GST -->
+            <div class="col-sm-5 col-12 text-sm-end text-start">
+                <div class="mb-1">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-1 fw-bold" style="font-size: 0.76rem;">
+                        Cost: &#8377; @Model.ProjectClientDtlsView.ProjValue.ToString("N2")
+                    </span>
+                </div>
+                <div class="font-monospace" style="font-size: 0.72rem; word-break: break-all;">
+                    <span class="text-muted">GST:</span>
+                    <span class="text-info fw-bold">@(string.IsNullOrWhiteSpace(Model.ProjectClientDtlsView.GSTNo) ? "N/A" : Model.ProjectClientDtlsView.GSTNo)</span>
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-lg-3 col-sm-12 col-12 d-flex">
-            <div class="card inovices-card w-100" style="padding:0px!important">
-                <div class="card-body">
-                    <div class="dash-widget-header">
-                        <div class="dash-count">
-                            <div class="dash-title">Project Cost</div>
-                            <div class="dash-counts">
-                                <p>@Model.ProjectClientDtlsView.ProjValue.ToString("0.00")</p>
-                            </div>
-                            <div class="dash-title">Client GST No.</div>
-                            <div class="dash-counts">
-                                <p>@Model.ProjectClientDtlsView.GSTNo</p>
-                            </div>
-                        </div>
-                    </div>
 
-                </div>
+        @if (!string.IsNullOrWhiteSpace(Model.ProjectClientDtlsView.VenderAddress))
+        {
+            <div class="pt-1.5 mt-1.5 border-top client-address-row" style="font-size: 0.74rem; line-height: 1.35;">
+                <i class="fa-solid fa-location-dot me-1 text-success opacity-75"></i>@Model.ProjectClientDtlsView.VenderAddress
             </div>
-        </div>
+        }
     </div>
 }
 
