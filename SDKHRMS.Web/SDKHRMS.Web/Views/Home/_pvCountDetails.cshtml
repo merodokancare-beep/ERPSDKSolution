@@ -10,12 +10,12 @@
                         <i class="fa-solid fa-file-invoice-dollar"></i>
                     </span>
                     <span class="badge bg-light text-muted border rounded-pill px-2 py-1" style="font-size: 0.68rem; font-weight: 600;">
-                        @(ViewBag.FYLabel ?? "FY 2024-25")
+                        @(ViewBag.FYLabel ?? "Custom Range")
                     </span>
                 </div>
                 <div class="text-muted fw-semibold text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.03em;">Total Invoices Generated</div>
                 <div class="fw-extrabold stat-value-text my-1" style="font-size: 1.4rem;">
-                    &#8377; @(ViewBag.TotalSales ?? "3,45,67,890")
+                    &#8377; @(ViewBag.TotalSales ?? "0")
                 </div>
                 <div class="pt-2 border-top d-flex align-items-center justify-content-between" style="font-size: 0.75rem;">
                     <a href="/invoice/saleinvoicelist" class="text-primary fw-bold text-decoration-none">
@@ -35,12 +35,12 @@
                         <i class="fa-solid fa-cart-shopping"></i>
                     </span>
                     <span class="badge bg-light text-muted border rounded-pill px-2 py-1" style="font-size: 0.68rem; font-weight: 600;">
-                        @(ViewBag.FYLabel ?? "FY 2024-25")
+                        @(ViewBag.FYLabel ?? "Custom Range")
                     </span>
                 </div>
                 <div class="text-muted fw-semibold text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.03em;">Total Purchase Orders</div>
                 <div class="fw-extrabold stat-value-text my-1" style="font-size: 1.4rem;">
-                    &#8377; @(ViewBag.TotalPO ?? "2,12,34,560")
+                    &#8377; @(ViewBag.TotalPO ?? "0")
                 </div>
                 <div class="pt-2 border-top d-flex align-items-center justify-content-between" style="font-size: 0.75rem;">
                     <a href="/invoice/purchaseinvoicelist" class="text-success fw-bold text-decoration-none">
@@ -65,7 +65,7 @@
                 </div>
                 <div class="text-muted fw-semibold text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.03em;">Total Payable to Vendors</div>
                 <div class="fw-extrabold stat-value-text my-1" style="font-size: 1.4rem;">
-                    &#8377; @(ViewBag.TotalPayable ?? "1,25,78,450")
+                    &#8377; @(ViewBag.TotalPayable ?? "0")
                 </div>
                 <div class="pt-2 border-top d-flex align-items-center justify-content-between" style="font-size: 0.75rem;">
                     <a href="/popayment/index" class="text-warning fw-bold text-decoration-none">
@@ -90,7 +90,7 @@
                 </div>
                 <div class="text-muted fw-semibold text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.03em;">Total Receivable from Clients</div>
                 <div class="fw-extrabold stat-value-text my-1" style="font-size: 1.4rem;">
-                    &#8377; @(ViewBag.TotalReceivable ?? "2,78,90,320")
+                    &#8377; @(ViewBag.TotalReceivable ?? "0")
                 </div>
 
                 <div class="pt-2 border-top d-flex align-items-center justify-content-between" style="font-size: 0.75rem;">
@@ -106,6 +106,9 @@
 <script>
     if ('@ViewBag.TotalSalesFormatted') {
         $('#quickTotalSales').text('\u20B9 ' + '@ViewBag.TotalSalesFormatted');
+    }
+    if ('@ViewBag.NetMargin' !== '') {
+        $('#quickNetMargin').text('@ViewBag.NetMargin%');
     }
     if ('@ViewBag.FYLabel') {
         $('#selectedFY').text('@ViewBag.FYLabel');

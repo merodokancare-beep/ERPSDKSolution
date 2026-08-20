@@ -93,11 +93,32 @@ namespace SDKHRMS.Web.Controllers
             }
         }
 
-        public ActionResult GetCountDetails(DateTime? SDate, DateTime? EDate)
+        private (DateTime startDate, DateTime endDate) ParseDateRange(string sDateStr, string eDateStr)
+        {
+            DateTime sDate, eDate;
+            var formats = new[] { "dd MMM yyyy", "d MMM yyyy", "yyyy-MM-dd", "dd/MM/yyyy", "MM/dd/yyyy", "dd-MM-yyyy", "d/M/yyyy" };
+
+            if (string.IsNullOrWhiteSpace(sDateStr) ||
+                (!DateTime.TryParseExact(sDateStr.Trim(), formats, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out sDate) &&
+                 !DateTime.TryParse(sDateStr, out sDate)))
+            {
+                sDate = new DateTime(2024, 4, 1);
+            }
+
+            if (string.IsNullOrWhiteSpace(eDateStr) ||
+                (!DateTime.TryParseExact(eDateStr.Trim(), formats, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out eDate) &&
+                 !DateTime.TryParse(eDateStr, out eDate)))
+            {
+                eDate = DateTime.Now;
+            }
+
+            return (sDate, eDate);
+        }
+
+        public ActionResult GetCountDetails(string SDate, string EDate)
         {
             FiscalWiseCount model = new FiscalWiseCount();
-            DateTime startDate = SDate ?? Convert.ToDateTime("2024-04-01");
-            DateTime endDate = EDate ?? Convert.ToDateTime("2025-03-31");
+            var (startDate, endDate) = ParseDateRange(SDate, EDate);
 
             int startYear = startDate.Year;
             if (startDate.Month < 4) startYear = startDate.Year - 1;
@@ -124,11 +145,10 @@ namespace SDKHRMS.Web.Controllers
 
             var ci = new System.Globalization.CultureInfo("en-IN");
 
-            // Direct binding from live database query result with fallback to SSMS verified results
-            decimal totalSales = model.TotalSalesInvoiceAmount > 0 ? model.TotalSalesInvoiceAmount : 31639575.65m;
-            decimal totalPO = model.TotalPOAmount > 0 ? model.TotalPOAmount : 23192552.85m;
-            decimal totalPayable = model.TotalPayableAmount > 0 ? model.TotalPayableAmount : 1596166.85m;
-            decimal totalReceivable = model.TotalReceivableAmount > 0 ? model.TotalReceivableAmount : 31639575.23m;
+            decimal totalSales = model.TotalSalesInvoiceAmount;
+            decimal totalPO = model.TotalPOAmount;
+            decimal totalPayable = model.TotalPayableAmount;
+            decimal totalReceivable = model.TotalReceivableAmount;
 
             ViewBag.TotalSales = totalSales.ToString("N0", ci);
             ViewBag.TotalPO = totalPO.ToString("N0", ci);
@@ -147,6 +167,9 @@ namespace SDKHRMS.Web.Controllers
             {
                 ViewBag.TotalSalesFormatted = totalSales.ToString("N0", ci);
             }
+
+            decimal netMargin = totalSales > 0 ? Math.Round(((totalSales - totalPO) / totalSales) * 100, 0) : 0;
+            ViewBag.NetMargin = netMargin;
 
             return PartialView("_pvCountDetails", model);
         }
@@ -235,10 +258,11 @@ namespace SDKHRMS.Web.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetGSTAnnualSummary(DateTime? SDate, DateTime? EDate)
+        public ActionResult GetGSTAnnualSummary(string SDate, string EDate)
         {
-            int startYear = SDate?.Year ?? 2025;
-            if (SDate.HasValue && SDate.Value.Month < 4) startYear = SDate.Value.Year - 1;
+            var (startDate, endDate) = ParseDateRange(SDate, EDate);
+            int startYear = startDate.Year;
+            if (startDate.Month < 4) startYear = startDate.Year - 1;
             string fyStr = $"{startYear}-{(startYear + 1).ToString().Substring(2)}";
             ViewBag.FYLabel = "FY " + fyStr;
 
@@ -282,10 +306,11 @@ namespace SDKHRMS.Web.Controllers
             return PartialView("_pvGSTAnnualSummary", model);
         }
 
-        public ActionResult GetGSTMonthlySummary(DateTime? SDate, DateTime? EDate)
+        public ActionResult GetGSTMonthlySummary(string SDate, string EDate)
         {
-            int startYear = SDate?.Year ?? 2025;
-            if (SDate.HasValue && SDate.Value.Month < 4) startYear = SDate.Value.Year - 1;
+            var (startDate, endDate) = ParseDateRange(SDate, EDate);
+            int startYear = startDate.Year;
+            if (startDate.Month < 4) startYear = startDate.Year - 1;
             string fyStr = $"{startYear}-{(startYear + 1).ToString().Substring(2)}";
             ViewBag.FYLabel = "FY " + fyStr;
 
@@ -310,10 +335,11 @@ namespace SDKHRMS.Web.Controllers
             return PartialView("_pvGSTMonthlySummary", list);
         }
 
-        public ActionResult GetTopProjectsSummary(DateTime? SDate, DateTime? EDate)
+        public ActionResult GetTopProjectsSummary(string SDate, string EDate)
         {
-            int startYear = SDate?.Year ?? 2025;
-            if (SDate.HasValue && SDate.Value.Month < 4) startYear = SDate.Value.Year - 1;
+            var (startDate, endDate) = ParseDateRange(SDate, EDate);
+            int startYear = startDate.Year;
+            if (startDate.Month < 4) startYear = startDate.Year - 1;
             string fyStr = $"{startYear}-{(startYear + 1).ToString().Substring(2)}";
             double mult = (fyStr == "2024-25") ? 0.82 : ((fyStr == "2023-24") ? 0.62 : 1.0);
 
@@ -328,10 +354,11 @@ namespace SDKHRMS.Web.Controllers
             return PartialView("_pvTopProjectsSummary", list);
         }
 
-        public JsonResult GetIncomeVsExpensesData(DateTime? SDate, DateTime? EDate)
+        public JsonResult GetIncomeVsExpensesData(string SDate, string EDate)
         {
-            int startYear = SDate?.Year ?? 2025;
-            if (SDate.HasValue && SDate.Value.Month < 4) startYear = SDate.Value.Year - 1;
+            var (startDate, endDate) = ParseDateRange(SDate, EDate);
+            int startYear = startDate.Year;
+            if (startDate.Month < 4) startYear = startDate.Year - 1;
             string fyStr = $"{startYear}-{(startYear + 1).ToString().Substring(2)}";
 
             int[] income, expense, profit;
@@ -364,10 +391,11 @@ namespace SDKHRMS.Web.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetReceivablesPayablesAging(DateTime? SDate, DateTime? EDate)
+        public JsonResult GetReceivablesPayablesAging(string SDate, string EDate)
         {
-            int startYear = SDate?.Year ?? 2025;
-            if (SDate.HasValue && SDate.Value.Month < 4) startYear = SDate.Value.Year - 1;
+            var (startDate, endDate) = ParseDateRange(SDate, EDate);
+            int startYear = startDate.Year;
+            if (startDate.Month < 4) startYear = startDate.Year - 1;
             string fyStr = $"{startYear}-{(startYear + 1).ToString().Substring(2)}";
 
             object model;

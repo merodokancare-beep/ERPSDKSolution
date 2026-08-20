@@ -17,16 +17,16 @@ namespace SDKHRMS.Entities.DataAccess
             try
             {
                 var parSDate = new SqlParameter("@SDate", SDate.Date);
-                var parEDate = new SqlParameter("@EDate", EDate.Date.AddDays(1).AddTicks(-1));
+                var parEDate = new SqlParameter("@EDate", EDate.Date.AddDays(1));
 
                 string sql = @"
                     SELECT 
-                        (SELECT COUNT(1) FROM utblSaleInvoiceKeys WHERE (IsCancelled = 0 OR IsCancelled IS NULL) AND InvoiceDate >= @SDate AND InvoiceDate <= @EDate) AS SaleInvCount,
-                        (SELECT COUNT(1) FROM utblPurchaseInvoiceKeys WHERE (IsPOCancelled = 0 OR IsPOCancelled IS NULL) AND PurchaseDate >= @SDate AND PurchaseDate <= @EDate) AS POCount,
-                        (SELECT ISNULL(SUM(IncludingTaxAmt), 0) FROM utblSaleInvoiceKeys WHERE (IsCancelled = 0 OR IsCancelled IS NULL) AND InvoiceDate >= @SDate AND InvoiceDate <= @EDate) AS TotalSalesInvoiceAmount,
-                        (SELECT ISNULL(SUM(IncludingTaxAmt), 0) FROM utblPurchaseInvoiceKeys WHERE (IsPOCancelled = 0 OR IsPOCancelled IS NULL) AND PurchaseDate >= @SDate AND PurchaseDate <= @EDate) AS TotalPOAmount,
-                        (SELECT ISNULL(SUM(BalanceAmount), 0) FROM utblPurchaseInvoiceKeys WHERE (IsPOCancelled = 0 OR IsPOCancelled IS NULL) AND PurchaseDate >= @SDate AND PurchaseDate <= @EDate) AS TotalPayableAmount,
-                        (SELECT ISNULL(SUM(BalanceAmount), 0) FROM utblSaleInvoiceKeys WHERE (IsCancelled = 0 OR IsCancelled IS NULL) AND InvoiceDate >= @SDate AND InvoiceDate <= @EDate) AS TotalReceivableAmount
+                        (SELECT COUNT(1) FROM utblSaleInvoiceKeys WHERE (IsCancelled = 0 OR IsCancelled IS NULL) AND InvoiceDate >= @SDate AND InvoiceDate < @EDate) AS SaleInvCount,
+                        (SELECT COUNT(1) FROM utblPurchaseInvoiceKeys WHERE (IsPOCancelled = 0 OR IsPOCancelled IS NULL) AND PurchaseDate >= @SDate AND PurchaseDate < @EDate) AS POCount,
+                        (SELECT ISNULL(SUM(IncludingTaxAmt), 0) FROM utblSaleInvoiceKeys WHERE (IsCancelled = 0 OR IsCancelled IS NULL) AND InvoiceDate >= @SDate AND InvoiceDate < @EDate) AS TotalSalesInvoiceAmount,
+                        (SELECT ISNULL(SUM(IncludingTaxAmt), 0) FROM utblPurchaseInvoiceKeys WHERE (IsPOCancelled = 0 OR IsPOCancelled IS NULL) AND PurchaseDate >= @SDate AND PurchaseDate < @EDate) AS TotalPOAmount,
+                        (SELECT ISNULL(SUM(CASE WHEN BalanceAmount > 0 THEN BalanceAmount ELSE 0 END), 0) FROM utblPurchaseInvoiceKeys WHERE (IsPOCancelled = 0 OR IsPOCancelled IS NULL) AND PurchaseDate >= @SDate AND PurchaseDate < @EDate) AS TotalPayableAmount,
+                        (SELECT ISNULL(SUM(CASE WHEN BalanceAmount > 0 THEN BalanceAmount ELSE 0 END), 0) FROM utblSaleInvoiceKeys WHERE (IsCancelled = 0 OR IsCancelled IS NULL) AND InvoiceDate >= @SDate AND InvoiceDate < @EDate) AS TotalReceivableAmount
                 ";
 
                 return objDB.Database.SqlQuery<FiscalWiseCount>(sql, parSDate, parEDate).FirstOrDefault() ?? new FiscalWiseCount();

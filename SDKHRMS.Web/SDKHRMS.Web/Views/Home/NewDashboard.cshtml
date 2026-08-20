@@ -384,8 +384,7 @@
                     theme: 'light',
                     format: 'd M Y',
                     timepicker: false,
-                    scrollInput: false,
-                    maxDate: 0
+                    scrollInput: false
                 });
             }
 
@@ -442,7 +441,6 @@
                 renderAgingCharts(sdate, edate);
             }
 
-
             // Financial Year Dropdown Option Handler
             $(document).on('click', '.fy-option', function () {
                 $('.fy-option').removeClass('active');
@@ -468,12 +466,26 @@
                 loadDashboardData();
             });
 
+            $('#startdate, #enddate').on('keypress', function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    loadDashboardData();
+                }
+            });
+
             $('#btnclear').on('click', function () {
                 $('.fy-option').removeClass('active');
-                $('.fy-option[data-fy="2025-26"]').addClass('active');
-                $('#selectedFY').text('FY 2025-26');
-                $('#startdate').val('01 Apr 2025');
-                $('#enddate').val('31 Mar 2026');
+                var defaultOption = $('.fy-option[data-fy="2024-25"]');
+                if (defaultOption.length) {
+                    defaultOption.addClass('active');
+                    $('#selectedFY').text(defaultOption.text());
+                    $('#startdate').val(defaultOption.data('start') || '01 Apr 2024');
+                    $('#enddate').val(defaultOption.data('end') || '31 Mar 2025');
+                } else {
+                    $('#selectedFY').text('FY 2024-25');
+                    $('#startdate').val('01 Apr 2024');
+                    $('#enddate').val('31 Mar 2025');
+                }
                 loadDashboardData();
             });
 
