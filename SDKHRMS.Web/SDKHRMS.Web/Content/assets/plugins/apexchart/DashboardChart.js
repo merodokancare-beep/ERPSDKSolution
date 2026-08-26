@@ -5,13 +5,18 @@ function renderGSTAnnualDonut() {
     if (!chartElem) return;
     if (typeof ApexCharts === 'undefined') return;
 
-    var cgst = parseFloat(chartElem.getAttribute('data-cgst')) || 1228394;
-    var sgst = parseFloat(chartElem.getAttribute('data-sgst')) || 1228394;
-    var igst = parseFloat(chartElem.getAttribute('data-igst')) || 3214568;
-    var cess = parseFloat(chartElem.getAttribute('data-cess')) || 405184;
+    var cgst = parseFloat(chartElem.getAttribute('data-cgst')) || 0;
+    var sgst = parseFloat(chartElem.getAttribute('data-sgst')) || 0;
+    var igst = parseFloat(chartElem.getAttribute('data-igst')) || 0;
+    var cess = parseFloat(chartElem.getAttribute('data-cess')) || 0;
+
+    var seriesData = [cgst, sgst, igst, cess];
+    if (cgst === 0 && sgst === 0 && igst === 0 && cess === 0) {
+        seriesData = [0.0001, 0, 0, 0];
+    }
 
     var options = {
-        series: [cgst, sgst, igst, cess],
+        series: seriesData,
         labels: ['CGST', 'SGST', 'IGST', 'CESS'],
         chart: {
             type: 'donut',

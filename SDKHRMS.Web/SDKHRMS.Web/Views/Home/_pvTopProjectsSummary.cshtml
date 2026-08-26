@@ -52,13 +52,20 @@
             }
         </tbody>
         <tfoot class="table-light fw-bold">
+            @{
+                decimal totalContract = (Model != null && Model.Any()) ? Model.Sum(x => x.ContractValue) : 0;
+                decimal totalIncome = (Model != null && Model.Any()) ? Model.Sum(x => x.Income) : 0;
+                decimal totalExpense = (Model != null && Model.Any()) ? Model.Sum(x => x.Expense) : 0;
+                decimal totalMargin = (Model != null && Model.Any()) ? Model.Sum(x => x.Margin) : 0;
+                int totalMarginPct = totalContract > 0 ? (int)Math.Round((totalMargin / totalContract) * 100) : 0;
+            }
             <tr>
                 <td class="text-primary">Total</td>
                 <td></td>
-                <td class="text-end text-primary">1,13,00,000</td>
-                <td class="text-end text-primary">78,35,000</td>
-                <td class="text-end text-primary">51,20,000</td>
-                <td class="text-end text-primary">27,15,000 (34%)</td>
+                <td class="text-end text-primary">@totalContract.ToString("N0")</td>
+                <td class="text-end text-primary">@totalIncome.ToString("N0")</td>
+                <td class="text-end text-primary">@totalExpense.ToString("N0")</td>
+                <td class="text-end text-primary">@totalMargin.ToString("N0") (@totalMarginPct%)</td>
                 <td></td>
             </tr>
         </tfoot>

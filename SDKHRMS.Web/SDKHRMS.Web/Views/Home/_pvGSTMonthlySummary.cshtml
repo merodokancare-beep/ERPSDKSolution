@@ -1,17 +1,14 @@
 @model IEnumerable<SDKHRMS.Entities.ViewModels.GSTMonthlySummaryRow>
 
-<div class="table-responsive" style="max-height: 220px; overflow-y: auto;">
-    <table class="table table-sm table-hover align-middle mb-0 dashboard-table" style="font-size: 0.76rem;">
+<div class="table-responsive" style="max-height: 240px; overflow-y: auto;">
+    <table class="table table-sm table-hover align-middle mb-0 dashboard-table w-100" style="font-size: 0.76rem;">
         <thead class="table-light sticky-top" style="z-index: 2;">
             <tr style="height: 38px;">
-                <th class="ps-2">Month</th>
+                <th class="ps-3">Month</th>
                 <th class="text-end">Output Tax (&#8377;)</th>
                 <th class="text-end">Input Tax (&#8377;)</th>
                 <th class="text-end">Net GST Payable (&#8377;)</th>
-                <th class="text-end">GST Paid (&#8377;)</th>
-                <th class="text-end">Balance Payable (&#8377;)</th>
-                <th class="text-center">Status</th>
-                <th class="text-center pe-2">Action</th>
+                <th class="text-end pe-3">GST Paid (&#8377;)</th>
             </tr>
         </thead>
         <tbody>
@@ -20,72 +17,25 @@
                 foreach (var item in Model)
                 {
                     <tr style="height: 36px;">
-                        <td class="fw-semibold ps-2">@item.MonthName</td>
+                        <td class="fw-semibold ps-3">@item.MonthName</td>
                         <td class="text-end">@item.OutputTax.ToString("N0")</td>
                         <td class="text-end">@item.InputTax.ToString("N0")</td>
-                        <td class="text-end fw-semibold @(item.NetGSTPayable < 0 ? "text-info" : "")">
+                        <td class="text-end fw-semibold @(item.NetGSTPayable < 0 ? "text-info" : (item.NetGSTPayable > 0 ? "text-primary" : "text-muted"))">
                             @(item.NetGSTPayable < 0 ? "(" + Math.Abs(item.NetGSTPayable).ToString("N0") + ")" : item.NetGSTPayable.ToString("N0"))
                         </td>
-                        <td class="text-end">@item.GSTPaid.ToString("N0")</td>
-                        <td class="text-end fw-bold text-danger">@item.BalancePayable.ToString("N0")</td>
-                        <td class="text-center">
-                            @if (item.Status == "Filed")
-                            {
-                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5" style="font-size: 0.68rem;">
-                                    <i class="fa-solid fa-circle-check me-1"></i>Filed
-                                </span>
-                            }
-                            else if (item.Status == "Partial")
-                            {
-                                <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-2 py-0.5" style="font-size: 0.68rem;">
-                                    <i class="fa-solid fa-circle-notch me-1"></i>Partial
-                                </span>
-                            }
-                            else if (item.Status == "Pending")
-                            {
-                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-0.5" style="font-size: 0.68rem;">
-                                    <i class="fa-solid fa-circle-exclamation me-1"></i>Pending
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-2 py-0.5" style="font-size: 0.68rem;">
-                                    <i class="fa-solid fa-circle-info me-1"></i>ITC Excess
-                                </span>
-                            }
-                        </td>
-                        <td class="text-center pe-2">
-                            @if (item.Status == "Filed" || item.Status == "ITC Excess")
-                            {
-                                <a href="javascript:void(0)" class="btn btn-link btn-sm p-0 text-decoration-none fw-bold text-primary" style="font-size: 0.72rem;">View</a>
-                            }
-                            else
-                            {
-                                <a href="javascript:void(0)" class="btn btn-link btn-sm p-0 text-decoration-none fw-bold text-primary" style="font-size: 0.72rem;">Reconcile</a>
-                            }
-                        </td>
+                        <td class="text-end pe-3 fw-medium">@item.GSTPaid.ToString("N0")</td>
                     </tr>
                 }
             }
         </tbody>
         <tfoot class="table-light fw-bold sticky-bottom">
             <tr style="height: 38px;">
-                <td class="text-primary ps-2">Total</td>
-                <td class="text-end text-primary">43,43,420</td>
-                <td class="text-end text-primary">35,44,980</td>
-                <td class="text-end text-primary">7,98,440</td>
-                <td class="text-end text-primary">5,70,040</td>
-                <td class="text-end text-primary">2,28,400</td>
-                <td></td>
-                <td class="pe-2"></td>
+                <td class="text-primary ps-3">Total</td>
+                <td class="text-end text-primary">@((Model != null && Model.Any()) ? Model.Sum(x => x.OutputTax).ToString("N0") : "0")</td>
+                <td class="text-end text-primary">@((Model != null && Model.Any()) ? Model.Sum(x => x.InputTax).ToString("N0") : "0")</td>
+                <td class="text-end text-primary">@((Model != null && Model.Any()) ? Model.Sum(x => x.NetGSTPayable).ToString("N0") : "0")</td>
+                <td class="text-end text-primary pe-3">@((Model != null && Model.Any()) ? Model.Sum(x => x.GSTPaid).ToString("N0") : "0")</td>
             </tr>
         </tfoot>
     </table>
-</div>
-
-<div class="d-flex align-items-center gap-3 flex-wrap mt-2 px-1" style="font-size: 0.7rem; font-weight: 600;">
-    <span class="d-flex align-items-center gap-1 text-success"><i class="fa-solid fa-square" style="font-size: 8px;"></i> Filed (Matched)</span>
-    <span class="d-flex align-items-center gap-1 text-warning"><i class="fa-solid fa-square" style="font-size: 8px;"></i> Partial (Need Reconciliation)</span>
-    <span class="d-flex align-items-center gap-1 text-danger"><i class="fa-solid fa-square" style="font-size: 8px;"></i> Pending (Not Paid)</span>
-    <span class="d-flex align-items-center gap-1 text-info"><i class="fa-solid fa-square" style="font-size: 8px;"></i> ITC Excess (Carry Forward)</span>
 </div>

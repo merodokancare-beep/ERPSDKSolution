@@ -4,11 +4,11 @@
     <!-- Donut Chart & Legend -->
     <div class="col-md-5 text-center">
         <div class="position-relative d-inline-block" style="margin-top: -6px;">
-            <div id="gstAnnualDonutChart" data-cgst="@(Model?.CGSTAmount ?? 1228394)" data-sgst="@(Model?.SGSTAmount ?? 1228394)" data-igst="@(Model?.IGSTAmount ?? 3214568)" data-cess="@(Model?.CESSAmount ?? 405184)" style="min-height: 200px;"></div>
+            <div id="gstAnnualDonutChart" data-cgst="@(Model?.CGSTAmount ?? 0)" data-sgst="@(Model?.SGSTAmount ?? 0)" data-igst="@(Model?.IGSTAmount ?? 0)" data-cess="@(Model?.CESSAmount ?? 0)" style="min-height: 200px;"></div>
             <div class="position-absolute top-50 start-50 translate-middle text-center" style="pointer-events: none; margin-top: -6px;">
                 <div class="text-uppercase donut-center-title fw-semibold text-muted" style="font-size: 0.65rem; letter-spacing: 0.05em;">Total GST</div>
                 <div class="fw-extrabold donut-center-value" style="font-size: 1.05rem; color: var(--erp-text-main, #f8fafc);">
-                    &#8377; @(Model?.TotalGSTAmount.ToString("N0") ?? "58,76,540")
+                    &#8377; @(Model?.TotalGSTAmount.ToString("N0") ?? "0")
                 </div>
             </div>
         </div>
@@ -36,35 +36,35 @@
                 <tbody>
                     <tr style="height: 36px;">
                         <td class="fw-semibold text-primary ps-2">CGST</td>
-                        <td class="text-end">@(Model?.CGSTTaxable.ToString("N0") ?? "2,45,67,890")</td>
-                        <td class="text-end">@(Model?.CGSTAmount.ToString("N0") ?? "12,28,394")</td>
-                        <td class="text-end fw-semibold pe-2">@(Model?.CGSTTotal.ToString("N0") ?? "12,28,394")</td>
+                        <td class="text-end">@(Model?.CGSTTaxable.ToString("N0") ?? "0")</td>
+                        <td class="text-end">@(Model?.CGSTAmount.ToString("N0") ?? "0")</td>
+                        <td class="text-end fw-semibold pe-2">@(Model?.CGSTTotal.ToString("N0") ?? "0")</td>
                     </tr>
                     <tr style="height: 36px;">
                         <td class="fw-semibold text-success ps-2">SGST</td>
-                        <td class="text-end">@(Model?.SGSTTaxable.ToString("N0") ?? "2,45,67,890")</td>
-                        <td class="text-end">@(Model?.SGSTAmount.ToString("N0") ?? "12,28,394")</td>
-                        <td class="text-end fw-semibold pe-2">@(Model?.SGSTTotal.ToString("N0") ?? "12,28,394")</td>
+                        <td class="text-end">@(Model?.SGSTTaxable.ToString("N0") ?? "0")</td>
+                        <td class="text-end">@(Model?.SGSTAmount.ToString("N0") ?? "0")</td>
+                        <td class="text-end fw-semibold pe-2">@(Model?.SGSTTotal.ToString("N0") ?? "0")</td>
                     </tr>
                     <tr style="height: 36px;">
                         <td class="fw-semibold text-warning ps-2">IGST</td>
-                        <td class="text-end">@(Model?.IGSTTaxable.ToString("N0") ?? "3,21,45,678")</td>
-                        <td class="text-end">@(Model?.IGSTAmount.ToString("N0") ?? "32,14,568")</td>
-                        <td class="text-end fw-semibold pe-2">@(Model?.IGSTTotal.ToString("N0") ?? "32,14,568")</td>
+                        <td class="text-end">@(Model?.IGSTTaxable.ToString("N0") ?? "0")</td>
+                        <td class="text-end">@(Model?.IGSTAmount.ToString("N0") ?? "0")</td>
+                        <td class="text-end fw-semibold pe-2">@(Model?.IGSTTotal.ToString("N0") ?? "0")</td>
                     </tr>
                     <tr style="height: 36px;">
                         <td class="fw-semibold ps-2" style="color: #a855f7;">CESS</td>
-                        <td class="text-end">@(Model?.CESSTaxable.ToString("N0") ?? "15,67,890")</td>
-                        <td class="text-end">@(Model?.CESSAmount.ToString("N0") ?? "4,05,184")</td>
-                        <td class="text-end fw-semibold pe-2">@(Model?.CESSTotal.ToString("N0") ?? "4,05,184")</td>
+                        <td class="text-end">@(Model?.CESSTaxable.ToString("N0") ?? "0")</td>
+                        <td class="text-end">@(Model?.CESSAmount.ToString("N0") ?? "0")</td>
+                        <td class="text-end fw-semibold pe-2">@(Model?.CESSTotal.ToString("N0") ?? "0")</td>
                     </tr>
                 </tbody>
                 <tfoot class="table-light fw-bold">
                     <tr style="height: 38px;">
                         <td class="text-primary ps-2">Total</td>
-                        <td class="text-end text-primary">@(Model?.TotalTaxable.ToString("N0") ?? "8,28,49,348")</td>
-                        <td class="text-end text-primary">@(Model?.TotalTax.ToString("N0") ?? "60,76,540")</td>
-                        <td class="text-end text-primary pe-2">@(Model?.GrandTotal.ToString("N0") ?? "60,76,540")</td>
+                        <td class="text-end text-primary">@(Model?.TotalTaxable.ToString("N0") ?? "0")</td>
+                        <td class="text-end text-primary">@(Model?.TotalTax.ToString("N0") ?? "0")</td>
+                        <td class="text-end text-primary pe-2">@(Model?.GrandTotal.ToString("N0") ?? "0")</td>
                     </tr>
                 </tfoot>
             </table>

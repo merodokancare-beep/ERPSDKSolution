@@ -196,10 +196,12 @@
     <!-- Cash Flow Overview -->
     <div class="col-lg-4">
         <div class="card border-0 shadow-sm rounded-3 h-100" style="background: var(--erp-bg-card, #ffffff); border: 1px solid var(--erp-border, rgba(0,0,0,0.08));">
-            <div class="card-header bg-transparent border-0 pt-3 pb-0 px-3">
-                <h6 class="fw-bold mb-0 text-dark dark-white-text" style="font-size: 0.88rem;">
-                    <i class="fa-solid fa-wallet me-2 text-success"></i>Cash Flow Overview (This FY)
-                </h6>
+            <div class="card-header bg-transparent border-0 pt-3 pb-0 px-3 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center text-truncate me-2">
+                    <i class="fa-solid fa-wallet me-2 text-success flex-shrink-0"></i>
+                    <span class="fw-bold dark-white-text text-truncate" style="font-size: 0.88rem;">Cash Flow Overview</span>
+                    <span class="badge bg-secondary-subtle text-secondary ms-1.5 px-1.5 py-0.5 fw-medium text-truncate gst-annual-fy-title" style="font-size: 0.68rem;">(FY 2024-25)</span>
+                </div>
             </div>
             <div class="card-body p-3 d-flex flex-column justify-content-between">
                 <div class="row g-2">
@@ -210,7 +212,7 @@
                                 <span class="badge bg-success rounded-circle p-1 text-white"><i class="fa-solid fa-arrow-down" style="font-size: 10px;"></i></span>
                                 <span class="text-muted fw-semibold" style="font-size: 0.7rem;">Cash Inflow</span>
                             </div>
-                            <div class="fw-extrabold text-success" style="font-size: 1.05rem;">&#8377; 3,10,25,000</div>
+                            <div class="fw-extrabold text-success" id="cashFlowInflow" style="font-size: 1.05rem;">&#8377; 0</div>
                         </div>
                     </div>
                     <!-- Cash Outflow -->
@@ -220,7 +222,7 @@
                                 <span class="badge bg-danger rounded-circle p-1 text-white"><i class="fa-solid fa-arrow-up" style="font-size: 10px;"></i></span>
                                 <span class="text-muted fw-semibold" style="font-size: 0.7rem;">Cash Outflow</span>
                             </div>
-                            <div class="fw-extrabold text-danger" style="font-size: 1.05rem;">&#8377; 2,45,60,000</div>
+                            <div class="fw-extrabold text-danger" id="cashFlowOutflow" style="font-size: 1.05rem;">&#8377; 0</div>
                         </div>
                     </div>
                     <!-- Net Cash Flow -->
@@ -230,7 +232,7 @@
                                 <span class="badge bg-primary rounded-circle p-1 text-white"><i class="fa-solid fa-chart-line" style="font-size: 10px;"></i></span>
                                 <span class="text-muted fw-semibold" style="font-size: 0.7rem;">Net Cash Flow</span>
                             </div>
-                            <div class="fw-extrabold text-primary" style="font-size: 1.05rem;">&#8377; 64,65,000</div>
+                            <div class="fw-extrabold text-primary" id="cashFlowNet" style="font-size: 1.05rem;">&#8377; 0</div>
                         </div>
                     </div>
                     <!-- Closing Balance -->
@@ -240,7 +242,7 @@
                                 <span class="badge rounded-circle p-1 text-white" style="background: #a855f7;"><i class="fa-solid fa-vault" style="font-size: 10px;"></i></span>
                                 <span class="text-muted fw-semibold" style="font-size: 0.7rem;">Closing Balance</span>
                             </div>
-                            <div class="fw-extrabold" style="color: #a855f7; font-size: 1.05rem;">&#8377; 81,20,450</div>
+                            <div class="fw-extrabold" id="cashFlowClosing" style="color: #a855f7; font-size: 1.05rem;">&#8377; 0</div>
                         </div>
                     </div>
                 </div>
@@ -431,6 +433,29 @@
                     data: { SDate: sdate, EDate: edate },
                     success: function (data) {
                         $('#topprojectscontainer').html(data);
+                    }
+                });
+
+                // 4b. Cash Flow Overview
+                $.ajax({
+                    type: 'GET',
+                    url: resolveUrl('/Home/GetCashFlowOverviewData'),
+                    data: { SDate: sdate, EDate: edate },
+                    success: function (res) {
+                        if (res) {
+                            var fmt = function (val) {
+                                return '₹ ' + (val || 0).toLocaleString('en-IN');
+                            };
+                            var inflow = (res.cashInflow !== undefined) ? res.cashInflow : (res.CashInflow || 0);
+                            var outflow = (res.cashOutflow !== undefined) ? res.cashOutflow : (res.CashOutflow || 0);
+                            var net = (res.netCashFlow !== undefined) ? res.netCashFlow : (res.NetCashFlow || 0);
+                            var closing = (res.closingBalance !== undefined) ? res.closingBalance : (res.ClosingBalance || 0);
+
+                            $('#cashFlowInflow').text(fmt(inflow));
+                            $('#cashFlowOutflow').text(fmt(outflow));
+                            $('#cashFlowNet').text(fmt(net));
+                            $('#cashFlowClosing').text(fmt(closing));
+                        }
                     }
                 });
 

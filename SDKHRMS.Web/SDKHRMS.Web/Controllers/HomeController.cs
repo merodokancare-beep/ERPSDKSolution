@@ -266,43 +266,7 @@ namespace SDKHRMS.Web.Controllers
             string fyStr = $"{startYear}-{(startYear + 1).ToString().Substring(2)}";
             ViewBag.FYLabel = "FY " + fyStr;
 
-            GSTAnnualSummaryModel model;
-            if (fyStr == "2024-25")
-            {
-                model = new GSTAnnualSummaryModel
-                {
-                    TotalGSTAmount = 4980400,
-                    CGSTTaxable = 21040000, CGSTAmount = 1040200, CGSTTotal = 1040200,
-                    SGSTTaxable = 21040000, SGSTAmount = 1040200, SGSTTotal = 1040200,
-                    IGSTTaxable = 27100000, IGSTAmount = 2710000, IGSTTotal = 2710000,
-                    CESSTaxable = 1200000, CESSAmount = 330000, CESSTotal = 330000,
-                    TotalTaxable = 70380000, TotalTax = 5120400, GrandTotal = 5120400
-                };
-            }
-            else if (fyStr == "2023-24")
-            {
-                model = new GSTAnnualSummaryModel
-                {
-                    TotalGSTAmount = 3850000,
-                    CGSTTaxable = 16200000, CGSTAmount = 810000, CGSTTotal = 810000,
-                    SGSTTaxable = 16200000, SGSTAmount = 810000, SGSTTotal = 810000,
-                    IGSTTaxable = 20700000, IGSTAmount = 2070000, IGSTTotal = 2070000,
-                    CESSTaxable = 900000, CESSAmount = 250000, CESSTotal = 250000,
-                    TotalTaxable = 54000000, TotalTax = 3940000, GrandTotal = 3940000
-                };
-            }
-            else
-            {
-                model = new GSTAnnualSummaryModel
-                {
-                    TotalGSTAmount = 5876540,
-                    CGSTTaxable = 24567890, CGSTAmount = 1228394, CGSTTotal = 1228394,
-                    SGSTTaxable = 24567890, SGSTAmount = 1228394, SGSTTotal = 1228394,
-                    IGSTTaxable = 32145678, IGSTAmount = 3214568, IGSTTotal = 3214568,
-                    CESSTaxable = 1567890, CESSAmount = 405184, CESSTotal = 405184,
-                    TotalTaxable = 82849348, TotalTax = 6076540, GrandTotal = 6076540
-                };
-            }
+            var model = DalDash.getGSTAnnualSummary(startDate, endDate);
             return PartialView("_pvGSTAnnualSummary", model);
         }
 
@@ -314,44 +278,22 @@ namespace SDKHRMS.Web.Controllers
             string fyStr = $"{startYear}-{(startYear + 1).ToString().Substring(2)}";
             ViewBag.FYLabel = "FY " + fyStr;
 
-            double mult = (fyStr == "2024-25") ? 0.85 : ((fyStr == "2023-24") ? 0.65 : 1.0);
-            int endYr = startYear + 1;
-
-            var list = new List<GSTMonthlySummaryRow>
-            {
-                new GSTMonthlySummaryRow { MonthName = $"Apr {startYear}", OutputTax = (decimal)(475270 * mult), InputTax = (decimal)(145230 * mult), NetGSTPayable = (decimal)(330040 * mult), GSTPaid = (decimal)(330040 * mult), BalancePayable = 0, Status = "Filed", StatusClass = "badge-soft-success" },
-                new GSTMonthlySummaryRow { MonthName = $"May {startYear}", OutputTax = (decimal)(469750 * mult), InputTax = (decimal)(210450 * mult), NetGSTPayable = (decimal)(259300 * mult), GSTPaid = (decimal)(240000 * mult), BalancePayable = (decimal)(19300 * mult), Status = "Filed", StatusClass = "badge-soft-success" },
-                new GSTMonthlySummaryRow { MonthName = $"Jun {startYear}", OutputTax = (decimal)(480100 * mult), InputTax = (decimal)(230200 * mult), NetGSTPayable = (decimal)(249900 * mult), GSTPaid = (decimal)(249900 * mult), BalancePayable = 0, Status = "Filed", StatusClass = "badge-soft-success" },
-                new GSTMonthlySummaryRow { MonthName = $"Jul {startYear}", OutputTax = (decimal)(435300 * mult), InputTax = (decimal)(290300 * mult), NetGSTPayable = (decimal)(144000 * mult), GSTPaid = (decimal)(144000 * mult), BalancePayable = 0, Status = "Filed", StatusClass = "badge-soft-success" },
-                new GSTMonthlySummaryRow { MonthName = $"Aug {startYear}", OutputTax = (decimal)(310900 * mult), InputTax = (decimal)(310700 * mult), NetGSTPayable = (decimal)(200 * mult), GSTPaid = (decimal)(200 * mult), BalancePayable = 0, Status = "Filed", StatusClass = "badge-soft-success" },
-                new GSTMonthlySummaryRow { MonthName = $"Sep {startYear}", OutputTax = (decimal)(420300 * mult), InputTax = (decimal)(360200 * mult), NetGSTPayable = (decimal)(60100 * mult), GSTPaid = (decimal)(60100 * mult), BalancePayable = 0, Status = "Filed", StatusClass = "badge-soft-success" },
-                new GSTMonthlySummaryRow { MonthName = $"Oct {startYear}", OutputTax = (decimal)(444500 * mult), InputTax = (decimal)(375600 * mult), NetGSTPayable = (decimal)(68900 * mult), GSTPaid = (decimal)(68900 * mult), BalancePayable = 0, Status = "Filed", StatusClass = "badge-soft-success" },
-                new GSTMonthlySummaryRow { MonthName = $"Nov {startYear}", OutputTax = (decimal)(389500 * mult), InputTax = (decimal)(320800 * mult), NetGSTPayable = (decimal)(68700 * mult), GSTPaid = (decimal)(68700 * mult), BalancePayable = 0, Status = "Filed", StatusClass = "badge-soft-success" },
-                new GSTMonthlySummaryRow { MonthName = $"Dec {startYear}", OutputTax = (decimal)(394900 * mult), InputTax = (decimal)(295300 * mult), NetGSTPayable = (decimal)(99600 * mult), GSTPaid = (decimal)(99600 * mult), BalancePayable = 0, Status = "Filed", StatusClass = "badge-soft-success" },
-                new GSTMonthlySummaryRow { MonthName = $"Jan {endYr}", OutputTax = (decimal)(289800 * mult), InputTax = (decimal)(320400 * mult), NetGSTPayable = (decimal)(-30600 * mult), GSTPaid = 0, BalancePayable = 0, Status = "ITC Excess", StatusClass = "badge-soft-info" },
-                new GSTMonthlySummaryRow { MonthName = $"Feb {endYr}", OutputTax = (decimal)(284800 * mult), InputTax = (decimal)(305600 * mult), NetGSTPayable = (decimal)(-20800 * mult), GSTPaid = 0, BalancePayable = 0, Status = "ITC Excess", StatusClass = "badge-soft-info" },
-                new GSTMonthlySummaryRow { MonthName = $"Mar {endYr}", OutputTax = (decimal)(260600 * mult), InputTax = (decimal)(380200 * mult), NetGSTPayable = (decimal)(-119600 * mult), GSTPaid = 0, BalancePayable = 0, Status = "ITC Excess", StatusClass = "badge-soft-info" }
-            };
+            var list = DalDash.getGSTMonthlySummary(startDate, endDate);
             return PartialView("_pvGSTMonthlySummary", list);
         }
 
         public ActionResult GetTopProjectsSummary(string SDate, string EDate)
         {
             var (startDate, endDate) = ParseDateRange(SDate, EDate);
-            int startYear = startDate.Year;
-            if (startDate.Month < 4) startYear = startDate.Year - 1;
-            string fyStr = $"{startYear}-{(startYear + 1).ToString().Substring(2)}";
-            double mult = (fyStr == "2024-25") ? 0.82 : ((fyStr == "2023-24") ? 0.62 : 1.0);
-
-            var list = new List<TopProjectSummaryRow>
-            {
-                new TopProjectSummaryRow { ProjectName = "School ERP Implementation", ClientName = "EduTech Pvt. Ltd.", ContractValue = (decimal)(4500000 * mult), Income = (decimal)(3245000 * mult), Expense = (decimal)(2210000 * mult), Margin = (decimal)(1035000 * mult), MarginPercentage = 32, Status = "In Progress", StatusBadgeClass = "badge-soft-primary" },
-                new TopProjectSummaryRow { ProjectName = "Website Development", ClientName = "ABC Industries", ContractValue = (decimal)(1850000 * mult), Income = (decimal)(1230000 * mult), Expense = (decimal)(745000 * mult), Margin = (decimal)(485000 * mult), MarginPercentage = 39, Status = "In Progress", StatusBadgeClass = "badge-soft-primary" },
-                new TopProjectSummaryRow { ProjectName = "Mobile App Project", ClientName = "XYZ Solutions", ContractValue = (decimal)(1200000 * mult), Income = (decimal)(675000 * mult), Expense = (decimal)(410000 * mult), Margin = (decimal)(265000 * mult), MarginPercentage = 39, Status = "On Hold", StatusBadgeClass = "badge-soft-warning" },
-                new TopProjectSummaryRow { ProjectName = "E-Commerce Solution", ClientName = "Retail Mart", ContractValue = (decimal)(2200000 * mult), Income = (decimal)(1860000 * mult), Expense = (decimal)(1220000 * mult), Margin = (decimal)(640000 * mult), MarginPercentage = 35, Status = "In Progress", StatusBadgeClass = "badge-soft-primary" },
-                new TopProjectSummaryRow { ProjectName = "Cloud Migration", ClientName = "Global Corp", ContractValue = (decimal)(1550000 * mult), Income = (decimal)(825000 * mult), Expense = (decimal)(535000 * mult), Margin = (decimal)(290000 * mult), MarginPercentage = 35, Status = "Completed", StatusBadgeClass = "badge-soft-success" }
-            };
+            var list = DalDash.getTopProjectsSummary(startDate, endDate);
             return PartialView("_pvTopProjectsSummary", list);
+        }
+
+        public JsonResult GetCashFlowOverviewData(string SDate, string EDate)
+        {
+            var (startDate, endDate) = ParseDateRange(SDate, EDate);
+            var model = DalDash.getCashFlowOverview(startDate, endDate);
+            return Json(model);
         }
 
         public JsonResult GetIncomeVsExpensesData(string SDate, string EDate)

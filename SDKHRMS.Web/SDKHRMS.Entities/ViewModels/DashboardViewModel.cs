@@ -191,10 +191,15 @@ namespace SDKHRMS.Entities.ViewModels
         public decimal TotalTaxable { get; set; }
         public decimal TotalTax { get; set; }
         public decimal GrandTotal { get; set; }
+
+        public decimal OutputGST { get; set; }
+        public decimal InputGST { get; set; }
+        public decimal NetGSTPayable { get; set; }
     }
 
     public class GSTMonthlySummaryRow
     {
+        public int MonthNo { get; set; }
         public string MonthName { get; set; }
         public decimal OutputTax { get; set; }
         public decimal InputTax { get; set; }
@@ -207,6 +212,7 @@ namespace SDKHRMS.Entities.ViewModels
 
     public class TopProjectSummaryRow
     {
+        public long ProjectID { get; set; }
         public string ProjectName { get; set; }
         public string ClientName { get; set; }
         public decimal ContractValue { get; set; }
@@ -214,6 +220,8 @@ namespace SDKHRMS.Entities.ViewModels
         public decimal Expense { get; set; }
         public decimal Margin { get; set; }
         public int MarginPercentage { get; set; }
+        public double ExpensePercentage { get; set; }
+        public string ExpenseIndicatorClass { get; set; } // Blue, Yellow, Red
         public string Status { get; set; } // In Progress, On Hold, Completed
         public string StatusBadgeClass { get; set; }
     }
