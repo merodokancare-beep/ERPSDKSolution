@@ -246,7 +246,7 @@ namespace SDKHRMS.Entities.DataAccess
                         ISNULL(v.VenderName, 'N/A') AS ClientName,
                         ISNULL(p.ProjValue, 0) AS ContractValue,
                         ISNULL(p.ProjStatus, 'In Progress') AS ProjStatus,
-                        ISNULL((SELECT SUM(ISNULL(r.NetAmtReceived, 0) + ISNULL(r.TDSDeductionAmt, 0) + ISNULL(r.GstDeductionAmt, 0) + ISNULL(r.SecurityDepositAmt, 0) + ISNULL(r.OtherDeductionAmt, 0)) 
+                        ISNULL((SELECT SUM(ISNULL(r.NetAmtReceived, 0)) 
                                 FROM utblProjPaymentReceivables r WHERE r.ProjectID = p.ProjectID), 0) AS Income,
                         ISNULL((SELECT SUM(ISNULL(pk.ExcludingTaxAmt, 0)) 
                                 FROM utblPurchaseInvoiceKeys pk WHERE pk.ProjectID = p.ProjectID AND ISNULL(pk.IsPOCancelled, 0) = 0), 0)
