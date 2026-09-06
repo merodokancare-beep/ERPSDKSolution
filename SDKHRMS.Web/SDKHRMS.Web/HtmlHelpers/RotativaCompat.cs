@@ -101,14 +101,14 @@ namespace Rotativa
 
         public new Rotativa.Options.Size PageSize
         {
-            get => (Rotativa.Options.Size)base.PageSize;
-            set => base.PageSize = (Rotativa.AspNetCore.Options.Size)value;
+            get => Enum.TryParse<Rotativa.Options.Size>(base.PageSize.ToString(), true, out var ps) ? ps : Rotativa.Options.Size.A4;
+            set => base.PageSize = Enum.TryParse<Rotativa.AspNetCore.Options.Size>(value.ToString(), true, out var parsedSize) ? parsedSize : Rotativa.AspNetCore.Options.Size.A4;
         }
 
         public new Rotativa.Options.Orientation PageOrientation
         {
-            get => (Rotativa.Options.Orientation)base.PageOrientation;
-            set => base.PageOrientation = (Rotativa.AspNetCore.Options.Orientation)value;
+            get => Enum.TryParse<Rotativa.Options.Orientation>(base.PageOrientation.ToString(), true, out var po) ? po : Rotativa.Options.Orientation.Portrait;
+            set => base.PageOrientation = Enum.TryParse<Rotativa.AspNetCore.Options.Orientation>(value.ToString(), true, out var parsedOrient) ? parsedOrient : Rotativa.AspNetCore.Options.Orientation.Portrait;
         }
 
         public override Task ExecuteResultAsync(ActionContext context)
@@ -133,14 +133,14 @@ namespace Rotativa
 
         public new Rotativa.Options.Size PageSize
         {
-            get => (Rotativa.Options.Size)base.PageSize;
-            set => base.PageSize = (Rotativa.AspNetCore.Options.Size)value;
+            get => Enum.TryParse<Rotativa.Options.Size>(base.PageSize.ToString(), true, out var ps) ? ps : Rotativa.Options.Size.A4;
+            set => base.PageSize = Enum.TryParse<Rotativa.AspNetCore.Options.Size>(value.ToString(), true, out var parsedSize) ? parsedSize : Rotativa.AspNetCore.Options.Size.A4;
         }
 
         public new Rotativa.Options.Orientation PageOrientation
         {
-            get => (Rotativa.Options.Orientation)base.PageOrientation;
-            set => base.PageOrientation = (Rotativa.AspNetCore.Options.Orientation)value;
+            get => Enum.TryParse<Rotativa.Options.Orientation>(base.PageOrientation.ToString(), true, out var po) ? po : Rotativa.Options.Orientation.Portrait;
+            set => base.PageOrientation = Enum.TryParse<Rotativa.AspNetCore.Options.Orientation>(value.ToString(), true, out var parsedOrient) ? parsedOrient : Rotativa.AspNetCore.Options.Orientation.Portrait;
         }
 
         public override Task ExecuteResultAsync(ActionContext context)

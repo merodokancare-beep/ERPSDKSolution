@@ -1927,7 +1927,7 @@ body:not(.light-mode) .table {
   color: #F8FAFC !important;
   border-collapse: separate;
   border-spacing: 0;
-  background-color: #0F172A !important;
+  background-color: transparent !important;
 }
 
 body:not(.light-mode) .table thead {
@@ -1935,74 +1935,50 @@ body:not(.light-mode) .table thead {
 }
 
 body:not(.light-mode) .table thead th {
-  background: #090D16 !important;
-  color: #F8FAFC !important;
-  font-size: 0.8rem !important;
-  font-weight: 800 !important;
+  background: #1A2030 !important;
+  color: #94A3B8 !important;
+  font-size: 0.74rem !important;
+  font-weight: 700 !important;
   text-transform: uppercase !important;
-  letter-spacing: 0.06em !important;
-  padding: 14px 16px !important;
-  border-bottom: 2px solid #334155 !important;
+  letter-spacing: 0.03em !important;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-top: none !important;
 }
 
 body:not(.light-mode) .table tbody tr {
-  background-color: #0F172A !important;
-  transition: var(--erp-transition);
+  background-color: transparent !important;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 body:not(.light-mode) .table-striped tbody tr:nth-of-type(odd),
 body:not(.light-mode) .table tbody tr:nth-child(odd) {
-  background-color: #0F172A !important;
+  background-color: rgba(255, 255, 255, 0.015) !important;
 }
 
 body:not(.light-mode) .table-striped tbody tr:nth-of-type(even),
 body:not(.light-mode) .table tbody tr:nth-child(even) {
-  background-color: #1E293B !important;
+  background-color: transparent !important;
 }
 
-body:not(.light-mode) .table tbody tr:hover {
-  background-color: rgba(99, 102, 241, 0.22) !important;
+body:not(.light-mode) .table tbody tr:hover,
+body:not(.light-mode) .table tbody tr:hover td {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  color: #FFFFFF !important;
 }
 
 body:not(.light-mode) .table tbody td {
-  padding: 14px 16px !important;
-  border-bottom: 1px solid #1E293B !important;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
   color: #F8FAFC !important;
   vertical-align: middle !important;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   font-weight: 500;
-}
-
-body:not(.light-mode) .table tbody td a {
-  color: #818CF8 !important;
 }
 
 body:not(.light-mode) .table tbody td span:not(.badge):not(.text-primary):not(.text-danger):not(.text-success):not(.text-warning):not(.text-info):not(.text-muted),
 body:not(.light-mode) .table tbody td strong {
   color: #F8FAFC !important;
-}
-
-body:not(.light-mode) .text-primary,
-body:not(.light-mode) .table tbody td .text-primary {
-  color: #818CF8 !important;
-}
-
-body:not(.light-mode) .table tbody td a:hover {
-  color: #A5B4FC !important;
-  text-decoration: underline;
-}
-
-/* Reference No / Invoice No Badges in Tables */
-.table td .badge-ref,
-.table td a.badge-ref {
-  background: rgba(99, 102, 241, 0.15) !important;
-  color: #818CF8 !important;
-  border: 1px solid rgba(99, 102, 241, 0.3) !important;
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-family: monospace;
-  font-weight: 700;
 }
 
 /* Status Pill Badges */
@@ -2831,7 +2807,7 @@ body:not(.light-mode) .table {
   --bs-table-bg: transparent;
   --bs-table-accent-bg: transparent;
   --bs-table-striped-bg: rgba(255, 255, 255, 0.02);
-  --bs-table-hover-bg: #1E2638;
+  --bs-table-hover-bg: rgba(255, 255, 255, 0.045);
   --bs-table-color: #F8FAFC;
   --bs-table-striped-color: #F8FAFC;
   --bs-table-hover-color: #FFFFFF;
@@ -2850,18 +2826,13 @@ body:not(.light-mode) .table thead th {
 body:not(.light-mode) .table tbody tr td {
   color: #F8FAFC !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-  transition: all 0.15s ease-in-out !important;
+  transition: background-color 0.2s ease, color 0.2s ease !important;
 }
 
 body:not(.light-mode) .table tbody tr:hover td {
-  background-color: #1E2638 !important;
+  background-color: rgba(255, 255, 255, 0.045) !important;
   color: #FFFFFF !important;
 }
-
-body:not(.light-mode) .table tbody tr:hover td:first-child {
-  box-shadow: inset 4px 0 0 #0284c7 !important;
-}
-
 
 /* Light Mode Block Hover */
 body.light-mode .table {
@@ -2887,7 +2858,7 @@ body.light-mode .table thead th {
 body.light-mode .table tbody tr td {
   color: #0F172A !important;
   border-bottom: 1px solid #E2E8F0 !important;
-  transition: all 0.15s ease-in-out !important;
+  transition: background-color 0.2s ease, color 0.2s ease !important;
 }
 
 body.light-mode .table-striped > tbody > tr:nth-of-type(odd) > td {
@@ -2898,14 +2869,11 @@ body.light-mode .table-striped > tbody > tr:nth-of-type(even) > td {
   background-color: #FFFFFF !important;
 }
 
-/* Solid Block Hover Fill & Left Accent Pill Bar */
+/* Distinct, Clean Hover Fill for Light Mode */
+body.light-mode .table tbody tr:hover,
 body.light-mode .table tbody tr:hover td {
   background-color: #E2E8F0 !important;
   color: #0F172A !important;
-}
-
-body.light-mode .table tbody tr:hover td:first-child {
-  box-shadow: inset 4px 0 0 #0284c7 !important;
 }
 
 body.light-mode .card-header.card-buttons,

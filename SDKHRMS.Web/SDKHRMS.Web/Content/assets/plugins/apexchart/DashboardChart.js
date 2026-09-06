@@ -8,22 +8,21 @@ function renderGSTAnnualDonut() {
     var cgst = parseFloat(chartElem.getAttribute('data-cgst')) || 0;
     var sgst = parseFloat(chartElem.getAttribute('data-sgst')) || 0;
     var igst = parseFloat(chartElem.getAttribute('data-igst')) || 0;
-    var cess = parseFloat(chartElem.getAttribute('data-cess')) || 0;
 
-    var seriesData = [cgst, sgst, igst, cess];
-    if (cgst === 0 && sgst === 0 && igst === 0 && cess === 0) {
-        seriesData = [0.0001, 0, 0, 0];
+    var seriesData = [cgst, sgst, igst];
+    if (cgst === 0 && sgst === 0 && igst === 0) {
+        seriesData = [0.0001, 0, 0];
     }
 
     var options = {
         series: seriesData,
-        labels: ['CGST', 'SGST', 'IGST', 'CESS'],
+        labels: ['CGST', 'SGST', 'IGST'],
         chart: {
             type: 'donut',
             height: 220,
             sparkline: { enabled: false }
         },
-        colors: ['#0284c7', '#10b981', '#f59e0b', '#a855f7'],
+        colors: ['#0284c7', '#10b981', '#f59e0b'],
         dataLabels: { enabled: false },
         legend: { show: false },
         plotOptions: {

@@ -1,33 +1,37 @@
 @model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
 @{
-    ViewBag.Title = "RoleList";
+    ViewBag.Title = "Configuration : Users & Roles";
     Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-
-<div class="page-title-wrapper">
-    <div class="page-title-heading text-primary">
-        <div class="page-title-icon">
-            <i class="fa fa-hand-o-right"></i>
-            </div>
-        <div>
-            <div class="page-title-main-text linebreak">
-                Manage Role 
-            </div>
-            <div class="page-title-sub-text">Manage Role/Roles List</div>
+<div class="page-header">
+    <div class="content-page-header">
+        <h5><i class="fa-solid fa-user-shield text-primary me-2"></i>Users &amp; Roles Management</h5>
+        <div class="list-btn">
+            <ul class="filter-list">
+                <li>
+                    <a class="btn btn-primary" href="@Url.Action("AddRole", "RoleCreator")">
+                        <i class="fa-solid fa-plus-circle me-2"></i>Add New Role
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
-    <div class="page-title-actions"></div>
-    <a href="@Url.Action("AddRole", "RoleCreator", new { @Area = "" })" class="btn btn-primary pull-right" title="Add New Role" data-modal="">
-        <i class="glyphicon glyphicon-plus"></i>
-    </a>
-</div>
-<div class="col-md-12">
-    <div class="page-content clearfix">
-        @Html.Partial("_pvRoleList", Model)
-    </div>
 </div>
 
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">System Defined Roles</h5>
+                <span class="badge bg-primary-light text-primary fs-12">@Model.Count() Roles Configured</span>
+            </div>
+            <div class="card-body">
+                @Html.Partial("_pvRoleList", Model)
+            </div>
+        </div>
+    </div>
+</div>
 
 @*error message*@
 <div id="ErrMsg" style="display:none;">

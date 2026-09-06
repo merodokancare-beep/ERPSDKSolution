@@ -74,6 +74,14 @@ namespace SDKHRMS.Web.Controllers
             }
             if (ModelState.IsValid)
             {
+                if (item.SaleInvoiceKeyModel.ProjectID > 0)
+                {
+                    var projClient = objDalinv.GetProjClienByID(item.SaleInvoiceKeyModel.ProjectID);
+                    if (projClient != null && projClient.VendorID > 0)
+                    {
+                        item.SaleInvoiceKeyModel.VenderID = projClient.VendorID;
+                    }
+                }
                 item.SaleInvoiceKeyModel.UserID = User.Identity.Name;
                 TempData["ErrMsg"] = objDalinv.SaveSaleInvoice(item);
                 if (!(TempData["ErrMsg"].ToString().Contains("Error")))
@@ -122,6 +130,14 @@ namespace SDKHRMS.Web.Controllers
             }
             if (ModelState.IsValid)
             {
+                if (item.SaleInvoiceKeyModel.ProjectID > 0)
+                {
+                    var projClient = objDalinv.GetProjClienByID(item.SaleInvoiceKeyModel.ProjectID);
+                    if (projClient != null && projClient.VendorID > 0)
+                    {
+                        item.SaleInvoiceKeyModel.VenderID = projClient.VendorID;
+                    }
+                }
                 item.SaleInvoiceKeyModel.UserID = User.Identity.Name;
                 TempData["ErrMsg"] = objDalinv.SaveSaleInvoice(item);
                 if (!(TempData["ErrMsg"].ToString().Contains("Error")))
@@ -392,6 +408,14 @@ namespace SDKHRMS.Web.Controllers
         {
             objInv.SaleInvoiceKeyModel = objDalinv.GetSaleInvDetailsByID(InvID);
             objInv.ItemsViewList = objDalinv.GetItemListByID(InvID, "Sale");
+            if (objInv.SaleInvoiceKeyModel != null && objInv.SaleInvoiceKeyModel.ProjectID > 0)
+            {
+                var projClient = objDalinv.GetProjClienByID(objInv.SaleInvoiceKeyModel.ProjectID);
+                if (projClient != null && projClient.VendorID > 0)
+                {
+                    objInv.SaleInvoiceKeyModel.VenderID = projClient.VendorID;
+                }
+            }
             objInv.VendorDetails = objDalConfig.GetVendorByID(objInv.SaleInvoiceKeyModel.VenderID);
             objInv.FigureAmount = NumberToWords(Convert.ToInt32(objInv.SaleInvoiceKeyModel.BalanceAmount));
             //model.FigureAmount = NumberToWords(Convert.ToInt32(model.BillingMasterModel.GrandTotalAmt));
@@ -403,8 +427,10 @@ namespace SDKHRMS.Web.Controllers
             {
                 ViewData = ViewData,
                 FileName = "Invoice" + objInv.SaleInvoiceKeyModel.ReferenceNo + ".pdf",
-                PageMargins = new Rotativa.Options.Margins(5, 5, 10, 5),
-                PageSize = Rotativa.Options.Size.A4
+                PageMargins = new Rotativa.Options.Margins(5, 5, 5, 5),
+                PageSize = Rotativa.Options.Size.A4,
+                PageOrientation = Rotativa.Options.Orientation.Portrait,
+                CustomSwitches = "--page-size A4 --orientation Portrait --enable-local-file-access"
             };
         }
 

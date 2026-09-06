@@ -1,437 +1,695 @@
-@model SDKHRMS.Entities.ViewModels.InvoiceViewModel
+﻿@model SDKHRMS.Entities.ViewModels.InvoiceViewModel
 @{
     Layout = null;
     decimal CGST = Model.ItemsViewList != null ? Model.ItemsViewList.Sum(x => x.CGSTAmt) : 0;
     decimal SGST = Model.ItemsViewList != null ? Model.ItemsViewList.Sum(x => x.SGSTAmt) : 0;
-    decimal TTax = CGST + SGST;
-    decimal totalAmt = Model.ItemsViewList != null ? Model.ItemsViewList.Sum(x => x.TotalAmt) : 0;
-    decimal baseAmt = Model.SaleInvoiceKeyModel != null ? Model.SaleInvoiceKeyModel.BalanceAmount : totalAmt;
-    decimal roundOfAmount = Math.Round(baseAmt);
-    decimal roundOfValue = roundOfAmount - baseAmt;
+    decimal IGST = Model.ItemsViewList != null ? Model.ItemsViewList.Sum(x => x.IGSTAmt) : 0;
+    bool isIGST = Model.ItemsViewList != null && Model.ItemsViewList.Any(x => x.IGSTAmt > 0);
+    decimal totalTax = isIGST ? IGST : (CGST + SGST);
+    decimal taxableAmt = Model.ItemsViewList != null ? Model.ItemsViewList.Sum(x => x.Amount) : 0;
+    decimal grandTotal = Model.ItemsViewList != null ? Model.ItemsViewList.Sum(x => x.TotalAmt) : 0;
+    decimal baseAmt = Model.SaleInvoiceKeyModel != null ? Model.SaleInvoiceKeyModel.BalanceAmount : grandTotal;
+    decimal roundOfAmount = Math.Round(baseAmt, 2);
+    decimal roundOfValue = Math.Round(roundOfAmount - baseAmt, 2);
+
+    string invNo = Model.SaleInvoiceKeyModel?.ReferenceNo ?? "";
+    string invDate = Model.SaleInvoiceKeyModel != null ? Model.SaleInvoiceKeyModel.InvoiceDate.ToString("dd MMM yyyy") : "";
+    string qrTopData = Uri.EscapeDataString($"SDK Solutions | Inv: {invNo} | Date: {invDate} | Amount: Rs. {roundOfAmount:N2} | GSTIN: 19AMVPA4565H1ZM");
+    string qrBankData = Uri.EscapeDataString($"upi://pay?pa=10152651115@idfc&pn=SDK%20Solutions&am={roundOfAmount:0.00}&cu=INR&tn=Invoice%20{invNo}");
+
+    string logoBase64 = "";
+    try
+    {
+        string[] paths = new string[]
+        {
+            System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Content", "Images", "LOGOSDK.png"),
+            System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "wwwroot", "Content", "Images", "LOGOSDK.png"),
+            System.IO.Path.Combine(AppContext.BaseDirectory, "Content", "Images", "LOGOSDK.png"),
+            System.IO.Path.Combine(AppContext.BaseDirectory, "wwwroot", "Content", "Images", "LOGOSDK.png")
+        };
+        foreach (var p in paths)
+        {
+            if (System.IO.File.Exists(p))
+            {
+                byte[] bytes = System.IO.File.ReadAllBytes(p);
+                logoBase64 = "data:image/png;base64," + Convert.ToBase64String(bytes);
+                break;
+            }
+        }
+    }
+    catch { }
 }
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>SDK Solutions ||Generate Invoice </title>
-    @*<link href="~/Content/invoice.css" rel="stylesheet" />*@
-    @Styles.Render("~/Content/css")
-
+    <meta charset="utf-8" />
+    <title>Tax Invoice - @invNo</title>
     <style>
-        .fontsize18 {
+        * {
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 750px !important;
+            max-width: 750px !important;
+            min-width: 750px !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            font-size: 13.5px;
+            line-height: 1.5;
+            color: #1e293b;
+            background: #ffffff;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .invoice-card {
+            width: 750px !important;
+            background: #ffffff;
+            border: 1.5px solid #0f172a;
+            padding: 16px 20px;
+            box-sizing: border-box;
+            margin: 0 auto;
+        }
+
+        /* Top Header Bar */
+        .title-header {
+            text-align: center;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 10px 0;
+            margin: -16px -20px 14px -20px;
+            border-bottom: 2px solid #0284c7;
+        }
+
+        .title-header h1 {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: #ffffff;
+            text-transform: uppercase;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Top Company & QR Section */
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-bottom: 1.5px solid #e2e8f0;
+            padding-bottom: 12px;
+            margin-bottom: 14px;
+        }
+
+        .company-col {
+            width: 65%;
+            vertical-align: top;
+            text-align: left;
+            padding-bottom: 10px;
+        }
+
+        .company-logo {
+            max-height: 52px;
+            max-width: 190px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .company-name {
             font-size: 18px;
-            color: #4d4d4d;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 3px;
+        }
+
+        .company-desc {
+            color: #475569;
+            font-size: 12.5px;
+            line-height: 1.5;
+        }
+
+        .company-gst {
+            font-weight: 700;
+            color: #0284c7;
+            margin-top: 4px;
+            font-size: 13px;
+        }
+
+        .top-qr-col {
+            width: 35%;
+            vertical-align: top;
+            text-align: right;
+            padding-bottom: 10px;
+        }
+
+        .qr-card {
+            display: inline-block;
+            padding: 6px 8px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 6px;
+            background: #f8fafc;
+            text-align: center;
+        }
+
+        .qr-card img {
+            width: 72px;
+            height: 72px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .qr-caption {
+            font-size: 10px;
+            font-weight: 700;
+            color: #64748b;
+            margin-top: 3px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* Metadata Cards */
+        .meta-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 12px 0;
+            margin-bottom: 14px;
+            page-break-inside: avoid;
+        }
+
+        .meta-box-left, .meta-box-right {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #0284c7;
+            border-radius: 5px;
+            padding: 10px 14px;
+            vertical-align: top;
+            width: 50%;
+        }
+
+        .meta-box-right {
+            border-left: 4px solid #0f172a;
+        }
+
+        .meta-box-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #0f172a;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 4px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-client-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .meta-client-desc {
+            font-size: 12.5px;
+            color: #475569;
+            line-height: 1.45;
+        }
+
+        .meta-grid-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+        }
+
+        .meta-grid-table td {
+            padding: 3px 4px;
+            vertical-align: top;
+        }
+
+        .meta-lbl {
+            color: #64748b;
+            display: block;
+            font-size: 11px;
             font-weight: 600;
         }
 
-        .fontsize16 {
-            font-size: 16px;
-            color: #4d4d4d;
+        .meta-val {
+            font-size: 13px;
+            font-weight: 700;
+            color: #0f172a;
         }
 
-        .custom-table, .custom-table-all {
+        /* Items Table */
+        .items-table {
+            width: 100%;
             border-collapse: collapse;
-            border-spacing: 0;
+            margin-bottom: 14px;
+            font-size: 12.5px;
+        }
+
+        .items-table thead {
+            display: table-header-group;
+        }
+
+        .items-table th {
+            background: #0f172a;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 9px 6px;
+            border: 1px solid #1e293b;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .items-table tbody tr {
+            page-break-inside: avoid;
+        }
+
+        .items-table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .items-table td {
+            padding: 9px 6px;
+            border: 1px solid #e2e8f0;
+            vertical-align: top;
+            color: #1e293b;
+        }
+
+        .items-table tfoot td {
+            padding: 9px 6px;
+            border: 1px solid #cbd5e1;
+            font-weight: 700;
+            font-size: 13px;
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .text-center { text-align: center !important; }
+        .text-left { text-align: left !important; }
+        .text-right { text-align: right !important; }
+
+        /* Summary & Totals */
+        .summary-table {
             width: 100%;
-            display: table;
+            border-collapse: collapse;
+            margin-bottom: 14px;
+            page-break-inside: avoid;
         }
 
-        .custom-table-all {
-            border: 1px solid #ccc;
+        .words-col {
+            width: 52%;
+            vertical-align: top;
+            padding-right: 15px;
         }
 
-        .mt-30 {
-            margin-top: 30px;
-        }
-
-        .img-responsive {
-            display: block;
-            max-width: 20%;
-            height: auto;
-        }
-
-        .invoice-wrapper {
-            background: #fff;
-            margin: 60px 0 40px;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .inv-content {
-            border: none;
-        }
-
-        .invoice-header {
-            border: none;
-            padding: 0px;
-            /*border-b*/
-        }
-
-        /* .tax-invoice {
-            color: #7539FF;
+        .words-lbl {
+            font-size: 12px;
             font-weight: 700;
-            font-size: 24px;
-            margin-bottom: 15px;
-        }*/
+            color: #475569;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
 
-        .invoice-title {
-            color: #0092cb;
-            font-size: 24px;
+        .words-box {
+            font-size: 13px;
+            font-weight: 600;
+            color: #0f172a;
+            background: #f8fafc;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-left: 3.5px solid #0284c7;
+            border-radius: 4px;
+            line-height: 1.5;
+        }
+
+        .calc-col {
+            width: 48%;
+            vertical-align: top;
+        }
+
+        .calc-grid {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+        }
+
+        .calc-grid td {
+            padding: 4px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .calc-lbl {
+            color: #475569;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .calc-val {
             font-weight: 700;
-            /*margin-bottom: 10px;*/
-            display: inline-block;
-        }
-
-        .gst-details-four:last-child {
-            font-size: 16px;
-            margin: 0;
-            color: #4d4d4d;
-        }
-
-        .inv-header-right {
             text-align: right;
+            color: #0f172a;
         }
 
-        .inv-details {
-            position: relative;
+        .calc-grid tr.grand-row td {
+            font-size: 14.5px;
+            font-weight: 800;
+            color: #0284c7;
+            border-top: 1.5px solid #0f172a;
+            border-bottom: 2px solid #0f172a;
+            padding-top: 6px;
+            padding-bottom: 6px;
         }
 
-        .inv-date:last-child {
-            margin-right: 0;
-            /*margin-bottom: 20px;*/
-        }
-
-        .inv-date {
+        /* 3-Column Footer */
+        .footer-three-table {
             width: 100%;
-            float: right;
-            color: #000;
-            font-size: 18px;
-            font-weight: normal;
+            border-collapse: collapse;
+            border-top: 1.5px solid #0f172a;
+            border-bottom: 1.5px solid #0f172a;
+            padding: 10px 0;
+            margin-top: 10px;
+            margin-bottom: 12px;
+            page-break-inside: avoid;
         }
 
-            .inv-date span {
-                color: #4d4d4d;
-                /*font-weight: 700;*/
-                font-size: 18px;
-                margin-left: 3px;
-            }
-
-        .inv-customer-add {
-            border: solid 1px #ccc;
-            border-radius: 15px;
-            padding: 15px;
-            color: #4d4d4d;
+        .foot-acc-col {
+            width: 38%;
+            vertical-align: top;
+            padding: 10px 12px 10px 0;
+            border-right: 1px solid #e2e8f0;
+            font-size: 12px;
         }
 
-        .inv-customer-add-header {
-            color: #0092cb;
-            font-size: 18px;
-            font-weight: 700;
+        .foot-acc-title {
+            font-weight: 800;
+            color: #0f172a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            font-size: 12.5px;
+        }
+
+        .foot-acc-row {
+            margin-bottom: 3px;
+        }
+
+        .foot-qr-col {
+            width: 32%;
+            vertical-align: middle;
+            text-align: center;
+            padding: 10px 8px;
+        }
+
+        .foot-qr-box {
             display: inline-block;
+            padding: 5px;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            background: #ffffff;
         }
 
-        .inv-total {
-            color: #0092cb;
+        .foot-qr-box img {
+            width: 72px;
+            height: 72px;
+            display: block;
+        }
+
+        .foot-qr-caption {
+            font-size: 9.5px;
             font-weight: 700;
+            color: #64748b;
+            margin-top: 3px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .foot-sign-col {
+            width: 30%;
+            vertical-align: bottom;
+            text-align: center;
+            padding: 10px 0 10px 12px;
+            border-left: 1px solid #e2e8f0;
+        }
+
+        .sign-company {
+            font-size: 13px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 45px;
+        }
+
+        .sign-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #475569;
+            border-top: 1px dashed #94a3b8;
             display: inline-block;
+            padding-top: 5px;
+            min-width: 140px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
         }
 
-        .total-amountdetails {
-            padding: 0;
-            border-bottom: 1px solid #e0e0e0;
+        /* Declaration */
+        .declaration-box {
+            font-size: 11px;
+            color: #64748b;
+            line-height: 1.5;
+            page-break-inside: avoid;
         }
 
-            .total-amountdetails p {
-                /*text-align: center;*/
-                font-size: 16px;
-                margin: 0;
-                padding: 20px 0;
-            }
-
-            .total-amountdetails span {
-                color: #4d4d4d;
-            }
-
-        .border-top {
-            border-top: solid 1px #ccc;
-        }
-
-        .border-bottom {
-            border-bottom: solid 1px #ccc;
-        }
-
-        img {
-            max-width: 200px;
-            height: auto;
+        .declaration-title {
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 4px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
     </style>
 </head>
-<body style="background:#fff;">
-    <div class="inv-customer-add">
-        <div class="col-md-12 text-center border-bottom">
-            <div class="invoice-title tax-invoice" style="color: #4d4d4d !important ">TAX INVOICE</div>
-            @*<div>
-                    <img class="logo-lightmode" src="~/Content/Images/LOGOSDK.png" alt="Logo">
-                </div>*@
-            <div class="company-details">
-                <span class="company-name invoice-title">M/S SDK Solutions</span>
-                <div class="gst-details-four">
-                    @*<span class="">M/S SDK Solutions</span><br />*@
-                    <span class="">3057/3/11/N, Jyoti Nagar, P.O Sevok Road, Siliguri, WB - 734001</span><br />
-                    <span class="">Email: info@sdksolutions.in || Mobile No.: +91 97331 16514 || GSTIN: 19AMVPA4565H1ZM</span><br /><br />
-                </div>
-            </div>
+<body>
+    <div class="invoice-card">
+        <!-- 1. Header Title -->
+        <div class="title-header">
+            <h1>TAX INVOICE</h1>
         </div>
-        <div class="inv-content">
 
-            <div class="col-md-12 mt-30">
-                <table class="" width="100%" style="width:100%;page-break-inside: avoid">
-                    <tr style="page-break-inside: avoid">
-                        <td class="text-left" style="width:55%;">
-                            <strong class="inv-customer-add-header">Invoice To: </strong>
-                        </td>
-                        <td class="text-left" style="width:5%">
-                            &nbsp;
-                        </td>
-                        <td class="inv-header-right" style="width:40%;">
-                            <strong class="inv-customer-add-header">Invoice Details: </strong>
-                    </tr>
-                    <tr style="color: #000;">
-                        <td class="text-left" style="width:55%;">
-                            <span class="fontsize18">To,</span><br />
-                            <span class="fontsize16">@Model.SaleInvoiceKeyModel.InvoiceTo</span><br />
-                            <span class="fontsize16">@Model.VendorDetails.VenderName</span><br />
-                            <span class="fontsize16">@Model.VendorDetails.VenderAddress</span><br />
-                            @if (!string.IsNullOrEmpty(@Model.VendorDetails.GSTNo) && @Model.VendorDetails.GSTNo.Length > 5)
-                            {
-                                <span class="fontsize16">GSTIN: @Model.VendorDetails.GSTNo</span><br />
-                            }
-                        </td>
-                        <td class="text-left" style="width:5%">
-                            &nbsp;
-                        </td>
-                        <td class="inv-header-right" style="width:40%;">
-                            <div class="inv-details">
-                                <div class="inv-date">Invoice Date:<span>@Model.SaleInvoiceKeyModel.InvoiceDate.ToString("dd MMM yyyy")</span></div>
-                                <div class="inv-date">Invoice No.:<span>@Model.SaleInvoiceKeyModel.ReferenceNo</span></div>
-                                @if (!string.IsNullOrEmpty(@Model.SaleInvoiceKeyModel.OrderNo))
-                                {
-                                    <div class="inv-date">Order Date:<span>@Model.SaleInvoiceKeyModel.OrderDate.Value.ToString("dd MMM yyyy")</span></div>
-                                    <div class="inv-date">Order No.:<span>@Model.SaleInvoiceKeyModel.OrderNo</span></div>
-
-                                }
-                            </div>
-
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <br />
-            @if (Model.ItemsViewList.Count() > 0)
-            {
-                <div class="col-md-12 border-top">
-                    <table class="table table-bordered mt-30" width="100%">
-                        <thead>
-                            <tr>
-                                <th class="text-center" style="vertical-align:middle">
-                                    Sl No.
-                                </th>
-                                <th class="text-center" style="vertical-align:middle">
-                                    Item Name
-                                </th>
-                                <th class="text-center" style="vertical-align:middle">
-                                    HSN Code
-                                </th>
-                                <th class="text-center" style="vertical-align:middle">
-                                    GST %
-                                </th>
-                                <th class="text-center" style="vertical-align:middle">
-                                    Qty
-                                </th>
-                                <th class="text-center" style="vertical-align:middle">
-                                    Rate (&#8377)
-                                </th>
-                                <th class="text-center" style="vertical-align:middle">
-                                    Amount (&#8377)
-                                </th>
-                                @if (@Model.ItemsViewList[0].IGSTAmt != 0)
-                                {
-                                    <th class="text-center" style="vertical-align:middle">
-                                        IGST (&#8377)
-                                    </th>
-                                }
-                                else
-                                {
-                                    <th class="text-center" style="vertical-align:middle">
-                                        CGST (&#8377)
-                                    </th>
-                                    <th class="text-center" style="vertical-align:middle">
-                                        SGST (&#8377)
-                                    </th>
-                                }
-                                <th class="text-center" style="vertical-align:middle">
-                                    Total (&#8377)
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @{int i = 1;}
-                            @foreach (var item in Model.ItemsViewList)
-                            {
-                                <tr style="page-break-inside: avoid; color: #000;">
-                                    <td class="text-center" style="vertical-align:middle">
-                                        @i
-                                    </td>
-                                    <td class="text-left" style="vertical-align:middle">
-                                        @item.ItemName
-                                    </td>
-                                    <td class="text-center" style="vertical-align:middle">
-                                        @item.ItemHSNCode
-                                    </td>
-                                    <td class="text-center" style="vertical-align:middle">
-                                        @item.GSTPercentage
-                                    </td>
-                                    <td class="text-center" style="vertical-align:middle">
-                                        @item.Qty
-                                    </td>
-                                    <td class="text-right" style="vertical-align:middle">
-                                        @item.Rate.ToString("0.00")
-                                    </td>
-                                    <td class="text-right" style="vertical-align:middle">
-                                        @item.Amount.ToString("0.00")
-                                    </td>
-                                    @if (@item.IGSTAmt != 0)
-                                    {
-                                        <td class="text-right" style="vertical-align:middle">
-                                            @item.IGSTAmt.ToString("0.00")
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td class="text-right" style="vertical-align:middle">
-                                            @item.CGSTAmt.ToString("0.00")
-                                        </td>
-                                        <td class="text-right" style="vertical-align:middle">
-                                            @item.SGSTAmt.ToString("0.00")
-                                        </td>
-                                    }
-                                    <td class="text-right" style="vertical-align:middle">
-                                        @item.TotalAmt.ToString("0.00")
-                                    </td>
-                                </tr>
-                                i++;
-                            }
-
-                            <tr style="background:#ccc;color:#000; page-break-inside: avoid">
-                                <td colspan="6" class="text-right">Total</td>
-                                <td class="text-right">@Model.ItemsViewList.Sum(x => x.Amount).ToString("0.00")</td>
-                                @if (@Model.ItemsViewList[0].IGSTAmt != 0)
-                                {
-                                    <td class="text-right">@Model.ItemsViewList.Sum(x => x.IGSTAmt).ToString("0.00")</td>
-                                }
-                                else
-                                {
-                                    <td class="text-right">@Model.ItemsViewList.Sum(x => x.CGSTAmt).ToString("0.00")</td>
-                                    <td class="text-right">@Model.ItemsViewList.Sum(x => x.SGSTAmt).ToString("0.00")</td>
-                                }
-                                <td class="text-right">@Model.ItemsViewList.Sum(x => x.TotalAmt).ToString("0.00")</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <hr />
-                    <div class="col-md-12 inv-header-right">
-                        <div class="inv-details">
-                            <div class="inv-date">Total Taxable Value: &#8377 @Model.ItemsViewList.Sum(x => x.Amount).ToString("0.00")</div>
-                            <div class="inv-date">Total Taxable Value: &#8377 @Model.ItemsViewList.Sum(x => x.Amount).ToString("0.00")</div>
-                            @*<strong class="pull-right inv-total">Total Taxable Value: &#8377 @Model.ItemsViewList.Sum(x => x.Amount).ToString("0.00")</strong>*@<br />
-                            @if (@Model.ItemsViewList[0].IGSTAmt != 0)
-                            {
-                                <div class="inv-date">Total Tax Amount: &#8377 @Model.ItemsViewList.Sum(x => x.IGSTAmt).ToString("0.00")</div>
-                            }
-                            else
-                            {
-                                <div class="inv-date">Total Tax Amount: &#8377 @TTax.ToString("0.00")</div>
-                            }
-                            @if (roundOfValue != 0)
-                            {
-                                <div class="inv-date">Total Amount: &#8377 @Model.ItemsViewList.Sum(x => x.TotalAmt).ToString("0.00")</div>
-                                <div class="inv-date">Round Of Value: &#8377  @roundOfValue.ToString("0.00")</div>
-                                <div class="inv-date">Total Value of Invoice: &#8377 @roundOfAmount.ToString("0.00")</div>
-                            }
-                            else
-                            {
-                                <div class="inv-date">Total Value of Invoice: &#8377 @Model.ItemsViewList.Sum(x => x.TotalAmt).ToString("0.00")</div>
-                            }
-
-                            @if (@Model.SaleInvoiceKeyModel.AdvanceReceived > 0)
-                            {
-                                <div class="inv-date">@Model.SaleInvoiceKeyModel.ReceivedRemarks: (&#8377 @Model.SaleInvoiceKeyModel.AdvanceReceived.ToString("0.00"))</div>
-                                <div class="inv-date">Net Payable Amount: &#8377 @Model.SaleInvoiceKeyModel.BalanceAmount.ToString("0.00")</div>
-                            }
-                        </div>
+        <!-- 2. Top Header Section: Company Details & Invoice Summary QR -->
+        <table class="header-table">
+            <tr>
+                <td class="company-col">
+                    @if (!string.IsNullOrEmpty(logoBase64))
+                    {
+                        <img src="@logoBase64" alt="SDK Solutions Logo" class="company-logo" />
+                    }
+                    else
+                    {
+                        <div class="company-name">M/S SDK Solutions</div>
+                    }
+                    <div class="company-desc">3057/3/11/N, Jyoti Nagar, P.O Sevok Road, Siliguri, WB-734001</div>
+                    <div class="company-desc">Email: info@sdksolution.in &nbsp;|&nbsp; Mobile: +91 97331 16514</div>
+                    <div class="company-gst">GSTIN: 19AMVPA4565H1ZM</div>
+                </td>
+                <td class="top-qr-col">
+                    <div class="qr-card">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=@qrTopData" alt="Invoice QR" />
+                        <span class="qr-caption">Scan for Summary</span>
                     </div>
-                </div>
-                <div class="total-amountdetails">
-                    <p>Total amount ( in words): <span>Rupees @Model.FigureAmount Only.</span></p>
-                </div>
-            }
-            else
-            {
-                <div class="col-md-12" style="margin-top:30px; margin-bottom:20px;">
-                    <h3>No record found...</h3>
-                </div>
-            }
-            <div class="col-md-12 mt-30">
-                <table class="" width="100%" style="width:100%;page-break-inside: avoid">
-                    <tr style="color: #000;">
-                        <td class="text-left" style="width:65%;">
-                            <span class="fontsize18">Account Details</span><br />
-                            <span class="fontsize16">Name: SDK Solutions</span><br />
-                            <span class="fontsize16">Bank Name: IDFC First</span><br />
-                            <span class="fontsize16">Branch: Gangtok Branch</span><br />
-                            <span class="fontsize16">IFSC: IDFB0061232</span><br />
-                            @*<span class="fontsize16">SWIFT Code: IDFBINBBMUM</span><br />*@
-                            <span class="fontsize16">Account No.: 10152651115</span>
-                        </td>
-                        <td class="text-left" style="width:5%">
-                            &nbsp;
-                        </td>
-                        <td class="text-left" style="width:30%;">
-                            <div class="text-center">
-                                <br />
-                                <br />
-                                <br />
-                                <br />
-                                <span class="">Authorised Signatory</span><br />
-                                <span class="">SDK Solutions</span><br />
-                            </div>
-                        </td>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Invoice & Billing Metadata (2-Column Card) -->
+        <table class="meta-table">
+            <tr>
+                <td class="meta-box-left">
+                    <div class="meta-box-title">Invoice To:</div>
+                    @if (!string.IsNullOrEmpty(Model.SaleInvoiceKeyModel?.InvoiceTo))
+                    {
+                        <div class="meta-client-name">@Model.SaleInvoiceKeyModel.InvoiceTo</div>
+                    }
+                    @if (Model.VendorDetails != null && !string.IsNullOrEmpty(Model.VendorDetails.VenderName) && Model.VendorDetails.VenderName != Model.SaleInvoiceKeyModel?.InvoiceTo)
+                    {
+                        <div class="meta-client-name">@Model.VendorDetails.VenderName</div>
+                    }
+                    @if (Model.VendorDetails != null && !string.IsNullOrEmpty(Model.VendorDetails.VenderAddress))
+                    {
+                        <div class="meta-client-desc">@Model.VendorDetails.VenderAddress</div>
+                    }
+                    @if (Model.VendorDetails != null && !string.IsNullOrEmpty(Model.VendorDetails.GSTNo) && Model.VendorDetails.GSTNo.Length > 4)
+                    {
+                        <div class="meta-client-desc" style="font-weight: 700; margin-top: 3px; color: #0f172a;">GSTIN: @Model.VendorDetails.GSTNo</div>
+                    }
+                </td>
+                <td class="meta-box-right">
+                    <div class="meta-box-title">Invoice Details:</div>
+                    <table class="meta-grid-table">
+                        <tr>
+                            <td>
+                                <span class="meta-lbl">Invoice Date:</span>
+                                <span class="meta-val">@invDate</span>
+                            </td>
+                            <td>
+                                <span class="meta-lbl">Invoice No:</span>
+                                <span class="meta-val">@invNo</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding-top: 6px;">
+                                <span class="meta-lbl">Order Date:</span>
+                                <span class="meta-val">@(Model.SaleInvoiceKeyModel?.OrderDate.HasValue == true ? Model.SaleInvoiceKeyModel.OrderDate.Value.ToString("dd MMM yyyy") : "-")</span>
+                            </td>
+                            <td style="padding-top: 6px;">
+                                <span class="meta-lbl">Order No:</span>
+                                <span class="meta-val">@(string.IsNullOrEmpty(Model.SaleInvoiceKeyModel?.OrderNo) ? "-" : Model.SaleInvoiceKeyModel.OrderNo)</span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 3. Body: Item List Table -->
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th style="width: 5%;">SI</th>
+                    <th style="width: 38%; text-align: left; padding-left: 6px;">Item Name</th>
+                    <th style="width: 10%;">HSN</th>
+                    <th style="width: 7%;">GST %</th>
+                    <th style="width: 6%;">Qty</th>
+                    <th style="width: 10%; text-align: right; padding-right: 6px;">Rate (&#8377;)</th>
+                    <th style="width: 12%; text-align: right; padding-right: 6px;">Amount (&#8377;)</th>
+                    @if (isIGST)
+                    {
+                        <th style="width: 12%; text-align: right; padding-right: 6px;">IGST (&#8377;)</th>
+                    }
+                    else
+                    {
+                        <th style="width: 12%; text-align: right; padding-right: 6px;">Tax (&#8377;)</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.ItemsViewList != null && Model.ItemsViewList.Any())
+                {
+                    int sl = 1;
+                    foreach (var item in Model.ItemsViewList)
+                    {
+                        decimal lineTax = isIGST || item.IGSTAmt > 0 ? item.IGSTAmt : (item.CGSTAmt + item.SGSTAmt);
+                        <tr>
+                            <td class="text-center">@sl</td>
+                            <td class="text-left" style="padding-left: 6px; font-weight: 600;">@item.ItemName</td>
+                            <td class="text-center">@item.ItemHSNCode</td>
+                            <td class="text-center">@item.GSTPercentage%</td>
+                            <td class="text-center">@item.Qty</td>
+                            <td class="text-right" style="padding-right: 6px;">@item.Rate.ToString("N2")</td>
+                            <td class="text-right" style="padding-right: 6px;">@item.Amount.ToString("N2")</td>
+                            <td class="text-right" style="padding-right: 6px;">@lineTax.ToString("N2")</td>
+                        </tr>
+                        sl++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-center" style="padding: 15px;">No items in this invoice</td>
                     </tr>
-                </table>
-            </div>
-            <br />
-            <div class="col-md-12 mt-30">
-                <div class="terms-condition">
-                    <span>Declaration:</span>
-                    <ol>
-                        <li>
-                            <small>Please pay by A/C payee cheque only in fabour of <b>"SDK Solutions"</b></small><br />
-                        </li>
-                        <li>
-                            <small>Goods once sold cannot be exchange or taken back</small><br />
-                        </li>
-                        <li>
-                            <small>All disputes subject to 'West Bengal' jurisdiction</small><br />
-                        </li>
-                        <li>
-                            <small>Warranty of all items are covered by the principles or by their authorised service center. We do not have any legal of financial liability for the same</small><br />
-                        </li>
-                    </ol>
-                </div>
-            </div>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5" class="text-right">Total:</td>
+                    <td class="text-right">-</td>
+                    <td class="text-right">@taxableAmt.ToString("N2")</td>
+                    <td class="text-right">@totalTax.ToString("N2")</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <!-- Summary & Totals -->
+        <table class="summary-table">
+            <tr>
+                <td class="words-col">
+                    <div class="words-lbl">Total Amount In Words:</div>
+                    <div class="words-box">Rupees @(Model.FigureAmount ?? "Zero") Only.</div>
+                </td>
+                <td class="calc-col">
+                    <table class="calc-grid">
+                        <tr>
+                            <td class="calc-lbl">Total Taxable Value:</td>
+                            <td class="calc-val">&#8377;@taxableAmt.ToString("N2")</td>
+                        </tr>
+                        <tr>
+                            <td class="calc-lbl">Total Tax Amount @(isIGST ? "(IGST)" : "(CGST+SGST)"):</td>
+                            <td class="calc-val">&#8377;@totalTax.ToString("N2")</td>
+                        </tr>
+                        @if (roundOfValue != 0)
+                        {
+                            <tr>
+                                <td class="calc-lbl">Round Off:</td>
+                                <td class="calc-val">&#8377;@roundOfValue.ToString("N2")</td>
+                            </tr>
+                        }
+                        <tr class="grand-row">
+                            <td class="calc-lbl" style="color: #0f172a;">Total Invoice Value:</td>
+                            <td class="calc-val">&#8377;@roundOfAmount.ToString("N2")</td>
+                        </tr>
+                        @if (Model.SaleInvoiceKeyModel != null && Model.SaleInvoiceKeyModel.AdvanceReceived > 0)
+                        {
+                            <tr>
+                                <td class="calc-lbl" style="color: #dc2626;">Less: @(string.IsNullOrEmpty(Model.SaleInvoiceKeyModel.ReceivedRemarks) ? "Deduction" : Model.SaleInvoiceKeyModel.ReceivedRemarks)</td>
+                                <td class="calc-val" style="color: #dc2626;">(-) &#8377;@Model.SaleInvoiceKeyModel.AdvanceReceived.ToString("N2")</td>
+                            </tr>
+                            <tr class="grand-row" style="color: #0284c7;">
+                                <td class="calc-lbl">Net Payable:</td>
+                                <td class="calc-val">&#8377;@Model.SaleInvoiceKeyModel.BalanceAmount.ToString("N2")</td>
+                            </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 4. Footer Section: Account Details | Bank QR | Authorised Signatory -->
+        <table class="footer-three-table">
+            <tr>
+                <td class="foot-acc-col">
+                    <div class="foot-acc-title">Account Details</div>
+                    <div class="foot-acc-row"><span style="color: #64748b;">Name:</span> <strong>SDK Solutions</strong></div>
+                    <div class="foot-acc-row"><span style="color: #64748b;">Bank:</span> IDFC First</div>
+                    <div class="foot-acc-row"><span style="color: #64748b;">Branch:</span> Gangtok Branch</div>
+                    <div class="foot-acc-row"><span style="color: #64748b;">IFSC:</span> IDFB0061232</div>
+                    <div class="foot-acc-row"><span style="color: #64748b;">Acc No.:</span> 10152651115</div>
+                </td>
+                <td class="foot-qr-col">
+                    <div class="foot-qr-box">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=@qrBankData" alt="Bank QR" />
+                    </div>
+                    <span class="foot-qr-caption">Scan to Pay / View Info</span>
+                </td>
+                <td class="foot-sign-col">
+                    <div class="sign-company">For SDK Solutions</div>
+                    <div class="sign-title">Authorised Signatory</div>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Declaration Section -->
+        <div class="declaration-box">
+            <div class="declaration-title">Declaration:</div>
+            <div>1. Please pay by A/C payee cheque only in favour of "SDK Solutions".</div>
+            <div>2. Goods once sold cannot be exchanged or taken back.</div>
+            <div>3. All disputes subject to West Bengal jurisdiction.</div>
+            <div>4. Warranty of all items are covered by the principles or by their authorised service center. We do not have any legal or financial liability for the same.</div>
         </div>
     </div>
-
 </body>
 </html>

@@ -4,7 +4,7 @@
     <!-- Donut Chart & Legend -->
     <div class="col-md-5 text-center">
         <div class="position-relative d-inline-block" style="margin-top: -6px;">
-            <div id="gstAnnualDonutChart" data-cgst="@(Model?.CGSTAmount ?? 0)" data-sgst="@(Model?.SGSTAmount ?? 0)" data-igst="@(Model?.IGSTAmount ?? 0)" data-cess="@(Model?.CESSAmount ?? 0)" style="min-height: 200px;"></div>
+            <div id="gstAnnualDonutChart" data-cgst="@(Model?.CGSTAmount ?? 0)" data-sgst="@(Model?.SGSTAmount ?? 0)" data-igst="@(Model?.IGSTAmount ?? 0)" style="min-height: 200px;"></div>
             <div class="position-absolute top-50 start-50 translate-middle text-center" style="pointer-events: none; margin-top: -6px;">
                 <div class="text-uppercase donut-center-title fw-semibold text-muted" style="font-size: 0.65rem; letter-spacing: 0.05em;">Total GST</div>
                 <div class="fw-extrabold donut-center-value" style="font-size: 1.05rem; color: var(--erp-text-main, #f8fafc);">
@@ -17,7 +17,6 @@
             <span class="d-flex align-items-center gap-1 text-muted"><i class="fa-solid fa-circle text-primary" style="font-size: 8px;"></i> CGST (&#8377;)</span>
             <span class="d-flex align-items-center gap-1 text-muted"><i class="fa-solid fa-circle text-success" style="font-size: 8px;"></i> SGST (&#8377;)</span>
             <span class="d-flex align-items-center gap-1 text-muted"><i class="fa-solid fa-circle text-warning" style="font-size: 8px;"></i> IGST (&#8377;)</span>
-            <span class="d-flex align-items-center gap-1 text-muted"><i class="fa-solid fa-circle" style="font-size: 8px; color: #a855f7;"></i> CESS (&#8377;)</span>
         </div>
     </div>
 
@@ -51,12 +50,6 @@
                         <td class="text-end">@(Model?.IGSTTaxable.ToString("N0") ?? "0")</td>
                         <td class="text-end">@(Model?.IGSTAmount.ToString("N0") ?? "0")</td>
                         <td class="text-end fw-semibold pe-2">@(Model?.IGSTTotal.ToString("N0") ?? "0")</td>
-                    </tr>
-                    <tr style="height: 36px;">
-                        <td class="fw-semibold ps-2" style="color: #a855f7;">CESS</td>
-                        <td class="text-end">@(Model?.CESSTaxable.ToString("N0") ?? "0")</td>
-                        <td class="text-end">@(Model?.CESSAmount.ToString("N0") ?? "0")</td>
-                        <td class="text-end fw-semibold pe-2">@(Model?.CESSTotal.ToString("N0") ?? "0")</td>
                     </tr>
                 </tbody>
                 <tfoot class="table-light fw-bold">

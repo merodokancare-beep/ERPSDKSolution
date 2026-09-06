@@ -20,6 +20,11 @@ namespace SDKHRMS.Web.Controllers
         }
 
         // GET: RoleCreator
+        public ActionResult Index()
+        {
+            return RedirectToAction("RoleList");
+        }
+
         public ActionResult RoleList()
         {
             var roles = _context.Roles.ToList();
